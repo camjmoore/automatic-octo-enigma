@@ -1,0 +1,11 @@
+body {
+  overflow: hidden;
+}
+body #block {
+  height: 100px;
+  width: 100px;
+  background: red;
+  position: absolute;
+}
+
+/*# sourceMappingURL=/app.c328ef1a.css.map */
