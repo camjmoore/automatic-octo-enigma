@@ -1,0 +1,24 @@
+{
+  "name": "automatic-octo-enigma",
+  "version": "1.0.0",
+  "description": "A Practice project following a tutorial by yuri3D scrolling effects with webGL and three.js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octanym/automatic-octo-enigma.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/octanym/automatic-octo-enigma/issues"
+  },
+  "homepage": "https://github.com/octanym/automatic-octo-enigma#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
