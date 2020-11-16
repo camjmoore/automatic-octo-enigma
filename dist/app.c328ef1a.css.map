@@ -1,0 +1,1 @@
+{"version":3,"sources":["style.scss"],"names":[],"mappings":"AAAA;EACE;;AAEA;EACE;EACA;EACA;EACA","file":"app.c328ef1a.css","sourceRoot":"..\\src","sourcesContent":["body {\r\n  overflow: hidden;\r\n\r\n  #block {\r\n    height: 100px;\r\n    width: 100px;\r\n    background: red;\r\n    position: absolute;\r\n  }\r\n}\r\n"]}
