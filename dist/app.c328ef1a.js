@@ -196,14 +196,21 @@ require("./style.scss");
 
 var speed = 0;
 var position = 0;
+var rounded = 0;
 var block = document.getElementById('block');
 window.addEventListener('wheel', function (e) {
-  speed += e.deltaY * 0.0002;
+  //slow down rate of change for y
+  speed += e.deltaY * 0.0003;
 });
 
 function raf() {
   position += speed;
   speed *= 0.8;
+  rounded = Math.round(position); //acts as a lerp functionx
+
+  var diff = rounded - position;
+  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015;
+  console.log(rounded);
   block.style.transform = "translate(0, ".concat(position * 100, "px)");
   window.requestAnimationFrame(raf);
 }
@@ -238,7 +245,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59210" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57845" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,10 +1,29 @@
 body {
   overflow: hidden;
 }
+body .n {
+  position: absolute;
+  top: 100px;
+  width: 100px;
+  height: 10px;
+  background-color: blueviolet;
+}
+body .n1 {
+  top: 200px;
+}
+body .n2 {
+  top: 300px;
+}
+body .n3 {
+  top: 400px;
+}
+body .n4 {
+  top: 500px;
+}
 body #block {
   height: 100px;
   width: 100px;
-  background: red;
+  background: peru;
   position: absolute;
 }
 
