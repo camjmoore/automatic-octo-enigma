@@ -194,24 +194,51 @@ module.hot.accept(reloadCSS);
 
 require("./style.scss");
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var speed = 0;
 var position = 0;
 var rounded = 0;
 var block = document.getElementById('block');
+var wrap = document.getElementById('wrapper');
+
+var elems = _toConsumableArray(document.querySelectorAll('.n'));
+
 window.addEventListener('wheel', function (e) {
   //slow down rate of change for y
   speed += e.deltaY * 0.0003;
+}); //create an array of object to iterate over
+
+var objets = Array(5).fill({
+  dist: 0
 });
 
 function raf() {
   position += speed;
   speed *= 0.8;
-  rounded = Math.round(position); //acts as a lerp functionx
+  rounded = Math.round(position); //iterate over the dist objects in the array we created
+
+  objets.forEach(function (obj, index) {
+    obj.dist = Math.min(Math.abs(position - index), 1);
+    obj.dist = 1 - Math.pow(obj.dist, 2);
+    elems[index].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
+  }); //acts as a lerp function
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015;
-  console.log(rounded);
-  block.style.transform = "translate(0, ".concat(position * 100, "px)");
+  console.log(rounded); // block.style.transform = `translate(0, ${position*100}px)`
+
+  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)");
   window.requestAnimationFrame(raf);
 }
 
