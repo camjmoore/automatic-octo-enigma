@@ -25,6 +25,16 @@ body #block {
   width: 100px;
   background: peru;
   position: absolute;
+  z-index: 100;
+}
+body canvas {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */

@@ -189,7 +189,11 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"shaders/vertex.glsl":[function(require,module,exports) {
+module.exports = "#define GLSLIFY 1\nuniform float time;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nuniform vec2 pixels;\nfloat PI = 3.141592653589793238;\nvoid main() {\n  vUv = uv;\n  gl_position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}\n";
+},{}],"shaders/fragment.glsl":[function(require,module,exports) {
+module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform sampler2D textured;\nuniform vec4 resolution;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nfloat PI = 3.141592653589793238\nvoid main() {\n  gl_FragColor = vec4(0.,1.,0.0,1.)\n}";
+},{}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40070,6 +40074,14 @@ var global = arguments[3];
 
 },{}],"three/three-stuff.js":[function(require,module,exports) {
 var global = arguments[3];
+"use strict";
+
+var _vertex = _interopRequireDefault(require("../shaders/vertex.glsl"));
+
+var _fragment = _interopRequireDefault(require("../shaders/fragment.glsl"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three"); // Include any additional ThreeJS examples below
 
@@ -40089,11 +40101,16 @@ var sketch = function sketch(_ref) {
   // Create a renderer
   var renderer = new THREE.WebGLRenderer({
     canvas: context.canvas
-  }); // WebGL background color
+  }); //attach the canvas to the dom
 
-  renderer.setClearColor("#000", 1); // Setup a camera
+  var container = context.canvas;
+  container.appendChild(renderer.domElement); // WebGL background color
 
-  var camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+  renderer.setClearColor(0xeeeeee, 1);
+  renderer.physicallyCorrectLights = true;
+  renderer.outputEncoding = THREE.sRGBEncoding; // Setup a camera
+
+  var camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
   camera.position.set(0, 0, -4);
   camera.lookAt(new THREE.Vector3()); // Setup camera controller
 
@@ -40101,15 +40118,30 @@ var sketch = function sketch(_ref) {
 
   var scene = new THREE.Scene(); // Setup a geometry
 
-  var geometry = new THREE.SphereGeometry(1, 32, 16); // Setup a material
-
-  var material = new THREE.MeshBasicMaterial({
-    color: "red",
-    wireframe: true
-  }); // Setup a mesh with geometry + material
-
-  var mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh); // draw each frame
+  var material = new THREE.ShaderMaterial({
+    extensions: {
+      derivatives: '#extension GL_OES_standard_derivatives : enable'
+    },
+    side: THREE.DoubleSide,
+    uniforms: {
+      time: {
+        type: "f",
+        value: 0
+      },
+      resolution: {
+        type: "v4",
+        value: new THREE.Vector4()
+      },
+      uvRate1: {
+        value: new THREE.Vector2(1, 1)
+      }
+    },
+    vertexShader: _vertex.default,
+    fragmentShader: _fragment.default
+  });
+  var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  var plane = new THREE.Mesh(geometry, material);
+  scene.add(plane); // draw each frame
 
   return {
     // Handle resize events here
@@ -40118,10 +40150,35 @@ var sketch = function sketch(_ref) {
           viewportWidth = _ref2.viewportWidth,
           viewportHeight = _ref2.viewportHeight;
       renderer.setPixelRatio(pixelRatio);
-      renderer.setSize(viewportWidth, viewportHeight, false);
+      renderer.setSize(viewportWidth, viewportHeight);
       camera.aspect = viewportWidth / viewportHeight;
+      material.uniforms.resolution.value.x = viewportWidth;
+      material.uniforms.resolution.value.y = viewportHeight;
+      material.uniforms.resolution.value.z = viewportWidth / viewportHeight;
+      material.uniforms.resolution.value.w = viewportHeight / viewportWidth;
       camera.updateProjectionMatrix();
     },
+    // Setup a material
+    // addObjects() {
+    //   let material = new THREE.ShaderMaterial({
+    //     extensions: {
+    //       derivatives: '#extension GL_OES_standard_derivatives : enable'
+    //     },
+    //     side:  THREE.DoubleSide,
+    //     uniforms:{
+    //       time: { type: "f", value: 0 },
+    //       resolution: { type: "v4", value: new THREE.Vector4() },
+    //       uvRate1: {
+    //         value: new THREE.Vector2(1, 1)
+    //       }
+    //     },
+    //     vertexShader: vertex,
+    //     fragmentShader: fragment
+    //   })
+    //   let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+    //   let plane = new THREE.Mesh(geometry, material);
+    //   scene.add(plane);
+    // },
     // Update & render your scene here
     render: function render(_ref3) {
       var time = _ref3.time;
@@ -40137,7 +40194,7 @@ var sketch = function sketch(_ref) {
 };
 
 canvasSketch(sketch, settings);
-},{"three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
+},{"../shaders/vertex.glsl":"shaders/vertex.glsl","../shaders/fragment.glsl":"shaders/fragment.glsl","three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 require("./style.scss");
@@ -40166,7 +40223,6 @@ var settings = {
   // Get a WebGL canvas rather than 2D
   context: "webgl"
 };
-(0, _canvasSketch.default)(_threeStuff.default, settings);
 var speed = 0;
 var position = 0;
 var rounded = 0;
@@ -40204,6 +40260,7 @@ function raf() {
 }
 
 console.log('it works!');
+(0, _canvasSketch.default)(_threeStuff.default, settings);
 raf();
 },{"./style.scss":"style.scss","./three/three-stuff":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -40233,7 +40290,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50531" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50976" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

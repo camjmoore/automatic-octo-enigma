@@ -30,5 +30,16 @@ body {
     width: 100px;
     background: peru;
     position: absolute;
+    z-index: 100;
+  }
+
+  canvas {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
   }
 }

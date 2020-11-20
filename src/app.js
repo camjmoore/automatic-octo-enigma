@@ -9,7 +9,6 @@ const settings = {
   context: "webgl"
 };
 
-canvasSketch(sketch, settings);
 
 let speed = 0;
 let position = 0;
@@ -30,7 +29,7 @@ function raf(){
   position += speed;
   speed*=0.8;
   rounded = Math.round(position);
-
+  
   //iterate over the dist objects in the array we created
   objets.forEach((obj, index) => {
     obj.dist = Math.min(Math.abs(position - index), 1)
@@ -40,9 +39,9 @@ function raf(){
   
   //acts as a lerp function
   let diff = (rounded - position);
-
+  
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.015;
-
+  
   console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
@@ -50,4 +49,5 @@ function raf(){
 }
 
 console.log('it works!')
+canvasSketch(sketch, settings);
 raf();
