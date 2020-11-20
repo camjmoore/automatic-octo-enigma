@@ -1,4 +1,15 @@
-import './style.scss'
+import './style.scss';
+import sketch from './three/three-stuff';
+import canvasSketch from 'canvas-sketch';
+
+const settings = {
+  // Make the loop animated
+  animate: true,
+  // Get a WebGL canvas rather than 2D
+  context: "webgl"
+};
+
+canvasSketch(sketch, settings);
 
 let speed = 0;
 let position = 0;

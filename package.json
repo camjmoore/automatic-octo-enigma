@@ -21,5 +21,9 @@
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
     "sass": "^1.29.0"
+  },
+  "dependencies": {
+    "canvas-sketch": "^0.7.4",
+    "three": "^0.122.0"
   }
 }
