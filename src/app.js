@@ -1,14 +1,9 @@
 import './style.scss';
-import sketch from './three/three-stuff';
-import canvasSketch from 'canvas-sketch';
+import Sketch from './three/three-class-refactor.js';
 
-const settings = {
-  // Make the loop animated
-  animate: true,
-  // Get a WebGL canvas rather than 2D
-  context: "webgl"
-};
-
+let sketch = new Sketch({
+  dom: document.getElementById('canvas')
+})
 
 let speed = 0;
 let position = 0;

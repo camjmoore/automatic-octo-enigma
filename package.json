@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "canvas-sketch": "^0.7.4",
-    "three": "^0.122.0"
+    "three": "^0.122.0",
+    "three-orbit-controls": "^82.1.0"
   }
 }

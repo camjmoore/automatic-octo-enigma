@@ -189,11 +189,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"shaders/vertex.glsl":[function(require,module,exports) {
-module.exports = "#define GLSLIFY 1\nuniform float time;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nuniform vec2 pixels;\nfloat PI = 3.141592653589793238;\nvoid main() {\n  vUv = uv;\n  gl_position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}\n";
-},{}],"shaders/fragment.glsl":[function(require,module,exports) {
-module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform sampler2D textured;\nuniform vec4 resolution;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nfloat PI = 3.141592653589793238\nvoid main() {\n  gl_FragColor = vec4(0.,1.,0.0,1.)\n}";
-},{}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36699,862 +36695,695 @@ if (typeof __THREE_DEVTOOLS__ !== 'undefined') {
   /* eslint-enable no-undef */
 
 }
-},{}],"../node_modules/three/examples/js/controls/OrbitControls.js":[function(require,module,exports) {
+},{}],"shaders/vertex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = vertexShader;
+
+function vertexShader() {
+  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n      vUv = uv;\n      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n    }\n  ";
+}
+},{}],"shaders/fragment.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = fragmentShader;
+
+function fragmentShader() {
+  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D textured;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    float PI = 3.141592653589793238\n    void main() {\n      gl_FragColor = vec4(0.,1.,0.0,1.)\n    }\n  ";
+}
+},{}],"../node_modules/three-orbit-controls/index.js":[function(require,module,exports) {
+module.exports = function( THREE ) {
+	/**
+	 * @author qiao / https://github.com/qiao
+	 * @author mrdoob / http://mrdoob.com
+	 * @author alteredq / http://alteredqualia.com/
+	 * @author WestLangley / http://github.com/WestLangley
+	 * @author erich666 / http://erichaines.com
+	 */
+
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
 //
-//    Orbit - left mouse / touch: one-finger move
-//    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
-//    Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
+//    Orbit - left mouse / touch: one finger move
+//    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
+//    Pan - right mouse, or arrow keys / touch: three finter swipe
 
-THREE.OrbitControls = function ( object, domElement ) {
+	function OrbitControls( object, domElement ) {
 
-	if ( domElement === undefined ) console.warn( 'THREE.OrbitControls: The second parameter "domElement" is now mandatory.' );
-	if ( domElement === document ) console.error( 'THREE.OrbitControls: "document" should not be used as the target "domElement". Please use "renderer.domElement" instead.' );
+		this.object = object;
 
-	this.object = object;
-	this.domElement = domElement;
+		this.domElement = ( domElement !== undefined ) ? domElement : document;
 
-	// Set to false to disable this control
-	this.enabled = true;
+		// Set to false to disable this control
+		this.enabled = true;
 
-	// "target" sets the location of focus, where the object orbits around
-	this.target = new THREE.Vector3();
+		// "target" sets the location of focus, where the object orbits around
+		this.target = new THREE.Vector3();
 
-	// How far you can dolly in and out ( PerspectiveCamera only )
-	this.minDistance = 0;
-	this.maxDistance = Infinity;
+		// How far you can dolly in and out ( PerspectiveCamera only )
+		this.minDistance = 0;
+		this.maxDistance = Infinity;
 
-	// How far you can zoom in and out ( OrthographicCamera only )
-	this.minZoom = 0;
-	this.maxZoom = Infinity;
+		// How far you can zoom in and out ( OrthographicCamera only )
+		this.minZoom = 0;
+		this.maxZoom = Infinity;
 
-	// How far you can orbit vertically, upper and lower limits.
-	// Range is 0 to Math.PI radians.
-	this.minPolarAngle = 0; // radians
-	this.maxPolarAngle = Math.PI; // radians
+		// How far you can orbit vertically, upper and lower limits.
+		// Range is 0 to Math.PI radians.
+		this.minPolarAngle = 0; // radians
+		this.maxPolarAngle = Math.PI; // radians
 
-	// How far you can orbit horizontally, upper and lower limits.
-	// If set, the interval [ min, max ] must be a sub-interval of [ - 2 PI, 2 PI ], with ( max - min < 2 PI )
-	this.minAzimuthAngle = - Infinity; // radians
-	this.maxAzimuthAngle = Infinity; // radians
+		// How far you can orbit horizontally, upper and lower limits.
+		// If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
+		this.minAzimuthAngle = - Infinity; // radians
+		this.maxAzimuthAngle = Infinity; // radians
 
-	// Set to true to enable damping (inertia)
-	// If damping is enabled, you must call controls.update() in your animation loop
-	this.enableDamping = false;
-	this.dampingFactor = 0.05;
+		// Set to true to enable damping (inertia)
+		// If damping is enabled, you must call controls.update() in your animation loop
+		this.enableDamping = false;
+		this.dampingFactor = 0.25;
 
-	// This option actually enables dollying in and out; left as "zoom" for backwards compatibility.
-	// Set to false to disable zooming
-	this.enableZoom = true;
-	this.zoomSpeed = 1.0;
+		// This option actually enables dollying in and out; left as "zoom" for backwards compatibility.
+		// Set to false to disable zooming
+		this.enableZoom = true;
+		this.zoomSpeed = 1.0;
 
-	// Set to false to disable rotating
-	this.enableRotate = true;
-	this.rotateSpeed = 1.0;
+		// Set to false to disable rotating
+		this.enableRotate = true;
+		this.rotateSpeed = 1.0;
 
-	// Set to false to disable panning
-	this.enablePan = true;
-	this.panSpeed = 1.0;
-	this.screenSpacePanning = true; // if false, pan orthogonal to world-space direction camera.up
-	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
+		// Set to false to disable panning
+		this.enablePan = true;
+		this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
 
-	// Set to true to automatically rotate around the target
-	// If auto-rotate is enabled, you must call controls.update() in your animation loop
-	this.autoRotate = false;
-	this.autoRotateSpeed = 2.0; // 30 seconds per round when fps is 60
+		// Set to true to automatically rotate around the target
+		// If auto-rotate is enabled, you must call controls.update() in your animation loop
+		this.autoRotate = false;
+		this.autoRotateSpeed = 2.0; // 30 seconds per round when fps is 60
 
-	// Set to false to disable use of the keys
-	this.enableKeys = true;
+		// Set to false to disable use of the keys
+		this.enableKeys = true;
 
-	// The four arrow keys
-	this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
+		// The four arrow keys
+		this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
 
-	// Mouse buttons
-	this.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+		// Mouse buttons
+		this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
 
-	// Touch fingers
-	this.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+		// for reset
+		this.target0 = this.target.clone();
+		this.position0 = this.object.position.clone();
+		this.zoom0 = this.object.zoom;
 
-	// for reset
-	this.target0 = this.target.clone();
-	this.position0 = this.object.position.clone();
-	this.zoom0 = this.object.zoom;
+		//
+		// public methods
+		//
 
-	//
-	// public methods
-	//
+		this.getPolarAngle = function () {
 
-	this.getPolarAngle = function () {
+			return spherical.phi;
 
-		return spherical.phi;
+		};
 
-	};
+		this.getAzimuthalAngle = function () {
 
-	this.getAzimuthalAngle = function () {
+			return spherical.theta;
 
-		return spherical.theta;
+		};
 
-	};
+		this.reset = function () {
 
-	this.saveState = function () {
+			scope.target.copy( scope.target0 );
+			scope.object.position.copy( scope.position0 );
+			scope.object.zoom = scope.zoom0;
 
-		scope.target0.copy( scope.target );
-		scope.position0.copy( scope.object.position );
-		scope.zoom0 = scope.object.zoom;
+			scope.object.updateProjectionMatrix();
+			scope.dispatchEvent( changeEvent );
 
-	};
+			scope.update();
 
-	this.reset = function () {
+			state = STATE.NONE;
 
-		scope.target.copy( scope.target0 );
-		scope.object.position.copy( scope.position0 );
-		scope.object.zoom = scope.zoom0;
+		};
 
-		scope.object.updateProjectionMatrix();
-		scope.dispatchEvent( changeEvent );
+		// this method is exposed, but perhaps it would be better if we can make it private...
+		this.update = function() {
 
-		scope.update();
+			var offset = new THREE.Vector3();
 
-		state = STATE.NONE;
+			// so camera.up is the orbit axis
+			var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+			var quatInverse = quat.clone().inverse();
 
-	};
+			var lastPosition = new THREE.Vector3();
+			var lastQuaternion = new THREE.Quaternion();
 
-	// this method is exposed, but perhaps it would be better if we can make it private...
-	this.update = function () {
+			return function update () {
 
-		var offset = new THREE.Vector3();
+				var position = scope.object.position;
 
-		// so camera.up is the orbit axis
-		var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-		var quatInverse = quat.clone().inverse();
+				offset.copy( position ).sub( scope.target );
 
-		var lastPosition = new THREE.Vector3();
-		var lastQuaternion = new THREE.Quaternion();
+				// rotate offset to "y-axis-is-up" space
+				offset.applyQuaternion( quat );
 
-		var twoPI = 2 * Math.PI;
+				// angle from z-axis around y-axis
+				spherical.setFromVector3( offset );
 
-		return function update() {
+				if ( scope.autoRotate && state === STATE.NONE ) {
 
-			var position = scope.object.position;
+					rotateLeft( getAutoRotationAngle() );
 
-			offset.copy( position ).sub( scope.target );
-
-			// rotate offset to "y-axis-is-up" space
-			offset.applyQuaternion( quat );
-
-			// angle from z-axis around y-axis
-			spherical.setFromVector3( offset );
-
-			if ( scope.autoRotate && state === STATE.NONE ) {
-
-				rotateLeft( getAutoRotationAngle() );
-
-			}
-
-			if ( scope.enableDamping ) {
-
-				spherical.theta += sphericalDelta.theta * scope.dampingFactor;
-				spherical.phi += sphericalDelta.phi * scope.dampingFactor;
-
-			} else {
+				}
 
 				spherical.theta += sphericalDelta.theta;
 				spherical.phi += sphericalDelta.phi;
 
-			}
+				// restrict theta to be between desired limits
+				spherical.theta = Math.max( scope.minAzimuthAngle, Math.min( scope.maxAzimuthAngle, spherical.theta ) );
 
-			// restrict theta to be between desired limits
+				// restrict phi to be between desired limits
+				spherical.phi = Math.max( scope.minPolarAngle, Math.min( scope.maxPolarAngle, spherical.phi ) );
 
-			var min = scope.minAzimuthAngle;
-			var max = scope.maxAzimuthAngle;
+				spherical.makeSafe();
 
-			if ( isFinite( min ) && isFinite( max ) ) {
 
-				if ( min < - Math.PI ) min += twoPI; else if ( min > Math.PI ) min -= twoPI;
+				spherical.radius *= scale;
 
-				if ( max < - Math.PI ) max += twoPI; else if ( max > Math.PI ) max -= twoPI;
+				// restrict radius to be between desired limits
+				spherical.radius = Math.max( scope.minDistance, Math.min( scope.maxDistance, spherical.radius ) );
 
-				if ( min < max ) {
+				// move target to panned location
+				scope.target.add( panOffset );
 
-					spherical.theta = Math.max( min, Math.min( max, spherical.theta ) );
+				offset.setFromSpherical( spherical );
+
+				// rotate offset back to "camera-up-vector-is-up" space
+				offset.applyQuaternion( quatInverse );
+
+				position.copy( scope.target ).add( offset );
+
+				scope.object.lookAt( scope.target );
+
+				if ( scope.enableDamping === true ) {
+
+					sphericalDelta.theta *= ( 1 - scope.dampingFactor );
+					sphericalDelta.phi *= ( 1 - scope.dampingFactor );
 
 				} else {
 
-					spherical.theta = ( spherical.theta > ( min + max ) / 2 ) ?
-						Math.max( min, spherical.theta ) :
-						Math.min( max, spherical.theta );
+					sphericalDelta.set( 0, 0, 0 );
 
 				}
 
-			}
-
-			// restrict phi to be between desired limits
-			spherical.phi = Math.max( scope.minPolarAngle, Math.min( scope.maxPolarAngle, spherical.phi ) );
-
-			spherical.makeSafe();
-
-
-			spherical.radius *= scale;
-
-			// restrict radius to be between desired limits
-			spherical.radius = Math.max( scope.minDistance, Math.min( scope.maxDistance, spherical.radius ) );
-
-			// move target to panned location
-
-			if ( scope.enableDamping === true ) {
-
-				scope.target.addScaledVector( panOffset, scope.dampingFactor );
-
-			} else {
-
-				scope.target.add( panOffset );
-
-			}
-
-			offset.setFromSpherical( spherical );
-
-			// rotate offset back to "camera-up-vector-is-up" space
-			offset.applyQuaternion( quatInverse );
-
-			position.copy( scope.target ).add( offset );
-
-			scope.object.lookAt( scope.target );
-
-			if ( scope.enableDamping === true ) {
-
-				sphericalDelta.theta *= ( 1 - scope.dampingFactor );
-				sphericalDelta.phi *= ( 1 - scope.dampingFactor );
-
-				panOffset.multiplyScalar( 1 - scope.dampingFactor );
-
-			} else {
-
-				sphericalDelta.set( 0, 0, 0 );
-
+				scale = 1;
 				panOffset.set( 0, 0, 0 );
 
-			}
+				// update condition is:
+				// min(camera displacement, camera rotation in radians)^2 > EPS
+				// using small-angle approximation cos(x/2) = 1 - x^2 / 8
 
-			scale = 1;
+				if ( zoomChanged ||
+					lastPosition.distanceToSquared( scope.object.position ) > EPS ||
+					8 * ( 1 - lastQuaternion.dot( scope.object.quaternion ) ) > EPS ) {
 
-			// update condition is:
-			// min(camera displacement, camera rotation in radians)^2 > EPS
-			// using small-angle approximation cos(x/2) = 1 - x^2 / 8
+					scope.dispatchEvent( changeEvent );
 
-			if ( zoomChanged ||
-				lastPosition.distanceToSquared( scope.object.position ) > EPS ||
-				8 * ( 1 - lastQuaternion.dot( scope.object.quaternion ) ) > EPS ) {
+					lastPosition.copy( scope.object.position );
+					lastQuaternion.copy( scope.object.quaternion );
+					zoomChanged = false;
 
-				scope.dispatchEvent( changeEvent );
+					return true;
 
-				lastPosition.copy( scope.object.position );
-				lastQuaternion.copy( scope.object.quaternion );
-				zoomChanged = false;
+				}
 
-				return true;
+				return false;
 
-			}
+			};
 
-			return false;
+		}();
 
-		};
+		this.dispose = function() {
 
-	}();
+			scope.domElement.removeEventListener( 'contextmenu', onContextMenu, false );
+			scope.domElement.removeEventListener( 'mousedown', onMouseDown, false );
+			scope.domElement.removeEventListener( 'wheel', onMouseWheel, false );
 
-	this.dispose = function () {
+			scope.domElement.removeEventListener( 'touchstart', onTouchStart, false );
+			scope.domElement.removeEventListener( 'touchend', onTouchEnd, false );
+			scope.domElement.removeEventListener( 'touchmove', onTouchMove, false );
 
-		scope.domElement.removeEventListener( 'contextmenu', onContextMenu, false );
+			document.removeEventListener( 'mousemove', onMouseMove, false );
+			document.removeEventListener( 'mouseup', onMouseUp, false );
 
-		scope.domElement.removeEventListener( 'pointerdown', onPointerDown, false );
-		scope.domElement.removeEventListener( 'wheel', onMouseWheel, false );
+			window.removeEventListener( 'keydown', onKeyDown, false );
 
-		scope.domElement.removeEventListener( 'touchstart', onTouchStart, false );
-		scope.domElement.removeEventListener( 'touchend', onTouchEnd, false );
-		scope.domElement.removeEventListener( 'touchmove', onTouchMove, false );
-
-		scope.domElement.ownerDocument.removeEventListener( 'pointermove', onPointerMove, false );
-		scope.domElement.ownerDocument.removeEventListener( 'pointerup', onPointerUp, false );
-
-		scope.domElement.removeEventListener( 'keydown', onKeyDown, false );
-
-		//scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
-
-	};
-
-	//
-	// internals
-	//
-
-	var scope = this;
-
-	var changeEvent = { type: 'change' };
-	var startEvent = { type: 'start' };
-	var endEvent = { type: 'end' };
-
-	var STATE = {
-		NONE: - 1,
-		ROTATE: 0,
-		DOLLY: 1,
-		PAN: 2,
-		TOUCH_ROTATE: 3,
-		TOUCH_PAN: 4,
-		TOUCH_DOLLY_PAN: 5,
-		TOUCH_DOLLY_ROTATE: 6
-	};
-
-	var state = STATE.NONE;
-
-	var EPS = 0.000001;
-
-	// current position in spherical coordinates
-	var spherical = new THREE.Spherical();
-	var sphericalDelta = new THREE.Spherical();
-
-	var scale = 1;
-	var panOffset = new THREE.Vector3();
-	var zoomChanged = false;
-
-	var rotateStart = new THREE.Vector2();
-	var rotateEnd = new THREE.Vector2();
-	var rotateDelta = new THREE.Vector2();
-
-	var panStart = new THREE.Vector2();
-	var panEnd = new THREE.Vector2();
-	var panDelta = new THREE.Vector2();
-
-	var dollyStart = new THREE.Vector2();
-	var dollyEnd = new THREE.Vector2();
-	var dollyDelta = new THREE.Vector2();
-
-	function getAutoRotationAngle() {
-
-		return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
-
-	}
-
-	function getZoomScale() {
-
-		return Math.pow( 0.95, scope.zoomSpeed );
-
-	}
-
-	function rotateLeft( angle ) {
-
-		sphericalDelta.theta -= angle;
-
-	}
-
-	function rotateUp( angle ) {
-
-		sphericalDelta.phi -= angle;
-
-	}
-
-	var panLeft = function () {
-
-		var v = new THREE.Vector3();
-
-		return function panLeft( distance, objectMatrix ) {
-
-			v.setFromMatrixColumn( objectMatrix, 0 ); // get X column of objectMatrix
-			v.multiplyScalar( - distance );
-
-			panOffset.add( v );
+			//scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
 
 		};
 
-	}();
+		//
+		// internals
+		//
 
-	var panUp = function () {
+		var scope = this;
 
-		var v = new THREE.Vector3();
+		var changeEvent = { type: 'change' };
+		var startEvent = { type: 'start' };
+		var endEvent = { type: 'end' };
 
-		return function panUp( distance, objectMatrix ) {
+		var STATE = { NONE : - 1, ROTATE : 0, DOLLY : 1, PAN : 2, TOUCH_ROTATE : 3, TOUCH_DOLLY : 4, TOUCH_PAN : 5 };
 
-			if ( scope.screenSpacePanning === true ) {
+		var state = STATE.NONE;
 
-				v.setFromMatrixColumn( objectMatrix, 1 );
+		var EPS = 0.000001;
+
+		// current position in spherical coordinates
+		var spherical = new THREE.Spherical();
+		var sphericalDelta = new THREE.Spherical();
+
+		var scale = 1;
+		var panOffset = new THREE.Vector3();
+		var zoomChanged = false;
+
+		var rotateStart = new THREE.Vector2();
+		var rotateEnd = new THREE.Vector2();
+		var rotateDelta = new THREE.Vector2();
+
+		var panStart = new THREE.Vector2();
+		var panEnd = new THREE.Vector2();
+		var panDelta = new THREE.Vector2();
+
+		var dollyStart = new THREE.Vector2();
+		var dollyEnd = new THREE.Vector2();
+		var dollyDelta = new THREE.Vector2();
+
+		function getAutoRotationAngle() {
+
+			return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
+
+		}
+
+		function getZoomScale() {
+
+			return Math.pow( 0.95, scope.zoomSpeed );
+
+		}
+
+		function rotateLeft( angle ) {
+
+			sphericalDelta.theta -= angle;
+
+		}
+
+		function rotateUp( angle ) {
+
+			sphericalDelta.phi -= angle;
+
+		}
+
+		var panLeft = function() {
+
+			var v = new THREE.Vector3();
+
+			return function panLeft( distance, objectMatrix ) {
+
+				v.setFromMatrixColumn( objectMatrix, 0 ); // get X column of objectMatrix
+				v.multiplyScalar( - distance );
+
+				panOffset.add( v );
+
+			};
+
+		}();
+
+		var panUp = function() {
+
+			var v = new THREE.Vector3();
+
+			return function panUp( distance, objectMatrix ) {
+
+				v.setFromMatrixColumn( objectMatrix, 1 ); // get Y column of objectMatrix
+				v.multiplyScalar( distance );
+
+				panOffset.add( v );
+
+			};
+
+		}();
+
+		// deltaX and deltaY are in pixels; right and down are positive
+		var pan = function() {
+
+			var offset = new THREE.Vector3();
+
+			return function pan ( deltaX, deltaY ) {
+
+				var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+
+				if ( scope.object instanceof THREE.PerspectiveCamera ) {
+
+					// perspective
+					var position = scope.object.position;
+					offset.copy( position ).sub( scope.target );
+					var targetDistance = offset.length();
+
+					// half of the fov is center to top of screen
+					targetDistance *= Math.tan( ( scope.object.fov / 2 ) * Math.PI / 180.0 );
+
+					// we actually don't use screenWidth, since perspective camera is fixed to screen height
+					panLeft( 2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix );
+					panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
+
+				} else if ( scope.object instanceof THREE.OrthographicCamera ) {
+
+					// orthographic
+					panLeft( deltaX * ( scope.object.right - scope.object.left ) / scope.object.zoom / element.clientWidth, scope.object.matrix );
+					panUp( deltaY * ( scope.object.top - scope.object.bottom ) / scope.object.zoom / element.clientHeight, scope.object.matrix );
+
+				} else {
+
+					// camera neither orthographic nor perspective
+					console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.' );
+					scope.enablePan = false;
+
+				}
+
+			};
+
+		}();
+
+		function dollyIn( dollyScale ) {
+
+			if ( scope.object instanceof THREE.PerspectiveCamera ) {
+
+				scale /= dollyScale;
+
+			} else if ( scope.object instanceof THREE.OrthographicCamera ) {
+
+				scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom * dollyScale ) );
+				scope.object.updateProjectionMatrix();
+				zoomChanged = true;
 
 			} else {
 
-				v.setFromMatrixColumn( objectMatrix, 0 );
-				v.crossVectors( scope.object.up, v );
+				console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
+				scope.enableZoom = false;
 
 			}
 
-			v.multiplyScalar( distance );
+		}
 
-			panOffset.add( v );
+		function dollyOut( dollyScale ) {
 
-		};
+			if ( scope.object instanceof THREE.PerspectiveCamera ) {
 
-	}();
+				scale *= dollyScale;
 
-	// deltaX and deltaY are in pixels; right and down are positive
-	var pan = function () {
+			} else if ( scope.object instanceof THREE.OrthographicCamera ) {
 
-		var offset = new THREE.Vector3();
-
-		return function pan( deltaX, deltaY ) {
-
-			var element = scope.domElement;
-
-			if ( scope.object.isPerspectiveCamera ) {
-
-				// perspective
-				var position = scope.object.position;
-				offset.copy( position ).sub( scope.target );
-				var targetDistance = offset.length();
-
-				// half of the fov is center to top of screen
-				targetDistance *= Math.tan( ( scope.object.fov / 2 ) * Math.PI / 180.0 );
-
-				// we use only clientHeight here so aspect ratio does not distort speed
-				panLeft( 2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix );
-				panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
-
-			} else if ( scope.object.isOrthographicCamera ) {
-
-				// orthographic
-				panLeft( deltaX * ( scope.object.right - scope.object.left ) / scope.object.zoom / element.clientWidth, scope.object.matrix );
-				panUp( deltaY * ( scope.object.top - scope.object.bottom ) / scope.object.zoom / element.clientHeight, scope.object.matrix );
+				scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom / dollyScale ) );
+				scope.object.updateProjectionMatrix();
+				zoomChanged = true;
 
 			} else {
 
-				// camera neither orthographic nor perspective
-				console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.' );
-				scope.enablePan = false;
+				console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
+				scope.enableZoom = false;
 
 			}
 
-		};
+		}
 
-	}();
+		//
+		// event callbacks - update the object state
+		//
 
-	function dollyOut( dollyScale ) {
+		function handleMouseDownRotate( event ) {
 
-		if ( scope.object.isPerspectiveCamera ) {
+			//console.log( 'handleMouseDownRotate' );
 
-			scale /= dollyScale;
-
-		} else if ( scope.object.isOrthographicCamera ) {
-
-			scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom * dollyScale ) );
-			scope.object.updateProjectionMatrix();
-			zoomChanged = true;
-
-		} else {
-
-			console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
-			scope.enableZoom = false;
+			rotateStart.set( event.clientX, event.clientY );
 
 		}
 
-	}
+		function handleMouseDownDolly( event ) {
 
-	function dollyIn( dollyScale ) {
+			//console.log( 'handleMouseDownDolly' );
 
-		if ( scope.object.isPerspectiveCamera ) {
-
-			scale *= dollyScale;
-
-		} else if ( scope.object.isOrthographicCamera ) {
-
-			scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom / dollyScale ) );
-			scope.object.updateProjectionMatrix();
-			zoomChanged = true;
-
-		} else {
-
-			console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
-			scope.enableZoom = false;
+			dollyStart.set( event.clientX, event.clientY );
 
 		}
 
-	}
+		function handleMouseDownPan( event ) {
 
-	//
-	// event callbacks - update the object state
-	//
+			//console.log( 'handleMouseDownPan' );
 
-	function handleMouseDownRotate( event ) {
-
-		rotateStart.set( event.clientX, event.clientY );
-
-	}
-
-	function handleMouseDownDolly( event ) {
-
-		dollyStart.set( event.clientX, event.clientY );
-
-	}
-
-	function handleMouseDownPan( event ) {
-
-		panStart.set( event.clientX, event.clientY );
-
-	}
-
-	function handleMouseMoveRotate( event ) {
-
-		rotateEnd.set( event.clientX, event.clientY );
-
-		rotateDelta.subVectors( rotateEnd, rotateStart ).multiplyScalar( scope.rotateSpeed );
-
-		var element = scope.domElement;
-
-		rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
-
-		rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
-
-		rotateStart.copy( rotateEnd );
-
-		scope.update();
-
-	}
-
-	function handleMouseMoveDolly( event ) {
-
-		dollyEnd.set( event.clientX, event.clientY );
-
-		dollyDelta.subVectors( dollyEnd, dollyStart );
-
-		if ( dollyDelta.y > 0 ) {
-
-			dollyOut( getZoomScale() );
-
-		} else if ( dollyDelta.y < 0 ) {
-
-			dollyIn( getZoomScale() );
+			panStart.set( event.clientX, event.clientY );
 
 		}
 
-		dollyStart.copy( dollyEnd );
+		function handleMouseMoveRotate( event ) {
 
-		scope.update();
+			//console.log( 'handleMouseMoveRotate' );
 
-	}
+			rotateEnd.set( event.clientX, event.clientY );
+			rotateDelta.subVectors( rotateEnd, rotateStart );
 
-	function handleMouseMovePan( event ) {
+			var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
-		panEnd.set( event.clientX, event.clientY );
+			// rotating across whole screen goes 360 degrees around
+			rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
 
-		panDelta.subVectors( panEnd, panStart ).multiplyScalar( scope.panSpeed );
+			// rotating up and down along whole screen attempts to go 360, but limited to 180
+			rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
 
-		pan( panDelta.x, panDelta.y );
-
-		panStart.copy( panEnd );
-
-		scope.update();
-
-	}
-
-	function handleMouseUp( /*event*/ ) {
-
-		// no-op
-
-	}
-
-	function handleMouseWheel( event ) {
-
-		if ( event.deltaY < 0 ) {
-
-			dollyIn( getZoomScale() );
-
-		} else if ( event.deltaY > 0 ) {
-
-			dollyOut( getZoomScale() );
-
-		}
-
-		scope.update();
-
-	}
-
-	function handleKeyDown( event ) {
-
-		var needsUpdate = false;
-
-		switch ( event.keyCode ) {
-
-			case scope.keys.UP:
-				pan( 0, scope.keyPanSpeed );
-				needsUpdate = true;
-				break;
-
-			case scope.keys.BOTTOM:
-				pan( 0, - scope.keyPanSpeed );
-				needsUpdate = true;
-				break;
-
-			case scope.keys.LEFT:
-				pan( scope.keyPanSpeed, 0 );
-				needsUpdate = true;
-				break;
-
-			case scope.keys.RIGHT:
-				pan( - scope.keyPanSpeed, 0 );
-				needsUpdate = true;
-				break;
-
-		}
-
-		if ( needsUpdate ) {
-
-			// prevent the browser from scrolling on cursor keys
-			event.preventDefault();
+			rotateStart.copy( rotateEnd );
 
 			scope.update();
 
 		}
 
+		function handleMouseMoveDolly( event ) {
 
-	}
+			//console.log( 'handleMouseMoveDolly' );
 
-	function handleTouchStartRotate( event ) {
+			dollyEnd.set( event.clientX, event.clientY );
 
-		if ( event.touches.length == 1 ) {
+			dollyDelta.subVectors( dollyEnd, dollyStart );
+
+			if ( dollyDelta.y > 0 ) {
+
+				dollyIn( getZoomScale() );
+
+			} else if ( dollyDelta.y < 0 ) {
+
+				dollyOut( getZoomScale() );
+
+			}
+
+			dollyStart.copy( dollyEnd );
+
+			scope.update();
+
+		}
+
+		function handleMouseMovePan( event ) {
+
+			//console.log( 'handleMouseMovePan' );
+
+			panEnd.set( event.clientX, event.clientY );
+
+			panDelta.subVectors( panEnd, panStart );
+
+			pan( panDelta.x, panDelta.y );
+
+			panStart.copy( panEnd );
+
+			scope.update();
+
+		}
+
+		function handleMouseUp( event ) {
+
+			//console.log( 'handleMouseUp' );
+
+		}
+
+		function handleMouseWheel( event ) {
+
+			//console.log( 'handleMouseWheel' );
+
+			if ( event.deltaY < 0 ) {
+
+				dollyOut( getZoomScale() );
+
+			} else if ( event.deltaY > 0 ) {
+
+				dollyIn( getZoomScale() );
+
+			}
+
+			scope.update();
+
+		}
+
+		function handleKeyDown( event ) {
+
+			//console.log( 'handleKeyDown' );
+
+			switch ( event.keyCode ) {
+
+				case scope.keys.UP:
+					pan( 0, scope.keyPanSpeed );
+					scope.update();
+					break;
+
+				case scope.keys.BOTTOM:
+					pan( 0, - scope.keyPanSpeed );
+					scope.update();
+					break;
+
+				case scope.keys.LEFT:
+					pan( scope.keyPanSpeed, 0 );
+					scope.update();
+					break;
+
+				case scope.keys.RIGHT:
+					pan( - scope.keyPanSpeed, 0 );
+					scope.update();
+					break;
+
+			}
+
+		}
+
+		function handleTouchStartRotate( event ) {
+
+			//console.log( 'handleTouchStartRotate' );
 
 			rotateStart.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
 
-		} else {
+		}
 
-			var x = 0.5 * ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX );
-			var y = 0.5 * ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY );
+		function handleTouchStartDolly( event ) {
 
-			rotateStart.set( x, y );
+			//console.log( 'handleTouchStartDolly' );
+
+			var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+			var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+
+			var distance = Math.sqrt( dx * dx + dy * dy );
+
+			dollyStart.set( 0, distance );
 
 		}
 
-	}
+		function handleTouchStartPan( event ) {
 
-	function handleTouchStartPan( event ) {
-
-		if ( event.touches.length == 1 ) {
+			//console.log( 'handleTouchStartPan' );
 
 			panStart.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
 
-		} else {
-
-			var x = 0.5 * ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX );
-			var y = 0.5 * ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY );
-
-			panStart.set( x, y );
-
 		}
 
-	}
+		function handleTouchMoveRotate( event ) {
 
-	function handleTouchStartDolly( event ) {
-
-		var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-		var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-
-		var distance = Math.sqrt( dx * dx + dy * dy );
-
-		dollyStart.set( 0, distance );
-
-	}
-
-	function handleTouchStartDollyPan( event ) {
-
-		if ( scope.enableZoom ) handleTouchStartDolly( event );
-
-		if ( scope.enablePan ) handleTouchStartPan( event );
-
-	}
-
-	function handleTouchStartDollyRotate( event ) {
-
-		if ( scope.enableZoom ) handleTouchStartDolly( event );
-
-		if ( scope.enableRotate ) handleTouchStartRotate( event );
-
-	}
-
-	function handleTouchMoveRotate( event ) {
-
-		if ( event.touches.length == 1 ) {
+			//console.log( 'handleTouchMoveRotate' );
 
 			rotateEnd.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+			rotateDelta.subVectors( rotateEnd, rotateStart );
 
-		} else {
+			var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
-			var x = 0.5 * ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX );
-			var y = 0.5 * ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY );
+			// rotating across whole screen goes 360 degrees around
+			rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
 
-			rotateEnd.set( x, y );
+			// rotating up and down along whole screen attempts to go 360, but limited to 180
+			rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
+
+			rotateStart.copy( rotateEnd );
+
+			scope.update();
 
 		}
 
-		rotateDelta.subVectors( rotateEnd, rotateStart ).multiplyScalar( scope.rotateSpeed );
+		function handleTouchMoveDolly( event ) {
 
-		var element = scope.domElement;
+			//console.log( 'handleTouchMoveDolly' );
 
-		rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
+			var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+			var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
 
-		rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
+			var distance = Math.sqrt( dx * dx + dy * dy );
 
-		rotateStart.copy( rotateEnd );
+			dollyEnd.set( 0, distance );
 
-	}
+			dollyDelta.subVectors( dollyEnd, dollyStart );
 
-	function handleTouchMovePan( event ) {
+			if ( dollyDelta.y > 0 ) {
 
-		if ( event.touches.length == 1 ) {
+				dollyOut( getZoomScale() );
+
+			} else if ( dollyDelta.y < 0 ) {
+
+				dollyIn( getZoomScale() );
+
+			}
+
+			dollyStart.copy( dollyEnd );
+
+			scope.update();
+
+		}
+
+		function handleTouchMovePan( event ) {
+
+			//console.log( 'handleTouchMovePan' );
 
 			panEnd.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
 
-		} else {
+			panDelta.subVectors( panEnd, panStart );
 
-			var x = 0.5 * ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX );
-			var y = 0.5 * ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY );
+			pan( panDelta.x, panDelta.y );
 
-			panEnd.set( x, y );
+			panStart.copy( panEnd );
 
-		}
-
-		panDelta.subVectors( panEnd, panStart ).multiplyScalar( scope.panSpeed );
-
-		pan( panDelta.x, panDelta.y );
-
-		panStart.copy( panEnd );
-
-	}
-
-	function handleTouchMoveDolly( event ) {
-
-		var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-		var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-
-		var distance = Math.sqrt( dx * dx + dy * dy );
-
-		dollyEnd.set( 0, distance );
-
-		dollyDelta.set( 0, Math.pow( dollyEnd.y / dollyStart.y, scope.zoomSpeed ) );
-
-		dollyOut( dollyDelta.y );
-
-		dollyStart.copy( dollyEnd );
-
-	}
-
-	function handleTouchMoveDollyPan( event ) {
-
-		if ( scope.enableZoom ) handleTouchMoveDolly( event );
-
-		if ( scope.enablePan ) handleTouchMovePan( event );
-
-	}
-
-	function handleTouchMoveDollyRotate( event ) {
-
-		if ( scope.enableZoom ) handleTouchMoveDolly( event );
-
-		if ( scope.enableRotate ) handleTouchMoveRotate( event );
-
-	}
-
-	function handleTouchEnd( /*event*/ ) {
-
-		// no-op
-
-	}
-
-	//
-	// event handlers - FSM: listen for events and reset state
-	//
-
-	function onPointerDown( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		switch ( event.pointerType ) {
-
-			case 'mouse':
-			case 'pen':
-				onMouseDown( event );
-				break;
-
-			// TODO touch
+			scope.update();
 
 		}
 
-	}
+		function handleTouchEnd( event ) {
 
-	function onPointerMove( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		switch ( event.pointerType ) {
-
-			case 'mouse':
-			case 'pen':
-				onMouseMove( event );
-				break;
-
-			// TODO touch
+			//console.log( 'handleTouchEnd' );
 
 		}
 
-	}
+		//
+		// event handlers - FSM: listen for events and reset state
+		//
 
-	function onPointerUp( event ) {
+		function onMouseDown( event ) {
 
-		if ( scope.enabled === false ) return;
+			if ( scope.enabled === false ) return;
 
-		switch ( event.pointerType ) {
+			event.preventDefault();
 
-			case 'mouse':
-			case 'pen':
-				onMouseUp( event );
-				break;
+			if ( event.button === scope.mouseButtons.ORBIT ) {
 
-			// TODO touch
+				if ( scope.enableRotate === false ) return;
 
-		}
+				handleMouseDownRotate( event );
 
-	}
+				state = STATE.ROTATE;
 
-	function onMouseDown( event ) {
-
-		// Prevent the browser from scrolling.
-		event.preventDefault();
-
-		// Manually set the focus since calling preventDefault above
-		// prevents the browser from setting it automatically.
-
-		scope.domElement.focus ? scope.domElement.focus() : window.focus();
-
-		var mouseAction;
-
-		switch ( event.button ) {
-
-			case 0:
-
-				mouseAction = scope.mouseButtons.LEFT;
-				break;
-
-			case 1:
-
-				mouseAction = scope.mouseButtons.MIDDLE;
-				break;
-
-			case 2:
-
-				mouseAction = scope.mouseButtons.RIGHT;
-				break;
-
-			default:
-
-				mouseAction = - 1;
-
-		}
-
-		switch ( mouseAction ) {
-
-			case THREE.MOUSE.DOLLY:
+			} else if ( event.button === scope.mouseButtons.ZOOM ) {
 
 				if ( scope.enableZoom === false ) return;
 
@@ -37562,2646 +37391,509 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				state = STATE.DOLLY;
 
-				break;
+			} else if ( event.button === scope.mouseButtons.PAN ) {
 
-			case THREE.MOUSE.ROTATE:
+				if ( scope.enablePan === false ) return;
 
-				if ( event.ctrlKey || event.metaKey || event.shiftKey ) {
+				handleMouseDownPan( event );
 
-					if ( scope.enablePan === false ) return;
+				state = STATE.PAN;
 
-					handleMouseDownPan( event );
+			}
 
-					state = STATE.PAN;
+			if ( state !== STATE.NONE ) {
 
-				} else {
+				document.addEventListener( 'mousemove', onMouseMove, false );
+				document.addEventListener( 'mouseup', onMouseUp, false );
 
-					if ( scope.enableRotate === false ) return;
+				scope.dispatchEvent( startEvent );
 
-					handleMouseDownRotate( event );
-
-					state = STATE.ROTATE;
-
-				}
-
-				break;
-
-			case THREE.MOUSE.PAN:
-
-				if ( event.ctrlKey || event.metaKey || event.shiftKey ) {
-
-					if ( scope.enableRotate === false ) return;
-
-					handleMouseDownRotate( event );
-
-					state = STATE.ROTATE;
-
-				} else {
-
-					if ( scope.enablePan === false ) return;
-
-					handleMouseDownPan( event );
-
-					state = STATE.PAN;
-
-				}
-
-				break;
-
-			default:
-
-				state = STATE.NONE;
+			}
 
 		}
 
-		if ( state !== STATE.NONE ) {
+		function onMouseMove( event ) {
 
-			scope.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove, false );
-			scope.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp, false );
+			if ( scope.enabled === false ) return;
 
-			scope.dispatchEvent( startEvent );
+			event.preventDefault();
 
-		}
-
-	}
-
-	function onMouseMove( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		event.preventDefault();
-
-		switch ( state ) {
-
-			case STATE.ROTATE:
+			if ( state === STATE.ROTATE ) {
 
 				if ( scope.enableRotate === false ) return;
 
 				handleMouseMoveRotate( event );
 
-				break;
-
-			case STATE.DOLLY:
+			} else if ( state === STATE.DOLLY ) {
 
 				if ( scope.enableZoom === false ) return;
 
 				handleMouseMoveDolly( event );
 
-				break;
-
-			case STATE.PAN:
+			} else if ( state === STATE.PAN ) {
 
 				if ( scope.enablePan === false ) return;
 
 				handleMouseMovePan( event );
 
-				break;
+			}
 
 		}
 
-	}
+		function onMouseUp( event ) {
 
-	function onMouseUp( event ) {
+			if ( scope.enabled === false ) return;
 
-		if ( scope.enabled === false ) return;
+			handleMouseUp( event );
 
-		handleMouseUp( event );
+			document.removeEventListener( 'mousemove', onMouseMove, false );
+			document.removeEventListener( 'mouseup', onMouseUp, false );
 
-		scope.domElement.ownerDocument.removeEventListener( 'pointermove', onPointerMove, false );
-		scope.domElement.ownerDocument.removeEventListener( 'pointerup', onPointerUp, false );
+			scope.dispatchEvent( endEvent );
 
-		scope.dispatchEvent( endEvent );
-
-		state = STATE.NONE;
-
-	}
-
-	function onMouseWheel( event ) {
-
-		if ( scope.enabled === false || scope.enableZoom === false || ( state !== STATE.NONE && state !== STATE.ROTATE ) ) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-
-		scope.dispatchEvent( startEvent );
-
-		handleMouseWheel( event );
-
-		scope.dispatchEvent( endEvent );
-
-	}
-
-	function onKeyDown( event ) {
-
-		if ( scope.enabled === false || scope.enableKeys === false || scope.enablePan === false ) return;
-
-		handleKeyDown( event );
-
-	}
-
-	function onTouchStart( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		event.preventDefault(); // prevent scrolling
-
-		switch ( event.touches.length ) {
-
-			case 1:
-
-				switch ( scope.touches.ONE ) {
-
-					case THREE.TOUCH.ROTATE:
-
-						if ( scope.enableRotate === false ) return;
-
-						handleTouchStartRotate( event );
-
-						state = STATE.TOUCH_ROTATE;
-
-						break;
-
-					case THREE.TOUCH.PAN:
-
-						if ( scope.enablePan === false ) return;
-
-						handleTouchStartPan( event );
-
-						state = STATE.TOUCH_PAN;
-
-						break;
-
-					default:
-
-						state = STATE.NONE;
-
-				}
-
-				break;
-
-			case 2:
-
-				switch ( scope.touches.TWO ) {
-
-					case THREE.TOUCH.DOLLY_PAN:
-
-						if ( scope.enableZoom === false && scope.enablePan === false ) return;
-
-						handleTouchStartDollyPan( event );
-
-						state = STATE.TOUCH_DOLLY_PAN;
-
-						break;
-
-					case THREE.TOUCH.DOLLY_ROTATE:
-
-						if ( scope.enableZoom === false && scope.enableRotate === false ) return;
-
-						handleTouchStartDollyRotate( event );
-
-						state = STATE.TOUCH_DOLLY_ROTATE;
-
-						break;
-
-					default:
-
-						state = STATE.NONE;
-
-				}
-
-				break;
-
-			default:
-
-				state = STATE.NONE;
+			state = STATE.NONE;
 
 		}
 
-		if ( state !== STATE.NONE ) {
+		function onMouseWheel( event ) {
 
-			scope.dispatchEvent( startEvent );
+			if ( scope.enabled === false || scope.enableZoom === false || ( state !== STATE.NONE && state !== STATE.ROTATE ) ) return;
 
-		}
+			event.preventDefault();
+			event.stopPropagation();
 
-	}
+			handleMouseWheel( event );
 
-	function onTouchMove( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		event.preventDefault(); // prevent scrolling
-		event.stopPropagation();
-
-		switch ( state ) {
-
-			case STATE.TOUCH_ROTATE:
-
-				if ( scope.enableRotate === false ) return;
-
-				handleTouchMoveRotate( event );
-
-				scope.update();
-
-				break;
-
-			case STATE.TOUCH_PAN:
-
-				if ( scope.enablePan === false ) return;
-
-				handleTouchMovePan( event );
-
-				scope.update();
-
-				break;
-
-			case STATE.TOUCH_DOLLY_PAN:
-
-				if ( scope.enableZoom === false && scope.enablePan === false ) return;
-
-				handleTouchMoveDollyPan( event );
-
-				scope.update();
-
-				break;
-
-			case STATE.TOUCH_DOLLY_ROTATE:
-
-				if ( scope.enableZoom === false && scope.enableRotate === false ) return;
-
-				handleTouchMoveDollyRotate( event );
-
-				scope.update();
-
-				break;
-
-			default:
-
-				state = STATE.NONE;
+			scope.dispatchEvent( startEvent ); // not sure why these are here...
+			scope.dispatchEvent( endEvent );
 
 		}
 
-	}
+		function onKeyDown( event ) {
 
-	function onTouchEnd( event ) {
+			if ( scope.enabled === false || scope.enableKeys === false || scope.enablePan === false ) return;
 
-		if ( scope.enabled === false ) return;
+			handleKeyDown( event );
 
-		handleTouchEnd( event );
+		}
 
-		scope.dispatchEvent( endEvent );
+		function onTouchStart( event ) {
 
-		state = STATE.NONE;
+			if ( scope.enabled === false ) return;
 
-	}
+			switch ( event.touches.length ) {
 
-	function onContextMenu( event ) {
+				case 1:	// one-fingered touch: rotate
 
-		if ( scope.enabled === false ) return;
+					if ( scope.enableRotate === false ) return;
 
-		event.preventDefault();
+					handleTouchStartRotate( event );
 
-	}
+					state = STATE.TOUCH_ROTATE;
 
-	//
+					break;
 
-	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
+				case 2:	// two-fingered touch: dolly
 
-	scope.domElement.addEventListener( 'pointerdown', onPointerDown, false );
-	scope.domElement.addEventListener( 'wheel', onMouseWheel, false );
+					if ( scope.enableZoom === false ) return;
 
-	scope.domElement.addEventListener( 'touchstart', onTouchStart, false );
-	scope.domElement.addEventListener( 'touchend', onTouchEnd, false );
-	scope.domElement.addEventListener( 'touchmove', onTouchMove, false );
+					handleTouchStartDolly( event );
 
-	scope.domElement.addEventListener( 'keydown', onKeyDown, false );
+					state = STATE.TOUCH_DOLLY;
 
-	// make sure element can receive keys.
+					break;
 
-	if ( scope.domElement.tabIndex === - 1 ) {
+				case 3: // three-fingered touch: pan
 
-		scope.domElement.tabIndex = 0;
+					if ( scope.enablePan === false ) return;
 
-	}
+					handleTouchStartPan( event );
 
-	// force an update at start
+					state = STATE.TOUCH_PAN;
 
-	this.update();
+					break;
 
+				default:
+
+					state = STATE.NONE;
+
+			}
+
+			if ( state !== STATE.NONE ) {
+
+				scope.dispatchEvent( startEvent );
+
+			}
+
+		}
+
+		function onTouchMove( event ) {
+
+			if ( scope.enabled === false ) return;
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			switch ( event.touches.length ) {
+
+				case 1: // one-fingered touch: rotate
+
+					if ( scope.enableRotate === false ) return;
+					if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?...
+
+					handleTouchMoveRotate( event );
+
+					break;
+
+				case 2: // two-fingered touch: dolly
+
+					if ( scope.enableZoom === false ) return;
+					if ( state !== STATE.TOUCH_DOLLY ) return; // is this needed?...
+
+					handleTouchMoveDolly( event );
+
+					break;
+
+				case 3: // three-fingered touch: pan
+
+					if ( scope.enablePan === false ) return;
+					if ( state !== STATE.TOUCH_PAN ) return; // is this needed?...
+
+					handleTouchMovePan( event );
+
+					break;
+
+				default:
+
+					state = STATE.NONE;
+
+			}
+
+		}
+
+		function onTouchEnd( event ) {
+
+			if ( scope.enabled === false ) return;
+
+			handleTouchEnd( event );
+
+			scope.dispatchEvent( endEvent );
+
+			state = STATE.NONE;
+
+		}
+
+		function onContextMenu( event ) {
+
+			event.preventDefault();
+
+		}
+
+		//
+
+		scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
+
+		scope.domElement.addEventListener( 'mousedown', onMouseDown, false );
+		scope.domElement.addEventListener( 'wheel', onMouseWheel, false );
+
+		scope.domElement.addEventListener( 'touchstart', onTouchStart, false );
+		scope.domElement.addEventListener( 'touchend', onTouchEnd, false );
+		scope.domElement.addEventListener( 'touchmove', onTouchMove, false );
+
+		window.addEventListener( 'keydown', onKeyDown, false );
+
+		// force an update at start
+
+		this.update();
+
+	};
+
+	OrbitControls.prototype = Object.create( THREE.EventDispatcher.prototype );
+	OrbitControls.prototype.constructor = OrbitControls;
+
+	Object.defineProperties( OrbitControls.prototype, {
+
+		center: {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .center has been renamed to .target' );
+				return this.target;
+
+			}
+
+		},
+
+		// backward compatibility
+
+		noZoom: {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
+				return ! this.enableZoom;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
+				this.enableZoom = ! value;
+
+			}
+
+		},
+
+		noRotate: {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
+				return ! this.enableRotate;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
+				this.enableRotate = ! value;
+
+			}
+
+		},
+
+		noPan: {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
+				return ! this.enablePan;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
+				this.enablePan = ! value;
+
+			}
+
+		},
+
+		noKeys: {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
+				return ! this.enableKeys;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
+				this.enableKeys = ! value;
+
+			}
+
+		},
+
+		staticMoving : {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
+				return ! this.enableDamping;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
+				this.enableDamping = ! value;
+
+			}
+
+		},
+
+		dynamicDampingFactor : {
+
+			get: function () {
+
+				console.warn( 'THREE.OrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
+				return this.dampingFactor;
+
+			},
+
+			set: function ( value ) {
+
+				console.warn( 'THREE.OrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
+				this.dampingFactor = value;
+
+			}
+
+		}
+
+	} );
+
+	return OrbitControls;
 };
 
-THREE.OrbitControls.prototype = Object.create( THREE.EventDispatcher.prototype );
-THREE.OrbitControls.prototype.constructor = THREE.OrbitControls;
-
-
-// This set of controls performs orbiting, dollying (zooming), and panning.
-// Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
-// This is very similar to OrbitControls, another set of touch behavior
-//
-//    Orbit - right mouse, or left mouse + ctrl/meta/shiftKey / touch: two-finger rotate
-//    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
-//    Pan - left mouse, or arrow keys / touch: one-finger move
-
-THREE.MapControls = function ( object, domElement ) {
-
-	THREE.OrbitControls.call( this, object, domElement );
-
-	this.screenSpacePanning = false; // pan orthogonal to world-space direction camera.up
-
-	this.mouseButtons.LEFT = THREE.MOUSE.PAN;
-	this.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
-
-	this.touches.ONE = THREE.TOUCH.PAN;
-	this.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
-
-};
-
-THREE.MapControls.prototype = Object.create( THREE.EventDispatcher.prototype );
-THREE.MapControls.prototype.constructor = THREE.MapControls;
-
-},{}],"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js":[function(require,module,exports) {
-var define;
-var global = arguments[3];
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.canvasSketch = factory());
-}(this, (function () {
-
-	/*
-	object-assign
-	(c) Sindre Sorhus
-	@license MIT
-	*/
-	/* eslint-disable no-unused-vars */
-	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-	function toObject(val) {
-		if (val === null || val === undefined) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	function shouldUseNative() {
-		try {
-			if (!Object.assign) {
-				return false;
-			}
-
-			// Detect buggy property enumeration order in older V8 versions.
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-			test1[5] = 'de';
-			if (Object.getOwnPropertyNames(test1)[0] === '5') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test2 = {};
-			for (var i = 0; i < 10; i++) {
-				test2['_' + String.fromCharCode(i)] = i;
-			}
-			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-				return test2[n];
-			});
-			if (order2.join('') !== '0123456789') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test3 = {};
-			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-				test3[letter] = letter;
-			});
-			if (Object.keys(Object.assign({}, test3)).join('') !==
-					'abcdefghijklmnopqrst') {
-				return false;
-			}
-
-			return true;
-		} catch (err) {
-			// We don't expect any of the above to throw, but better to be safe.
-			return false;
-		}
-	}
-
-	var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
-		var from;
-		var to = toObject(target);
-		var symbols;
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = Object(arguments[s]);
-
-			for (var key in from) {
-				if (hasOwnProperty.call(from, key)) {
-					to[key] = from[key];
-				}
-			}
-
-			if (getOwnPropertySymbols) {
-				symbols = getOwnPropertySymbols(from);
-				for (var i = 0; i < symbols.length; i++) {
-					if (propIsEnumerable.call(from, symbols[i])) {
-						to[symbols[i]] = from[symbols[i]];
-					}
-				}
-			}
-		}
-
-		return to;
-	};
-
-	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-	function createCommonjsModule(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
-	}
-
-	var browser =
-	  commonjsGlobal.performance &&
-	  commonjsGlobal.performance.now ? function now() {
-	    return performance.now()
-	  } : Date.now || function now() {
-	    return +new Date
-	  };
-
-	var isPromise_1 = isPromise;
-
-	function isPromise(obj) {
-	  return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
-	}
-
-	var isDom = isNode;
-
-	function isNode (val) {
-	  return (!val || typeof val !== 'object')
-	    ? false
-	    : (typeof window === 'object' && typeof window.Node === 'object')
-	      ? (val instanceof window.Node)
-	      : (typeof val.nodeType === 'number') &&
-	        (typeof val.nodeName === 'string')
-	}
-
-	function getClientAPI() {
-	    return typeof window !== 'undefined' && window['canvas-sketch-cli'];
-	}
-
-	function defined() {
-	    var arguments$1 = arguments;
-
-	    for (var i = 0;i < arguments.length; i++) {
-	        if (arguments$1[i] != null) {
-	            return arguments$1[i];
-	        }
-	    }
-	    return undefined;
-	}
-
-	function isBrowser() {
-	    return typeof document !== 'undefined';
-	}
-
-	function isWebGLContext(ctx) {
-	    return typeof ctx.clear === 'function' && typeof ctx.clearColor === 'function' && typeof ctx.bufferData === 'function';
-	}
-
-	function isCanvas(element) {
-	    return isDom(element) && /canvas/i.test(element.nodeName) && typeof element.getContext === 'function';
-	}
-
-	var keys = createCommonjsModule(function (module, exports) {
-	exports = module.exports = typeof Object.keys === 'function'
-	  ? Object.keys : shim;
-
-	exports.shim = shim;
-	function shim (obj) {
-	  var keys = [];
-	  for (var key in obj) keys.push(key);
-	  return keys;
-	}
-	});
-	var keys_1 = keys.shim;
-
-	var is_arguments = createCommonjsModule(function (module, exports) {
-	var supportsArgumentsClass = (function(){
-	  return Object.prototype.toString.call(arguments)
-	})() == '[object Arguments]';
-
-	exports = module.exports = supportsArgumentsClass ? supported : unsupported;
-
-	exports.supported = supported;
-	function supported(object) {
-	  return Object.prototype.toString.call(object) == '[object Arguments]';
-	}
-	exports.unsupported = unsupported;
-	function unsupported(object){
-	  return object &&
-	    typeof object == 'object' &&
-	    typeof object.length == 'number' &&
-	    Object.prototype.hasOwnProperty.call(object, 'callee') &&
-	    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
-	    false;
-	}});
-	var is_arguments_1 = is_arguments.supported;
-	var is_arguments_2 = is_arguments.unsupported;
-
-	var deepEqual_1 = createCommonjsModule(function (module) {
-	var pSlice = Array.prototype.slice;
-
-
-
-	var deepEqual = module.exports = function (actual, expected, opts) {
-	  if (!opts) opts = {};
-	  // 7.1. All identical values are equivalent, as determined by ===.
-	  if (actual === expected) {
-	    return true;
-
-	  } else if (actual instanceof Date && expected instanceof Date) {
-	    return actual.getTime() === expected.getTime();
-
-	  // 7.3. Other pairs that do not both pass typeof value == 'object',
-	  // equivalence is determined by ==.
-	  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
-	    return opts.strict ? actual === expected : actual == expected;
-
-	  // 7.4. For all other Object pairs, including Array objects, equivalence is
-	  // determined by having the same number of owned properties (as verified
-	  // with Object.prototype.hasOwnProperty.call), the same set of keys
-	  // (although not necessarily the same order), equivalent values for every
-	  // corresponding key, and an identical 'prototype' property. Note: this
-	  // accounts for both named and indexed properties on Arrays.
-	  } else {
-	    return objEquiv(actual, expected, opts);
-	  }
-	};
-
-	function isUndefinedOrNull(value) {
-	  return value === null || value === undefined;
-	}
-
-	function isBuffer (x) {
-	  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
-	  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
-	    return false;
-	  }
-	  if (x.length > 0 && typeof x[0] !== 'number') return false;
-	  return true;
-	}
-
-	function objEquiv(a, b, opts) {
-	  var i, key;
-	  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
-	    return false;
-	  // an identical 'prototype' property.
-	  if (a.prototype !== b.prototype) return false;
-	  //~~~I've managed to break Object.keys through screwy arguments passing.
-	  //   Converting to array solves the problem.
-	  if (is_arguments(a)) {
-	    if (!is_arguments(b)) {
-	      return false;
-	    }
-	    a = pSlice.call(a);
-	    b = pSlice.call(b);
-	    return deepEqual(a, b, opts);
-	  }
-	  if (isBuffer(a)) {
-	    if (!isBuffer(b)) {
-	      return false;
-	    }
-	    if (a.length !== b.length) return false;
-	    for (i = 0; i < a.length; i++) {
-	      if (a[i] !== b[i]) return false;
-	    }
-	    return true;
-	  }
-	  try {
-	    var ka = keys(a),
-	        kb = keys(b);
-	  } catch (e) {//happens when one is a string literal and the other isn't
-	    return false;
-	  }
-	  // having the same number of owned properties (keys incorporates
-	  // hasOwnProperty)
-	  if (ka.length != kb.length)
-	    return false;
-	  //the same set of keys (although not necessarily the same order),
-	  ka.sort();
-	  kb.sort();
-	  //~~~cheap key test
-	  for (i = ka.length - 1; i >= 0; i--) {
-	    if (ka[i] != kb[i])
-	      return false;
-	  }
-	  //equivalent values for every corresponding key, and
-	  //~~~possibly expensive deep test
-	  for (i = ka.length - 1; i >= 0; i--) {
-	    key = ka[i];
-	    if (!deepEqual(a[key], b[key], opts)) return false;
-	  }
-	  return typeof a === typeof b;
-	}
-	});
-
-	var dateformat = createCommonjsModule(function (module, exports) {
-	/*
-	 * Date Format 1.2.3
-	 * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
-	 * MIT license
-	 *
-	 * Includes enhancements by Scott Trenda <scott.trenda.net>
-	 * and Kris Kowal <cixar.com/~kris.kowal/>
-	 *
-	 * Accepts a date, a mask, or a date and a mask.
-	 * Returns a formatted version of the given date.
-	 * The date defaults to the current date/time.
-	 * The mask defaults to dateFormat.masks.default.
-	 */
-
-	(function(global) {
-
-	  var dateFormat = (function() {
-	      var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZWN]|"[^"]*"|'[^']*'/g;
-	      var timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g;
-	      var timezoneClip = /[^-+\dA-Z]/g;
-	  
-	      // Regexes and supporting functions are cached through closure
-	      return function (date, mask, utc, gmt) {
-	  
-	        // You can't provide utc if you skip other args (use the 'UTC:' mask prefix)
-	        if (arguments.length === 1 && kindOf(date) === 'string' && !/\d/.test(date)) {
-	          mask = date;
-	          date = undefined;
-	        }
-	  
-	        date = date || new Date;
-	  
-	        if(!(date instanceof Date)) {
-	          date = new Date(date);
-	        }
-	  
-	        if (isNaN(date)) {
-	          throw TypeError('Invalid date');
-	        }
-	  
-	        mask = String(dateFormat.masks[mask] || mask || dateFormat.masks['default']);
-	  
-	        // Allow setting the utc/gmt argument via the mask
-	        var maskSlice = mask.slice(0, 4);
-	        if (maskSlice === 'UTC:' || maskSlice === 'GMT:') {
-	          mask = mask.slice(4);
-	          utc = true;
-	          if (maskSlice === 'GMT:') {
-	            gmt = true;
-	          }
-	        }
-	  
-	        var _ = utc ? 'getUTC' : 'get';
-	        var d = date[_ + 'Date']();
-	        var D = date[_ + 'Day']();
-	        var m = date[_ + 'Month']();
-	        var y = date[_ + 'FullYear']();
-	        var H = date[_ + 'Hours']();
-	        var M = date[_ + 'Minutes']();
-	        var s = date[_ + 'Seconds']();
-	        var L = date[_ + 'Milliseconds']();
-	        var o = utc ? 0 : date.getTimezoneOffset();
-	        var W = getWeek(date);
-	        var N = getDayOfWeek(date);
-	        var flags = {
-	          d:    d,
-	          dd:   pad(d),
-	          ddd:  dateFormat.i18n.dayNames[D],
-	          dddd: dateFormat.i18n.dayNames[D + 7],
-	          m:    m + 1,
-	          mm:   pad(m + 1),
-	          mmm:  dateFormat.i18n.monthNames[m],
-	          mmmm: dateFormat.i18n.monthNames[m + 12],
-	          yy:   String(y).slice(2),
-	          yyyy: y,
-	          h:    H % 12 || 12,
-	          hh:   pad(H % 12 || 12),
-	          H:    H,
-	          HH:   pad(H),
-	          M:    M,
-	          MM:   pad(M),
-	          s:    s,
-	          ss:   pad(s),
-	          l:    pad(L, 3),
-	          L:    pad(Math.round(L / 10)),
-	          t:    H < 12 ? dateFormat.i18n.timeNames[0] : dateFormat.i18n.timeNames[1],
-	          tt:   H < 12 ? dateFormat.i18n.timeNames[2] : dateFormat.i18n.timeNames[3],
-	          T:    H < 12 ? dateFormat.i18n.timeNames[4] : dateFormat.i18n.timeNames[5],
-	          TT:   H < 12 ? dateFormat.i18n.timeNames[6] : dateFormat.i18n.timeNames[7],
-	          Z:    gmt ? 'GMT' : utc ? 'UTC' : (String(date).match(timezone) || ['']).pop().replace(timezoneClip, ''),
-	          o:    (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-	          S:    ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10],
-	          W:    W,
-	          N:    N
-	        };
-	  
-	        return mask.replace(token, function (match) {
-	          if (match in flags) {
-	            return flags[match];
-	          }
-	          return match.slice(1, match.length - 1);
-	        });
-	      };
-	    })();
-
-	  dateFormat.masks = {
-	    'default':               'ddd mmm dd yyyy HH:MM:ss',
-	    'shortDate':             'm/d/yy',
-	    'mediumDate':            'mmm d, yyyy',
-	    'longDate':              'mmmm d, yyyy',
-	    'fullDate':              'dddd, mmmm d, yyyy',
-	    'shortTime':             'h:MM TT',
-	    'mediumTime':            'h:MM:ss TT',
-	    'longTime':              'h:MM:ss TT Z',
-	    'isoDate':               'yyyy-mm-dd',
-	    'isoTime':               'HH:MM:ss',
-	    'isoDateTime':           'yyyy-mm-dd\'T\'HH:MM:sso',
-	    'isoUtcDateTime':        'UTC:yyyy-mm-dd\'T\'HH:MM:ss\'Z\'',
-	    'expiresHeaderFormat':   'ddd, dd mmm yyyy HH:MM:ss Z'
-	  };
-
-	  // Internationalization strings
-	  dateFormat.i18n = {
-	    dayNames: [
-	      'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
-	      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-	    ],
-	    monthNames: [
-	      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-	      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-	    ],
-	    timeNames: [
-	      'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
-	    ]
-	  };
-
-	function pad(val, len) {
-	  val = String(val);
-	  len = len || 2;
-	  while (val.length < len) {
-	    val = '0' + val;
-	  }
-	  return val;
-	}
-
-	/**
-	 * Get the ISO 8601 week number
-	 * Based on comments from
-	 * http://techblog.procurios.nl/k/n618/news/view/33796/14863/Calculate-ISO-8601-week-and-year-in-javascript.html
-	 *
-	 * @param  {Object} `date`
-	 * @return {Number}
-	 */
-	function getWeek(date) {
-	  // Remove time components of date
-	  var targetThursday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-	  // Change date to Thursday same week
-	  targetThursday.setDate(targetThursday.getDate() - ((targetThursday.getDay() + 6) % 7) + 3);
-
-	  // Take January 4th as it is always in week 1 (see ISO 8601)
-	  var firstThursday = new Date(targetThursday.getFullYear(), 0, 4);
-
-	  // Change date to Thursday same week
-	  firstThursday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7) + 3);
-
-	  // Check if daylight-saving-time-switch occurred and correct for it
-	  var ds = targetThursday.getTimezoneOffset() - firstThursday.getTimezoneOffset();
-	  targetThursday.setHours(targetThursday.getHours() - ds);
-
-	  // Number of weeks between target Thursday and first Thursday
-	  var weekDiff = (targetThursday - firstThursday) / (86400000*7);
-	  return 1 + Math.floor(weekDiff);
-	}
-
-	/**
-	 * Get ISO-8601 numeric representation of the day of the week
-	 * 1 (for Monday) through 7 (for Sunday)
-	 * 
-	 * @param  {Object} `date`
-	 * @return {Number}
-	 */
-	function getDayOfWeek(date) {
-	  var dow = date.getDay();
-	  if(dow === 0) {
-	    dow = 7;
-	  }
-	  return dow;
-	}
-
-	/**
-	 * kind-of shortcut
-	 * @param  {*} val
-	 * @return {String}
-	 */
-	function kindOf(val) {
-	  if (val === null) {
-	    return 'null';
-	  }
-
-	  if (val === undefined) {
-	    return 'undefined';
-	  }
-
-	  if (typeof val !== 'object') {
-	    return typeof val;
-	  }
-
-	  if (Array.isArray(val)) {
-	    return 'array';
-	  }
-
-	  return {}.toString.call(val)
-	    .slice(8, -1).toLowerCase();
-	}
-
-
-	  if (typeof undefined === 'function' && undefined.amd) {
-	    undefined(function () {
-	      return dateFormat;
-	    });
-	  } else {
-	    module.exports = dateFormat;
-	  }
-	})(commonjsGlobal);
-	});
-
-	/*!
-	 * repeat-string <https://github.com/jonschlinkert/repeat-string>
-	 *
-	 * Copyright (c) 2014-2015, Jon Schlinkert.
-	 * Licensed under the MIT License.
-	 */
-
-	/**
-	 * Results cache
-	 */
-
-	var res = '';
-	var cache;
-
-	/**
-	 * Expose `repeat`
-	 */
-
-	var repeatString = repeat;
-
-	/**
-	 * Repeat the given `string` the specified `number`
-	 * of times.
-	 *
-	 * **Example:**
-	 *
-	 * ```js
-	 * var repeat = require('repeat-string');
-	 * repeat('A', 5);
-	 * //=> AAAAA
-	 * ```
-	 *
-	 * @param {String} `string` The string to repeat
-	 * @param {Number} `number` The number of times to repeat the string
-	 * @return {String} Repeated string
-	 * @api public
-	 */
-
-	function repeat(str, num) {
-	  if (typeof str !== 'string') {
-	    throw new TypeError('expected a string');
-	  }
-
-	  // cover common, quick use cases
-	  if (num === 1) return str;
-	  if (num === 2) return str + str;
-
-	  var max = str.length * num;
-	  if (cache !== str || typeof cache === 'undefined') {
-	    cache = str;
-	    res = '';
-	  } else if (res.length >= max) {
-	    return res.substr(0, max);
-	  }
-
-	  while (max > res.length && num > 1) {
-	    if (num & 1) {
-	      res += str;
-	    }
-
-	    num >>= 1;
-	    str += str;
-	  }
-
-	  res += str;
-	  res = res.substr(0, max);
-	  return res;
-	}
-
-	var padLeft = function padLeft(str, num, ch) {
-	  str = str.toString();
-
-	  if (typeof num === 'undefined') {
-	    return str;
-	  }
-
-	  if (ch === 0) {
-	    ch = '0';
-	  } else if (ch) {
-	    ch = ch.toString();
-	  } else {
-	    ch = ' ';
-	  }
-
-	  return repeatString(ch, num - str.length) + str;
-	};
-
-	var noop = function () {};
-	var link;
-	var defaultExts = {
-	    extension: '',
-	    prefix: '',
-	    suffix: ''
-	};
-	var supportedEncodings = ['image/png','image/jpeg','image/webp'];
-	function stream(isStart, opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    return new Promise(function (resolve, reject) {
-	        opts = objectAssign({}, defaultExts, opts);
-	        var filename = resolveFilename(Object.assign({}, opts, {
-	            extension: '',
-	            frame: undefined
-	        }));
-	        var func = isStart ? 'streamStart' : 'streamEnd';
-	        var client = getClientAPI();
-	        if (client && client.output && typeof client[func] === 'function') {
-	            return client[func](objectAssign({}, opts, {
-	                filename: filename
-	            })).then(function (ev) { return resolve(ev); });
-	        } else {
-	            return resolve({
-	                filename: filename,
-	                client: false
-	            });
-	        }
-	    });
-	}
-
-	function streamStart(opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    return stream(true, opts);
-	}
-
-	function streamEnd(opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    return stream(false, opts);
-	}
-
-	function exportCanvas(canvas, opt) {
-	    if ( opt === void 0 ) opt = {};
-
-	    var encoding = opt.encoding || 'image/png';
-	    if (!supportedEncodings.includes(encoding)) 
-	        { throw new Error(("Invalid canvas encoding " + encoding)); }
-	    var extension = (encoding.split('/')[1] || '').replace(/jpeg/i, 'jpg');
-	    if (extension) 
-	        { extension = ("." + extension).toLowerCase(); }
-	    return {
-	        extension: extension,
-	        type: encoding,
-	        dataURL: canvas.toDataURL(encoding, opt.encodingQuality)
-	    };
-	}
-
-	function createBlobFromDataURL(dataURL) {
-	    return new Promise(function (resolve) {
-	        var splitIndex = dataURL.indexOf(',');
-	        if (splitIndex === -1) {
-	            resolve(new window.Blob());
-	            return;
-	        }
-	        var base64 = dataURL.slice(splitIndex + 1);
-	        var byteString = window.atob(base64);
-	        var type = dataURL.slice(0, splitIndex);
-	        var mimeMatch = /data:([^;]+)/.exec(type);
-	        var mime = (mimeMatch ? mimeMatch[1] : '') || undefined;
-	        var ab = new ArrayBuffer(byteString.length);
-	        var ia = new Uint8Array(ab);
-	        for (var i = 0;i < byteString.length; i++) {
-	            ia[i] = byteString.charCodeAt(i);
-	        }
-	        resolve(new window.Blob([ab], {
-	            type: mime
-	        }));
-	    });
-	}
-
-	function saveDataURL(dataURL, opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    return createBlobFromDataURL(dataURL).then(function (blob) { return saveBlob(blob, opts); });
-	}
-
-	function saveBlob(blob, opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    return new Promise(function (resolve) {
-	        opts = objectAssign({}, defaultExts, opts);
-	        var filename = opts.filename;
-	        var client = getClientAPI();
-	        if (client && typeof client.saveBlob === 'function' && client.output) {
-	            return client.saveBlob(blob, objectAssign({}, opts, {
-	                filename: filename
-	            })).then(function (ev) { return resolve(ev); });
-	        } else {
-	            if (!link) {
-	                link = document.createElement('a');
-	                link.style.visibility = 'hidden';
-	                link.target = '_blank';
-	            }
-	            link.download = filename;
-	            link.href = window.URL.createObjectURL(blob);
-	            document.body.appendChild(link);
-	            link.onclick = (function () {
-	                link.onclick = noop;
-	                setTimeout(function () {
-	                    window.URL.revokeObjectURL(blob);
-	                    if (link.parentElement) 
-	                        { link.parentElement.removeChild(link); }
-	                    link.removeAttribute('href');
-	                    resolve({
-	                        filename: filename,
-	                        client: false
-	                    });
-	                });
-	            });
-	            link.click();
-	        }
-	    });
-	}
-
-	function saveFile(data, opts) {
-	    if ( opts === void 0 ) opts = {};
-
-	    var parts = Array.isArray(data) ? data : [data];
-	    var blob = new window.Blob(parts, {
-	        type: opts.type || ''
-	    });
-	    return saveBlob(blob, opts);
-	}
-
-	function getTimeStamp() {
-	    var dateFormatStr = "yyyy.mm.dd-HH.MM.ss";
-	    return dateformat(new Date(), dateFormatStr);
-	}
-
-	function resolveFilename(opt) {
-	    if ( opt === void 0 ) opt = {};
-
-	    opt = objectAssign({}, opt);
-	    if (typeof opt.file === 'function') {
-	        return opt.file(opt);
-	    } else if (opt.file) {
-	        return opt.file;
-	    }
-	    var frame = null;
-	    var extension = '';
-	    if (typeof opt.extension === 'string') 
-	        { extension = opt.extension; }
-	    if (typeof opt.frame === 'number') {
-	        var totalFrames;
-	        if (typeof opt.totalFrames === 'number') {
-	            totalFrames = opt.totalFrames;
-	        } else {
-	            totalFrames = Math.max(10000, opt.frame);
-	        }
-	        frame = padLeft(String(opt.frame), String(totalFrames).length, '0');
-	    }
-	    var layerStr = isFinite(opt.totalLayers) && isFinite(opt.layer) && opt.totalLayers > 1 ? ("" + (opt.layer)) : '';
-	    if (frame != null) {
-	        return [layerStr,frame].filter(Boolean).join('-') + extension;
-	    } else {
-	        var defaultFileName = opt.timeStamp;
-	        return [opt.prefix,opt.name || defaultFileName,layerStr,opt.hash,opt.suffix].filter(Boolean).join('-') + extension;
-	    }
-	}
-
-	var commonTypos = {
-	    dimension: 'dimensions',
-	    animated: 'animate',
-	    animating: 'animate',
-	    unit: 'units',
-	    P5: 'p5',
-	    pixellated: 'pixelated',
-	    looping: 'loop',
-	    pixelPerInch: 'pixels'
-	};
-	var allKeys = ['dimensions','units','pixelsPerInch','orientation','scaleToFit',
-	    'scaleToView','bleed','pixelRatio','exportPixelRatio','maxPixelRatio','scaleContext',
-	    'resizeCanvas','styleCanvas','canvas','context','attributes','parent','file',
-	    'name','prefix','suffix','animate','playing','loop','duration','totalFrames',
-	    'fps','playbackRate','timeScale','frame','time','flush','pixelated','hotkeys',
-	    'p5','id','scaleToFitPadding','data','params','encoding','encodingQuality'];
-	var checkSettings = function (settings) {
-	    var keys = Object.keys(settings);
-	    keys.forEach(function (key) {
-	        if (key in commonTypos) {
-	            var actual = commonTypos[key];
-	            console.warn(("[canvas-sketch] Could not recognize the setting \"" + key + "\", did you mean \"" + actual + "\"?"));
-	        } else if (!allKeys.includes(key)) {
-	            console.warn(("[canvas-sketch] Could not recognize the setting \"" + key + "\""));
-	        }
-	    });
-	};
-
-	function keyboardShortcuts (opt) {
-	    if ( opt === void 0 ) opt = {};
-
-	    var handler = function (ev) {
-	        if (!opt.enabled()) 
-	            { return; }
-	        var client = getClientAPI();
-	        if (ev.keyCode === 83 && !ev.altKey && (ev.metaKey || ev.ctrlKey)) {
-	            ev.preventDefault();
-	            opt.save(ev);
-	        } else if (ev.keyCode === 32) {
-	            opt.togglePlay(ev);
-	        } else if (client && !ev.altKey && ev.keyCode === 75 && (ev.metaKey || ev.ctrlKey)) {
-	            ev.preventDefault();
-	            opt.commit(ev);
-	        }
-	    };
-	    var attach = function () {
-	        window.addEventListener('keydown', handler);
-	    };
-	    var detach = function () {
-	        window.removeEventListener('keydown', handler);
-	    };
-	    return {
-	        attach: attach,
-	        detach: detach
-	    };
-	}
-
-	var defaultUnits = 'mm';
-	var data = [['postcard',101.6,152.4],['poster-small',280,430],['poster',460,610],
-	    ['poster-large',610,910],['business-card',50.8,88.9],['2r',64,89],['3r',89,127],
-	    ['4r',102,152],['5r',127,178],['6r',152,203],['8r',203,254],['10r',254,305],['11r',
-	    279,356],['12r',305,381],['a0',841,1189],['a1',594,841],['a2',420,594],['a3',
-	    297,420],['a4',210,297],['a5',148,210],['a6',105,148],['a7',74,105],['a8',52,
-	    74],['a9',37,52],['a10',26,37],['2a0',1189,1682],['4a0',1682,2378],['b0',1000,
-	    1414],['b1',707,1000],['b1+',720,1020],['b2',500,707],['b2+',520,720],['b3',353,
-	    500],['b4',250,353],['b5',176,250],['b6',125,176],['b7',88,125],['b8',62,88],
-	    ['b9',44,62],['b10',31,44],['b11',22,32],['b12',16,22],['c0',917,1297],['c1',
-	    648,917],['c2',458,648],['c3',324,458],['c4',229,324],['c5',162,229],['c6',114,
-	    162],['c7',81,114],['c8',57,81],['c9',40,57],['c10',28,40],['c11',22,32],['c12',
-	    16,22],['half-letter',5.5,8.5,'in'],['letter',8.5,11,'in'],['legal',8.5,14,'in'],
-	    ['junior-legal',5,8,'in'],['ledger',11,17,'in'],['tabloid',11,17,'in'],['ansi-a',
-	    8.5,11.0,'in'],['ansi-b',11.0,17.0,'in'],['ansi-c',17.0,22.0,'in'],['ansi-d',
-	    22.0,34.0,'in'],['ansi-e',34.0,44.0,'in'],['arch-a',9,12,'in'],['arch-b',12,18,
-	    'in'],['arch-c',18,24,'in'],['arch-d',24,36,'in'],['arch-e',36,48,'in'],['arch-e1',
-	    30,42,'in'],['arch-e2',26,38,'in'],['arch-e3',27,39,'in']];
-	var paperSizes = data.reduce(function (dict, preset) {
-	    var item = {
-	        units: preset[3] || defaultUnits,
-	        dimensions: [preset[1],preset[2]]
-	    };
-	    dict[preset[0]] = item;
-	    dict[preset[0].replace(/-/g, ' ')] = item;
-	    return dict;
-	}, {})
-
-	var defined$1 = function () {
-	    for (var i = 0; i < arguments.length; i++) {
-	        if (arguments[i] !== undefined) return arguments[i];
-	    }
-	};
-
-	var units = [ 'mm', 'cm', 'm', 'pc', 'pt', 'in', 'ft', 'px' ];
-
-	var conversions = {
-	  // metric
-	  m: {
-	    system: 'metric',
-	    factor: 1
-	  },
-	  cm: {
-	    system: 'metric',
-	    factor: 1 / 100
-	  },
-	  mm: {
-	    system: 'metric',
-	    factor: 1 / 1000
-	  },
-	  // imperial
-	  pt: {
-	    system: 'imperial',
-	    factor: 1 / 72
-	  },
-	  pc: {
-	    system: 'imperial',
-	    factor: 1 / 6
-	  },
-	  in: {
-	    system: 'imperial',
-	    factor: 1
-	  },
-	  ft: {
-	    system: 'imperial',
-	    factor: 12
-	  }
-	};
-
-	const anchors = {
-	  metric: {
-	    unit: 'm',
-	    ratio: 1 / 0.0254
-	  },
-	  imperial: {
-	    unit: 'in',
-	    ratio: 0.0254
-	  }
-	};
-
-	function round (value, decimals) {
-	  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-	}
-
-	function convertDistance (value, fromUnit, toUnit, opts) {
-	  if (typeof value !== 'number' || !isFinite(value)) throw new Error('Value must be a finite number');
-	  if (!fromUnit || !toUnit) throw new Error('Must specify from and to units');
-
-	  opts = opts || {};
-	  var pixelsPerInch = defined$1(opts.pixelsPerInch, 96);
-	  var precision = opts.precision;
-	  var roundPixel = opts.roundPixel !== false;
-
-	  fromUnit = fromUnit.toLowerCase();
-	  toUnit = toUnit.toLowerCase();
-
-	  if (units.indexOf(fromUnit) === -1) throw new Error('Invalid from unit "' + fromUnit + '", must be one of: ' + units.join(', '));
-	  if (units.indexOf(toUnit) === -1) throw new Error('Invalid from unit "' + toUnit + '", must be one of: ' + units.join(', '));
-
-	  if (fromUnit === toUnit) {
-	    // We don't need to convert from A to B since they are the same already
-	    return value;
-	  }
-
-	  var toFactor = 1;
-	  var fromFactor = 1;
-	  var isToPixel = false;
-
-	  if (fromUnit === 'px') {
-	    fromFactor = 1 / pixelsPerInch;
-	    fromUnit = 'in';
-	  }
-	  if (toUnit === 'px') {
-	    isToPixel = true;
-	    toFactor = pixelsPerInch;
-	    toUnit = 'in';
-	  }
-
-	  var fromUnitData = conversions[fromUnit];
-	  var toUnitData = conversions[toUnit];
-
-	  // source to anchor inside source's system
-	  var anchor = value * fromUnitData.factor * fromFactor;
-
-	  // if systems differ, convert one to another
-	  if (fromUnitData.system !== toUnitData.system) {
-	    // regular 'm' to 'in' and so forth
-	    anchor *= anchors[fromUnitData.system].ratio;
-	  }
-
-	  var result = anchor / toUnitData.factor * toFactor;
-	  if (isToPixel && roundPixel) {
-	    result = Math.round(result);
-	  } else if (typeof precision === 'number' && isFinite(precision)) {
-	    result = round(result, precision);
-	  }
-	  return result;
-	}
-
-	var convertLength = convertDistance;
-	var units_1 = units;
-	convertLength.units = units_1;
-
-	function getDimensionsFromPreset(dimensions, unitsTo, pixelsPerInch) {
-	    if ( unitsTo === void 0 ) unitsTo = 'px';
-	    if ( pixelsPerInch === void 0 ) pixelsPerInch = 72;
-
-	    if (typeof dimensions === 'string') {
-	        var key = dimensions.toLowerCase();
-	        if (!(key in paperSizes)) {
-	            throw new Error(("The dimension preset \"" + dimensions + "\" is not supported or could not be found; try using a4, a3, postcard, letter, etc."));
-	        }
-	        var preset = paperSizes[key];
-	        return preset.dimensions.map(function (d) { return convertDistance$1(d, preset.units, unitsTo, pixelsPerInch); });
-	    } else {
-	        return dimensions;
-	    }
-	}
-
-	function convertDistance$1(dimension, unitsFrom, unitsTo, pixelsPerInch) {
-	    if ( unitsFrom === void 0 ) unitsFrom = 'px';
-	    if ( unitsTo === void 0 ) unitsTo = 'px';
-	    if ( pixelsPerInch === void 0 ) pixelsPerInch = 72;
-
-	    return convertLength(dimension, unitsFrom, unitsTo, {
-	        pixelsPerInch: pixelsPerInch,
-	        precision: 4,
-	        roundPixel: true
-	    });
-	}
-
-	function checkIfHasDimensions(settings) {
-	    if (!settings.dimensions) 
-	        { return false; }
-	    if (typeof settings.dimensions === 'string') 
-	        { return true; }
-	    if (Array.isArray(settings.dimensions) && settings.dimensions.length >= 2) 
-	        { return true; }
-	    return false;
-	}
-
-	function getParentSize(props, settings) {
-	    if (!isBrowser()) {
-	        return [300,150];
-	    }
-	    var element = settings.parent || window;
-	    if (element === window || element === document || element === document.body) {
-	        return [window.innerWidth,window.innerHeight];
-	    } else {
-	        var ref = element.getBoundingClientRect();
-	        var width = ref.width;
-	        var height = ref.height;
-	        return [width,height];
-	    }
-	}
-
-	function resizeCanvas(props, settings) {
-	    var width, height;
-	    var styleWidth, styleHeight;
-	    var canvasWidth, canvasHeight;
-	    var browser = isBrowser();
-	    var dimensions = settings.dimensions;
-	    var hasDimensions = checkIfHasDimensions(settings);
-	    var exporting = props.exporting;
-	    var scaleToFit = hasDimensions ? settings.scaleToFit !== false : false;
-	    var scaleToView = !exporting && hasDimensions ? settings.scaleToView : true;
-	    if (!browser) 
-	        { scaleToFit = (scaleToView = false); }
-	    var units = settings.units;
-	    var pixelsPerInch = typeof settings.pixelsPerInch === 'number' && isFinite(settings.pixelsPerInch) ? settings.pixelsPerInch : 72;
-	    var bleed = defined(settings.bleed, 0);
-	    var devicePixelRatio = browser ? window.devicePixelRatio : 1;
-	    var basePixelRatio = scaleToView ? devicePixelRatio : 1;
-	    var pixelRatio, exportPixelRatio;
-	    if (typeof settings.pixelRatio === 'number' && isFinite(settings.pixelRatio)) {
-	        pixelRatio = settings.pixelRatio;
-	        exportPixelRatio = defined(settings.exportPixelRatio, pixelRatio);
-	    } else {
-	        if (hasDimensions) {
-	            pixelRatio = basePixelRatio;
-	            exportPixelRatio = defined(settings.exportPixelRatio, 1);
-	        } else {
-	            pixelRatio = devicePixelRatio;
-	            exportPixelRatio = defined(settings.exportPixelRatio, pixelRatio);
-	        }
-	    }
-	    if (typeof settings.maxPixelRatio === 'number' && isFinite(settings.maxPixelRatio)) {
-	        pixelRatio = Math.min(settings.maxPixelRatio, pixelRatio);
-	    }
-	    if (exporting) {
-	        pixelRatio = exportPixelRatio;
-	    }
-	    var ref = getParentSize(props, settings);
-	    var parentWidth = ref[0];
-	    var parentHeight = ref[1];
-	    var trimWidth, trimHeight;
-	    if (hasDimensions) {
-	        var result = getDimensionsFromPreset(dimensions, units, pixelsPerInch);
-	        var highest = Math.max(result[0], result[1]);
-	        var lowest = Math.min(result[0], result[1]);
-	        if (settings.orientation) {
-	            var landscape = settings.orientation === 'landscape';
-	            width = landscape ? highest : lowest;
-	            height = landscape ? lowest : highest;
-	        } else {
-	            width = result[0];
-	            height = result[1];
-	        }
-	        trimWidth = width;
-	        trimHeight = height;
-	        width += bleed * 2;
-	        height += bleed * 2;
-	    } else {
-	        width = parentWidth;
-	        height = parentHeight;
-	        trimWidth = width;
-	        trimHeight = height;
-	    }
-	    var realWidth = width;
-	    var realHeight = height;
-	    if (hasDimensions && units) {
-	        realWidth = convertDistance$1(width, units, 'px', pixelsPerInch);
-	        realHeight = convertDistance$1(height, units, 'px', pixelsPerInch);
-	    }
-	    styleWidth = Math.round(realWidth);
-	    styleHeight = Math.round(realHeight);
-	    if (scaleToFit && !exporting && hasDimensions) {
-	        var aspect = width / height;
-	        var windowAspect = parentWidth / parentHeight;
-	        var scaleToFitPadding = defined(settings.scaleToFitPadding, 40);
-	        var maxWidth = Math.round(parentWidth - scaleToFitPadding * 2);
-	        var maxHeight = Math.round(parentHeight - scaleToFitPadding * 2);
-	        if (styleWidth > maxWidth || styleHeight > maxHeight) {
-	            if (windowAspect > aspect) {
-	                styleHeight = maxHeight;
-	                styleWidth = Math.round(styleHeight * aspect);
-	            } else {
-	                styleWidth = maxWidth;
-	                styleHeight = Math.round(styleWidth / aspect);
-	            }
-	        }
-	    }
-	    canvasWidth = scaleToView ? Math.round(pixelRatio * styleWidth) : Math.round(pixelRatio * realWidth);
-	    canvasHeight = scaleToView ? Math.round(pixelRatio * styleHeight) : Math.round(pixelRatio * realHeight);
-	    var viewportWidth = scaleToView ? Math.round(styleWidth) : Math.round(realWidth);
-	    var viewportHeight = scaleToView ? Math.round(styleHeight) : Math.round(realHeight);
-	    var scaleX = canvasWidth / width;
-	    var scaleY = canvasHeight / height;
-	    return {
-	        bleed: bleed,
-	        pixelRatio: pixelRatio,
-	        width: width,
-	        height: height,
-	        dimensions: [width,height],
-	        units: units || 'px',
-	        scaleX: scaleX,
-	        scaleY: scaleY,
-	        pixelsPerInch: pixelsPerInch,
-	        viewportWidth: viewportWidth,
-	        viewportHeight: viewportHeight,
-	        canvasWidth: canvasWidth,
-	        canvasHeight: canvasHeight,
-	        trimWidth: trimWidth,
-	        trimHeight: trimHeight,
-	        styleWidth: styleWidth,
-	        styleHeight: styleHeight
-	    };
-	}
-
-	var getCanvasContext_1 = getCanvasContext;
-	function getCanvasContext (type, opts) {
-	  if (typeof type !== 'string') {
-	    throw new TypeError('must specify type string')
-	  }
-
-	  opts = opts || {};
-
-	  if (typeof document === 'undefined' && !opts.canvas) {
-	    return null // check for Node
-	  }
-
-	  var canvas = opts.canvas || document.createElement('canvas');
-	  if (typeof opts.width === 'number') {
-	    canvas.width = opts.width;
-	  }
-	  if (typeof opts.height === 'number') {
-	    canvas.height = opts.height;
-	  }
-
-	  var attribs = opts;
-	  var gl;
-	  try {
-	    var names = [ type ];
-	    // prefix GL contexts
-	    if (type.indexOf('webgl') === 0) {
-	      names.push('experimental-' + type);
-	    }
-
-	    for (var i = 0; i < names.length; i++) {
-	      gl = canvas.getContext(names[i], attribs);
-	      if (gl) return gl
-	    }
-	  } catch (e) {
-	    gl = null;
-	  }
-	  return (gl || null) // ensure null on fail
-	}
-
-	function createCanvasElement() {
-	    if (!isBrowser()) {
-	        throw new Error('It appears you are runing from Node.js or a non-browser environment. Try passing in an existing { canvas } interface instead.');
-	    }
-	    return document.createElement('canvas');
-	}
-
-	function createCanvas(settings) {
-	    if ( settings === void 0 ) settings = {};
-
-	    var context, canvas;
-	    var ownsCanvas = false;
-	    if (settings.canvas !== false) {
-	        context = settings.context;
-	        if (!context || typeof context === 'string') {
-	            var newCanvas = settings.canvas;
-	            if (!newCanvas) {
-	                newCanvas = createCanvasElement();
-	                ownsCanvas = true;
-	            }
-	            var type = context || '2d';
-	            if (typeof newCanvas.getContext !== 'function') {
-	                throw new Error("The specified { canvas } element does not have a getContext() function, maybe it is not a <canvas> tag?");
-	            }
-	            context = getCanvasContext_1(type, objectAssign({}, settings.attributes, {
-	                canvas: newCanvas
-	            }));
-	            if (!context) {
-	                throw new Error(("Failed at canvas.getContext('" + type + "') - the browser may not support this context, or a different context may already be in use with this canvas."));
-	            }
-	        }
-	        canvas = context.canvas;
-	        if (settings.canvas && canvas !== settings.canvas) {
-	            throw new Error('The { canvas } and { context } settings must point to the same underlying canvas element');
-	        }
-	        if (settings.pixelated) {
-	            context.imageSmoothingEnabled = false;
-	            context.mozImageSmoothingEnabled = false;
-	            context.oImageSmoothingEnabled = false;
-	            context.webkitImageSmoothingEnabled = false;
-	            context.msImageSmoothingEnabled = false;
-	            canvas.style['image-rendering'] = 'pixelated';
-	        }
-	    }
-	    return {
-	        canvas: canvas,
-	        context: context,
-	        ownsCanvas: ownsCanvas
-	    };
-	}
-
-	var SketchManager = function SketchManager() {
-	    var this$1 = this;
-
-	    this._settings = {};
-	    this._props = {};
-	    this._sketch = undefined;
-	    this._raf = null;
-	    this._recordTimeout = null;
-	    this._lastRedrawResult = undefined;
-	    this._isP5Resizing = false;
-	    this._keyboardShortcuts = keyboardShortcuts({
-	        enabled: function () { return this$1.settings.hotkeys !== false; },
-	        save: function (ev) {
-	            if (ev.shiftKey) {
-	                if (this$1.props.recording) {
-	                    this$1.endRecord();
-	                    this$1.run();
-	                } else 
-	                    { this$1.record(); }
-	            } else if (!this$1.props.recording) {
-	                this$1.exportFrame();
-	            }
-	        },
-	        togglePlay: function () {
-	            if (this$1.props.playing) 
-	                { this$1.pause(); }
-	             else 
-	                { this$1.play(); }
-	        },
-	        commit: function (ev) {
-	            this$1.exportFrame({
-	                commit: true
-	            });
-	        }
-	    });
-	    this._animateHandler = (function () { return this$1.animate(); });
-	    this._resizeHandler = (function () {
-	        var changed = this$1.resize();
-	        if (changed) {
-	            this$1.render();
-	        }
-	    });
-	};
-
-	var prototypeAccessors = { sketch: { configurable: true },settings: { configurable: true },props: { configurable: true } };
-	prototypeAccessors.sketch.get = function () {
-	    return this._sketch;
-	};
-	prototypeAccessors.settings.get = function () {
-	    return this._settings;
-	};
-	prototypeAccessors.props.get = function () {
-	    return this._props;
-	};
-	SketchManager.prototype._computePlayhead = function _computePlayhead (currentTime, duration) {
-	    var hasDuration = typeof duration === 'number' && isFinite(duration);
-	    return hasDuration ? currentTime / duration : 0;
-	};
-	SketchManager.prototype._computeFrame = function _computeFrame (playhead, time, totalFrames, fps) {
-	    return isFinite(totalFrames) && totalFrames > 1 ? Math.floor(playhead * (totalFrames - 1)) : Math.floor(fps * time);
-	};
-	SketchManager.prototype._computeCurrentFrame = function _computeCurrentFrame () {
-	    return this._computeFrame(this.props.playhead, this.props.time, this.props.totalFrames, this.props.fps);
-	};
-	SketchManager.prototype._getSizeProps = function _getSizeProps () {
-	    var props = this.props;
-	    return {
-	        width: props.width,
-	        height: props.height,
-	        pixelRatio: props.pixelRatio,
-	        canvasWidth: props.canvasWidth,
-	        canvasHeight: props.canvasHeight,
-	        viewportWidth: props.viewportWidth,
-	        viewportHeight: props.viewportHeight
-	    };
-	};
-	SketchManager.prototype.run = function run () {
-	    if (!this.sketch) 
-	        { throw new Error('should wait until sketch is loaded before trying to play()'); }
-	    if (this.settings.playing !== false) {
-	        this.play();
-	    }
-	    if (typeof this.sketch.dispose === 'function') {
-	        console.warn('In canvas-sketch@0.0.23 the dispose() event has been renamed to unload()');
-	    }
-	    if (!this.props.started) {
-	        this._signalBegin();
-	        this.props.started = true;
-	    }
-	    this.tick();
-	    this.render();
-	    return this;
-	};
-	SketchManager.prototype._cancelTimeouts = function _cancelTimeouts () {
-	    if (this._raf != null && typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
-	        window.cancelAnimationFrame(this._raf);
-	        this._raf = null;
-	    }
-	    if (this._recordTimeout != null) {
-	        clearTimeout(this._recordTimeout);
-	        this._recordTimeout = null;
-	    }
-	};
-	SketchManager.prototype.play = function play () {
-	    var animate = this.settings.animate;
-	    if ('animation' in this.settings) {
-	        animate = true;
-	        console.warn('[canvas-sketch] { animation } has been renamed to { animate }');
-	    }
-	    if (!animate) 
-	        { return; }
-	    if (!isBrowser()) {
-	        console.error('[canvas-sketch] WARN: Using { animate } in Node.js is not yet supported');
-	        return;
-	    }
-	    if (this.props.playing) 
-	        { return; }
-	    if (!this.props.started) {
-	        this._signalBegin();
-	        this.props.started = true;
-	    }
-	    this.props.playing = true;
-	    this._cancelTimeouts();
-	    this._lastTime = browser();
-	    this._raf = window.requestAnimationFrame(this._animateHandler);
-	};
-	SketchManager.prototype.pause = function pause () {
-	    if (this.props.recording) 
-	        { this.endRecord(); }
-	    this.props.playing = false;
-	    this._cancelTimeouts();
-	};
-	SketchManager.prototype.togglePlay = function togglePlay () {
-	    if (this.props.playing) 
-	        { this.pause(); }
-	     else 
-	        { this.play(); }
-	};
-	SketchManager.prototype.stop = function stop () {
-	    this.pause();
-	    this.props.frame = 0;
-	    this.props.playhead = 0;
-	    this.props.time = 0;
-	    this.props.deltaTime = 0;
-	    this.props.started = false;
-	    this.render();
-	};
-	SketchManager.prototype.record = function record () {
-	        var this$1 = this;
-
-	    if (this.props.recording) 
-	        { return; }
-	    if (!isBrowser()) {
-	        console.error('[canvas-sketch] WARN: Recording from Node.js is not yet supported');
-	        return;
-	    }
-	    this.stop();
-	    this.props.playing = true;
-	    this.props.recording = true;
-	    var exportOpts = this._createExportOptions({
-	        sequence: true
-	    });
-	    var frameInterval = 1 / this.props.fps;
-	    this._cancelTimeouts();
-	    var tick = function () {
-	        if (!this$1.props.recording) 
-	            { return Promise.resolve(); }
-	        this$1.props.deltaTime = frameInterval;
-	        this$1.tick();
-	        return this$1.exportFrame(exportOpts).then(function () {
-	            if (!this$1.props.recording) 
-	                { return; }
-	            this$1.props.deltaTime = 0;
-	            this$1.props.frame++;
-	            if (this$1.props.frame < this$1.props.totalFrames) {
-	                this$1.props.time += frameInterval;
-	                this$1.props.playhead = this$1._computePlayhead(this$1.props.time, this$1.props.duration);
-	                this$1._recordTimeout = setTimeout(tick, 0);
-	            } else {
-	                console.log('Finished recording');
-	                this$1._signalEnd();
-	                this$1.endRecord();
-	                this$1.stop();
-	                this$1.run();
-	            }
-	        });
-	    };
-	    if (!this.props.started) {
-	        this._signalBegin();
-	        this.props.started = true;
-	    }
-	    if (this.sketch && typeof this.sketch.beginRecord === 'function') {
-	        this._wrapContextScale(function (props) { return this$1.sketch.beginRecord(props); });
-	    }
-	    streamStart(exportOpts).catch(function (err) {
-	        console.error(err);
-	    }).then(function (response) {
-	        this$1._raf = window.requestAnimationFrame(tick);
-	    });
-	};
-	SketchManager.prototype._signalBegin = function _signalBegin () {
-	        var this$1 = this;
-
-	    if (this.sketch && typeof this.sketch.begin === 'function') {
-	        this._wrapContextScale(function (props) { return this$1.sketch.begin(props); });
-	    }
-	};
-	SketchManager.prototype._signalEnd = function _signalEnd () {
-	        var this$1 = this;
-
-	    if (this.sketch && typeof this.sketch.end === 'function') {
-	        this._wrapContextScale(function (props) { return this$1.sketch.end(props); });
-	    }
-	};
-	SketchManager.prototype.endRecord = function endRecord () {
-	        var this$1 = this;
-
-	    var wasRecording = this.props.recording;
-	    this._cancelTimeouts();
-	    this.props.recording = false;
-	    this.props.deltaTime = 0;
-	    this.props.playing = false;
-	    return streamEnd().catch(function (err) {
-	        console.error(err);
-	    }).then(function () {
-	        if (wasRecording && this$1.sketch && typeof this$1.sketch.endRecord === 'function') {
-	            this$1._wrapContextScale(function (props) { return this$1.sketch.endRecord(props); });
-	        }
-	    });
-	};
-	SketchManager.prototype._createExportOptions = function _createExportOptions (opt) {
-	        if ( opt === void 0 ) opt = {};
-
-	    return {
-	        sequence: opt.sequence,
-	        save: opt.save,
-	        fps: this.props.fps,
-	        frame: opt.sequence ? this.props.frame : undefined,
-	        file: this.settings.file,
-	        name: this.settings.name,
-	        prefix: this.settings.prefix,
-	        suffix: this.settings.suffix,
-	        encoding: this.settings.encoding,
-	        encodingQuality: this.settings.encodingQuality,
-	        timeStamp: opt.timeStamp || getTimeStamp(),
-	        totalFrames: isFinite(this.props.totalFrames) ? Math.max(0, this.props.totalFrames) : 1000
-	    };
-	};
-	SketchManager.prototype.exportFrame = function exportFrame (opt) {
-	        var this$1 = this;
-	        if ( opt === void 0 ) opt = {};
-
-	    if (!this.sketch) 
-	        { return Promise.all([]); }
-	    if (typeof this.sketch.preExport === 'function') {
-	        this.sketch.preExport();
-	    }
-	    var exportOpts = this._createExportOptions(opt);
-	    var client = getClientAPI();
-	    var p = Promise.resolve();
-	    if (client && opt.commit && typeof client.commit === 'function') {
-	        var commitOpts = objectAssign({}, exportOpts);
-	        var hash = client.commit(commitOpts);
-	        if (isPromise_1(hash)) 
-	            { p = hash; }
-	         else 
-	            { p = Promise.resolve(hash); }
-	    }
-	    return p.then(function (hash) { return this$1._doExportFrame(objectAssign({}, exportOpts, {
-	        hash: hash || ''
-	    })); }).then(function (result) {
-	        if (result.length === 1) 
-	            { return result[0]; }
-	         else 
-	            { return result; }
-	    });
-	};
-	SketchManager.prototype._doExportFrame = function _doExportFrame (exportOpts) {
-	        var this$1 = this;
-	        if ( exportOpts === void 0 ) exportOpts = {};
-
-	    this._props.exporting = true;
-	    this.resize();
-	    var drawResult = this.render();
-	    var canvas = this.props.canvas;
-	    if (typeof drawResult === 'undefined') {
-	        drawResult = [canvas];
-	    }
-	    drawResult = [].concat(drawResult).filter(Boolean);
-	    drawResult = drawResult.map(function (result) {
-	        var hasDataObject = typeof result === 'object' && result && ('data' in result || 'dataURL' in result);
-	        var data = hasDataObject ? result.data : result;
-	        var opts = hasDataObject ? objectAssign({}, result, {
-	            data: data
-	        }) : {
-	            data: data
-	        };
-	        if (isCanvas(data)) {
-	            var encoding = opts.encoding || exportOpts.encoding;
-	            var encodingQuality = defined(opts.encodingQuality, exportOpts.encodingQuality, 0.95);
-	            var ref = exportCanvas(data, {
-	                encoding: encoding,
-	                encodingQuality: encodingQuality
-	            });
-	                var dataURL = ref.dataURL;
-	                var extension = ref.extension;
-	                var type = ref.type;
-	            return Object.assign(opts, {
-	                dataURL: dataURL,
-	                extension: extension,
-	                type: type
-	            });
-	        } else {
-	            return opts;
-	        }
-	    });
-	    this._props.exporting = false;
-	    this.resize();
-	    this.render();
-	    return Promise.all(drawResult.map(function (result, i, layerList) {
-	        var curOpt = objectAssign({
-	            extension: '',
-	            prefix: '',
-	            suffix: ''
-	        }, exportOpts, result, {
-	            layer: i,
-	            totalLayers: layerList.length
-	        });
-	        var saveParam = exportOpts.save === false ? false : result.save;
-	        curOpt.save = saveParam !== false;
-	        curOpt.filename = resolveFilename(curOpt);
-	        delete curOpt.encoding;
-	        delete curOpt.encodingQuality;
-	        for (var k in curOpt) {
-	            if (typeof curOpt[k] === 'undefined') 
-	                { delete curOpt[k]; }
-	        }
-	        var savePromise = Promise.resolve({});
-	        if (curOpt.save) {
-	            var data = curOpt.data;
-	            if (curOpt.dataURL) {
-	                var dataURL = curOpt.dataURL;
-	                savePromise = saveDataURL(dataURL, curOpt);
-	            } else {
-	                savePromise = saveFile(data, curOpt);
-	            }
-	        }
-	        return savePromise.then(function (saveResult) { return Object.assign({}, curOpt, saveResult); });
-	    })).then(function (ev) {
-	        var savedEvents = ev.filter(function (e) { return e.save; });
-	        if (savedEvents.length > 0) {
-	            var eventWithOutput = savedEvents.find(function (e) { return e.outputName; });
-	            var isClient = savedEvents.some(function (e) { return e.client; });
-	            var isStreaming = savedEvents.some(function (e) { return e.stream; });
-	            var item;
-	            if (savedEvents.length > 1) 
-	                { item = savedEvents.length; }
-	             else if (eventWithOutput) 
-	                { item = (eventWithOutput.outputName) + "/" + (savedEvents[0].filename); }
-	             else 
-	                { item = "" + (savedEvents[0].filename); }
-	            var ofSeq = '';
-	            if (exportOpts.sequence) {
-	                var hasTotalFrames = isFinite(this$1.props.totalFrames);
-	                ofSeq = hasTotalFrames ? (" (frame " + (exportOpts.frame + 1) + " / " + (this$1.props.totalFrames) + ")") : (" (frame " + (exportOpts.frame) + ")");
-	            } else if (savedEvents.length > 1) {
-	                ofSeq = " files";
-	            }
-	            var client = isClient ? 'canvas-sketch-cli' : 'canvas-sketch';
-	            var action = isStreaming ? 'Streaming into' : 'Exported';
-	            console.log(("%c[" + client + "]%c " + action + " %c" + item + "%c" + ofSeq), 'color: #8e8e8e;', 'color: initial;', 'font-weight: bold;', 'font-weight: initial;');
-	        }
-	        if (typeof this$1.sketch.postExport === 'function') {
-	            this$1.sketch.postExport();
-	        }
-	        return ev;
-	    });
-	};
-	SketchManager.prototype._wrapContextScale = function _wrapContextScale (cb) {
-	    this._preRender();
-	    cb(this.props);
-	    this._postRender();
-	};
-	SketchManager.prototype._preRender = function _preRender () {
-	    var props = this.props;
-	    if (!this.props.gl && props.context && !props.p5) {
-	        props.context.save();
-	        if (this.settings.scaleContext !== false) {
-	            props.context.scale(props.scaleX, props.scaleY);
-	        }
-	    } else if (props.p5) {
-	        props.p5.scale(props.scaleX / props.pixelRatio, props.scaleY / props.pixelRatio);
-	    }
-	};
-	SketchManager.prototype._postRender = function _postRender () {
-	    var props = this.props;
-	    if (!this.props.gl && props.context && !props.p5) {
-	        props.context.restore();
-	    }
-	    if (props.gl && this.settings.flush !== false && !props.p5) {
-	        props.gl.flush();
-	    }
-	};
-	SketchManager.prototype.tick = function tick () {
-	    if (this.sketch && typeof this.sketch.tick === 'function') {
-	        this._preRender();
-	        this.sketch.tick(this.props);
-	        this._postRender();
-	    }
-	};
-	SketchManager.prototype.render = function render () {
-	    if (this.props.p5) {
-	        this._lastRedrawResult = undefined;
-	        this.props.p5.redraw();
-	        return this._lastRedrawResult;
-	    } else {
-	        return this.submitDrawCall();
-	    }
-	};
-	SketchManager.prototype.submitDrawCall = function submitDrawCall () {
-	    if (!this.sketch) 
-	        { return; }
-	    var props = this.props;
-	    this._preRender();
-	    var drawResult;
-	    if (typeof this.sketch === 'function') {
-	        drawResult = this.sketch(props);
-	    } else if (typeof this.sketch.render === 'function') {
-	        drawResult = this.sketch.render(props);
-	    }
-	    this._postRender();
-	    return drawResult;
-	};
-	SketchManager.prototype.update = function update (opt) {
-	        var this$1 = this;
-	        if ( opt === void 0 ) opt = {};
-
-	    var notYetSupported = ['animate'];
-	    Object.keys(opt).forEach(function (key) {
-	        if (notYetSupported.indexOf(key) >= 0) {
-	            throw new Error(("Sorry, the { " + key + " } option is not yet supported with update()."));
-	        }
-	    });
-	    var oldCanvas = this._settings.canvas;
-	    var oldContext = this._settings.context;
-	    for (var key in opt) {
-	        var value = opt[key];
-	        if (typeof value !== 'undefined') {
-	            this$1._settings[key] = value;
-	        }
-	    }
-	    var timeOpts = Object.assign({}, this._settings, opt);
-	    if ('time' in opt && 'frame' in opt) 
-	        { throw new Error('You should specify { time } or { frame } but not both'); }
-	     else if ('time' in opt) 
-	        { delete timeOpts.frame; }
-	     else if ('frame' in opt) 
-	        { delete timeOpts.time; }
-	    if ('duration' in opt && 'totalFrames' in opt) 
-	        { throw new Error('You should specify { duration } or { totalFrames } but not both'); }
-	     else if ('duration' in opt) 
-	        { delete timeOpts.totalFrames; }
-	     else if ('totalFrames' in opt) 
-	        { delete timeOpts.duration; }
-	    if ('data' in opt) 
-	        { this._props.data = opt.data; }
-	    var timeProps = this.getTimeProps(timeOpts);
-	    Object.assign(this._props, timeProps);
-	    if (oldCanvas !== this._settings.canvas || oldContext !== this._settings.context) {
-	        var ref = createCanvas(this._settings);
-	            var canvas = ref.canvas;
-	            var context = ref.context;
-	        this.props.canvas = canvas;
-	        this.props.context = context;
-	        this._setupGLKey();
-	        this._appendCanvasIfNeeded();
-	    }
-	    if (opt.p5 && typeof opt.p5 !== 'function') {
-	        this.props.p5 = opt.p5;
-	        this.props.p5.draw = (function () {
-	            if (this$1._isP5Resizing) 
-	                { return; }
-	            this$1._lastRedrawResult = this$1.submitDrawCall();
-	        });
-	    }
-	    if ('playing' in opt) {
-	        if (opt.playing) 
-	            { this.play(); }
-	         else 
-	            { this.pause(); }
-	    }
-	    checkSettings(this._settings);
-	    this.resize();
-	    this.render();
-	    return this.props;
-	};
-	SketchManager.prototype.resize = function resize () {
-	    var oldSizes = this._getSizeProps();
-	    var settings = this.settings;
-	    var props = this.props;
-	    var newProps = resizeCanvas(props, settings);
-	    Object.assign(this._props, newProps);
-	    var ref = this.props;
-	        var pixelRatio = ref.pixelRatio;
-	        var canvasWidth = ref.canvasWidth;
-	        var canvasHeight = ref.canvasHeight;
-	        var styleWidth = ref.styleWidth;
-	        var styleHeight = ref.styleHeight;
-	    var canvas = this.props.canvas;
-	    if (canvas && settings.resizeCanvas !== false) {
-	        if (props.p5) {
-	            if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
-	                this._isP5Resizing = true;
-	                props.p5.pixelDensity(pixelRatio);
-	                props.p5.resizeCanvas(canvasWidth / pixelRatio, canvasHeight / pixelRatio, false);
-	                this._isP5Resizing = false;
-	            }
-	        } else {
-	            if (canvas.width !== canvasWidth) 
-	                { canvas.width = canvasWidth; }
-	            if (canvas.height !== canvasHeight) 
-	                { canvas.height = canvasHeight; }
-	        }
-	        if (isBrowser() && settings.styleCanvas !== false) {
-	            canvas.style.width = styleWidth + "px";
-	            canvas.style.height = styleHeight + "px";
-	        }
-	    }
-	    var newSizes = this._getSizeProps();
-	    var changed = !deepEqual_1(oldSizes, newSizes);
-	    if (changed) {
-	        this._sizeChanged();
-	    }
-	    return changed;
-	};
-	SketchManager.prototype._sizeChanged = function _sizeChanged () {
-	    if (this.sketch && typeof this.sketch.resize === 'function') {
-	        this.sketch.resize(this.props);
-	    }
-	};
-	SketchManager.prototype.animate = function animate () {
-	    if (!this.props.playing) 
-	        { return; }
-	    if (!isBrowser()) {
-	        console.error('[canvas-sketch] WARN: Animation in Node.js is not yet supported');
-	        return;
-	    }
-	    this._raf = window.requestAnimationFrame(this._animateHandler);
-	    var now = browser();
-	    var fps = this.props.fps;
-	    var frameIntervalMS = 1000 / fps;
-	    var deltaTimeMS = now - this._lastTime;
-	    var duration = this.props.duration;
-	    var hasDuration = typeof duration === 'number' && isFinite(duration);
-	    var isNewFrame = true;
-	    var playbackRate = this.settings.playbackRate;
-	    if (playbackRate === 'fixed') {
-	        deltaTimeMS = frameIntervalMS;
-	    } else if (playbackRate === 'throttle') {
-	        if (deltaTimeMS > frameIntervalMS) {
-	            now = now - deltaTimeMS % frameIntervalMS;
-	            this._lastTime = now;
-	        } else {
-	            isNewFrame = false;
-	        }
-	    } else {
-	        this._lastTime = now;
-	    }
-	    var deltaTime = deltaTimeMS / 1000;
-	    var newTime = this.props.time + deltaTime * this.props.timeScale;
-	    if (newTime < 0 && hasDuration) {
-	        newTime = duration + newTime;
-	    }
-	    var isFinished = false;
-	    var isLoopStart = false;
-	    var looping = this.settings.loop !== false;
-	    if (hasDuration && newTime >= duration) {
-	        if (looping) {
-	            isNewFrame = true;
-	            newTime = newTime % duration;
-	            isLoopStart = true;
-	        } else {
-	            isNewFrame = false;
-	            newTime = duration;
-	            isFinished = true;
-	        }
-	        this._signalEnd();
-	    }
-	    if (isNewFrame) {
-	        this.props.deltaTime = deltaTime;
-	        this.props.time = newTime;
-	        this.props.playhead = this._computePlayhead(newTime, duration);
-	        var lastFrame = this.props.frame;
-	        this.props.frame = this._computeCurrentFrame();
-	        if (isLoopStart) 
-	            { this._signalBegin(); }
-	        if (lastFrame !== this.props.frame) 
-	            { this.tick(); }
-	        this.render();
-	        this.props.deltaTime = 0;
-	    }
-	    if (isFinished) {
-	        this.pause();
-	    }
-	};
-	SketchManager.prototype.dispatch = function dispatch (cb) {
-	    if (typeof cb !== 'function') 
-	        { throw new Error('must pass function into dispatch()'); }
-	    cb(this.props);
-	    this.render();
-	};
-	SketchManager.prototype.mount = function mount () {
-	    this._appendCanvasIfNeeded();
-	};
-	SketchManager.prototype.unmount = function unmount () {
-	    if (isBrowser()) {
-	        window.removeEventListener('resize', this._resizeHandler);
-	        this._keyboardShortcuts.detach();
-	    }
-	    if (this.props.canvas.parentElement) {
-	        this.props.canvas.parentElement.removeChild(this.props.canvas);
-	    }
-	};
-	SketchManager.prototype._appendCanvasIfNeeded = function _appendCanvasIfNeeded () {
-	    if (!isBrowser()) 
-	        { return; }
-	    if (this.settings.parent !== false && (this.props.canvas && !this.props.canvas.parentElement)) {
-	        var defaultParent = this.settings.parent || document.body;
-	        defaultParent.appendChild(this.props.canvas);
-	    }
-	};
-	SketchManager.prototype._setupGLKey = function _setupGLKey () {
-	    if (this.props.context) {
-	        if (isWebGLContext(this.props.context)) {
-	            this._props.gl = this.props.context;
-	        } else {
-	            delete this._props.gl;
-	        }
-	    }
-	};
-	SketchManager.prototype.getTimeProps = function getTimeProps (settings) {
-	        if ( settings === void 0 ) settings = {};
-
-	    var duration = settings.duration;
-	    var totalFrames = settings.totalFrames;
-	    var timeScale = defined(settings.timeScale, 1);
-	    var fps = defined(settings.fps, 24);
-	    var hasDuration = typeof duration === 'number' && isFinite(duration);
-	    var hasTotalFrames = typeof totalFrames === 'number' && isFinite(totalFrames);
-	    var totalFramesFromDuration = hasDuration ? Math.floor(fps * duration) : undefined;
-	    var durationFromTotalFrames = hasTotalFrames ? totalFrames / fps : undefined;
-	    if (hasDuration && hasTotalFrames && totalFramesFromDuration !== totalFrames) {
-	        throw new Error('You should specify either duration or totalFrames, but not both. Or, they must match exactly.');
-	    }
-	    if (typeof settings.dimensions === 'undefined' && typeof settings.units !== 'undefined') {
-	        console.warn("You've specified a { units } setting but no { dimension }, so the units will be ignored.");
-	    }
-	    totalFrames = defined(totalFrames, totalFramesFromDuration, Infinity);
-	    duration = defined(duration, durationFromTotalFrames, Infinity);
-	    var startTime = settings.time;
-	    var startFrame = settings.frame;
-	    var hasStartTime = typeof startTime === 'number' && isFinite(startTime);
-	    var hasStartFrame = typeof startFrame === 'number' && isFinite(startFrame);
-	    var time = 0;
-	    var frame = 0;
-	    var playhead = 0;
-	    if (hasStartTime && hasStartFrame) {
-	        throw new Error('You should specify either start frame or time, but not both.');
-	    } else if (hasStartTime) {
-	        time = startTime;
-	        playhead = this._computePlayhead(time, duration);
-	        frame = this._computeFrame(playhead, time, totalFrames, fps);
-	    } else if (hasStartFrame) {
-	        frame = startFrame;
-	        time = frame / fps;
-	        playhead = this._computePlayhead(time, duration);
-	    }
-	    return {
-	        playhead: playhead,
-	        time: time,
-	        frame: frame,
-	        duration: duration,
-	        totalFrames: totalFrames,
-	        fps: fps,
-	        timeScale: timeScale
-	    };
-	};
-	SketchManager.prototype.setup = function setup (settings) {
-	        var this$1 = this;
-	        if ( settings === void 0 ) settings = {};
-
-	    if (this.sketch) 
-	        { throw new Error('Multiple setup() calls not yet supported.'); }
-	    this._settings = Object.assign({}, settings, this._settings);
-	    checkSettings(this._settings);
-	    var ref = createCanvas(this._settings);
-	        var context = ref.context;
-	        var canvas = ref.canvas;
-	    var timeProps = this.getTimeProps(this._settings);
-	    this._props = Object.assign({}, timeProps,
-	        {canvas: canvas,
-	        context: context,
-	        deltaTime: 0,
-	        started: false,
-	        exporting: false,
-	        playing: false,
-	        recording: false,
-	        settings: this.settings,
-	        data: this.settings.data,
-	        render: function () { return this$1.render(); },
-	        togglePlay: function () { return this$1.togglePlay(); },
-	        dispatch: function (cb) { return this$1.dispatch(cb); },
-	        tick: function () { return this$1.tick(); },
-	        resize: function () { return this$1.resize(); },
-	        update: function (opt) { return this$1.update(opt); },
-	        exportFrame: function (opt) { return this$1.exportFrame(opt); },
-	        record: function () { return this$1.record(); },
-	        play: function () { return this$1.play(); },
-	        pause: function () { return this$1.pause(); },
-	        stop: function () { return this$1.stop(); }});
-	    this._setupGLKey();
-	    this.resize();
-	};
-	SketchManager.prototype.loadAndRun = function loadAndRun (canvasSketch, newSettings) {
-	        var this$1 = this;
-
-	    return this.load(canvasSketch, newSettings).then(function () {
-	        this$1.run();
-	        return this$1;
-	    });
-	};
-	SketchManager.prototype.unload = function unload () {
-	        var this$1 = this;
-
-	    this.pause();
-	    if (!this.sketch) 
-	        { return; }
-	    if (typeof this.sketch.unload === 'function') {
-	        this._wrapContextScale(function (props) { return this$1.sketch.unload(props); });
-	    }
-	    this._sketch = null;
-	};
-	SketchManager.prototype.destroy = function destroy () {
-	    this.unload();
-	    this.unmount();
-	};
-	SketchManager.prototype.load = function load (createSketch, newSettings) {
-	        var this$1 = this;
-
-	    if (typeof createSketch !== 'function') {
-	        throw new Error('The function must take in a function as the first parameter. Example:\n  canvasSketcher(() => { ... }, settings)');
-	    }
-	    if (this.sketch) {
-	        this.unload();
-	    }
-	    if (typeof newSettings !== 'undefined') {
-	        this.update(newSettings);
-	    }
-	    this._preRender();
-	    var preload = Promise.resolve();
-	    if (this.settings.p5) {
-	        if (!isBrowser()) {
-	            throw new Error('[canvas-sketch] ERROR: Using p5.js in Node.js is not supported');
-	        }
-	        preload = new Promise(function (resolve) {
-	            var P5Constructor = this$1.settings.p5;
-	            var preload;
-	            if (P5Constructor.p5) {
-	                preload = P5Constructor.preload;
-	                P5Constructor = P5Constructor.p5;
-	            }
-	            var p5Sketch = function (p5) {
-	                if (preload) 
-	                    { p5.preload = (function () { return preload(p5); }); }
-	                p5.setup = (function () {
-	                    var props = this$1.props;
-	                    var isGL = this$1.settings.context === 'webgl';
-	                    var renderer = isGL ? p5.WEBGL : p5.P2D;
-	                    p5.noLoop();
-	                    p5.pixelDensity(props.pixelRatio);
-	                    p5.createCanvas(props.viewportWidth, props.viewportHeight, renderer);
-	                    if (isGL && this$1.settings.attributes) {
-	                        p5.setAttributes(this$1.settings.attributes);
-	                    }
-	                    this$1.update({
-	                        p5: p5,
-	                        canvas: p5.canvas,
-	                        context: p5._renderer.drawingContext
-	                    });
-	                    resolve();
-	                });
-	            };
-	            if (typeof P5Constructor === 'function') {
-	                new P5Constructor(p5Sketch);
-	            } else {
-	                if (typeof window.createCanvas !== 'function') {
-	                    throw new Error("{ p5 } setting is passed but can't find p5.js in global (window) scope. Maybe you did not create it globally?\nnew p5(); // <-- attaches to global scope");
-	                }
-	                p5Sketch(window);
-	            }
-	        });
-	    }
-	    return preload.then(function () {
-	        var loader = createSketch(this$1.props);
-	        if (!isPromise_1(loader)) {
-	            loader = Promise.resolve(loader);
-	        }
-	        return loader;
-	    }).then(function (sketch) {
-	        if (!sketch) 
-	            { sketch = {}; }
-	        this$1._sketch = sketch;
-	        if (isBrowser()) {
-	            this$1._keyboardShortcuts.attach();
-	            window.addEventListener('resize', this$1._resizeHandler);
-	        }
-	        this$1._postRender();
-	        this$1._sizeChanged();
-	        return this$1;
-	    }).catch(function (err) {
-	        console.warn('Could not start sketch, the async loading function rejected with an error:\n    Error: ' + err.message);
-	        throw err;
-	    });
-	};
-
-	Object.defineProperties( SketchManager.prototype, prototypeAccessors );
-
-	var CACHE = 'hot-id-cache';
-	var runtimeCollisions = [];
-	function isHotReload() {
-	    var client = getClientAPI();
-	    return client && client.hot;
-	}
-
-	function cacheGet(id) {
-	    var client = getClientAPI();
-	    if (!client) 
-	        { return undefined; }
-	    client[CACHE] = client[CACHE] || {};
-	    return client[CACHE][id];
-	}
-
-	function cachePut(id, data) {
-	    var client = getClientAPI();
-	    if (!client) 
-	        { return undefined; }
-	    client[CACHE] = client[CACHE] || {};
-	    client[CACHE][id] = data;
-	}
-
-	function getTimeProp(oldManager, newSettings) {
-	    return newSettings.animate ? {
-	        time: oldManager.props.time
-	    } : undefined;
-	}
-
-	function canvasSketch(sketch, settings) {
-	    if ( settings === void 0 ) settings = {};
-
-	    if (settings.p5) {
-	        if (settings.canvas || settings.context && typeof settings.context !== 'string') {
-	            throw new Error("In { p5 } mode, you can't pass your own canvas or context, unless the context is a \"webgl\" or \"2d\" string");
-	        }
-	        var context = typeof settings.context === 'string' ? settings.context : false;
-	        settings = Object.assign({}, settings, {
-	            canvas: false,
-	            context: context
-	        });
-	    }
-	    var isHot = isHotReload();
-	    var hotID;
-	    if (isHot) {
-	        hotID = defined(settings.id, '$__DEFAULT_CANVAS_SKETCH_ID__$');
-	    }
-	    var isInjecting = isHot && typeof hotID === 'string';
-	    if (isInjecting && runtimeCollisions.includes(hotID)) {
-	        console.warn("Warning: You have multiple calls to canvasSketch() in --hot mode. You must pass unique { id } strings in settings to enable hot reload across multiple sketches. ", hotID);
-	        isInjecting = false;
-	    }
-	    var preload = Promise.resolve();
-	    if (isInjecting) {
-	        runtimeCollisions.push(hotID);
-	        var previousData = cacheGet(hotID);
-	        if (previousData) {
-	            var next = function () {
-	                var newProps = getTimeProp(previousData.manager, settings);
-	                previousData.manager.destroy();
-	                return newProps;
-	            };
-	            preload = previousData.load.then(next).catch(next);
-	        }
-	    }
-	    return preload.then(function (newProps) {
-	        var manager = new SketchManager();
-	        var result;
-	        if (sketch) {
-	            settings = Object.assign({}, settings, newProps);
-	            manager.setup(settings);
-	            manager.mount();
-	            result = manager.loadAndRun(sketch);
-	        } else {
-	            result = Promise.resolve(manager);
-	        }
-	        if (isInjecting) {
-	            cachePut(hotID, {
-	                load: result,
-	                manager: manager
-	            });
-	        }
-	        return result;
-	    });
-	}
-
-	canvasSketch.canvasSketch = canvasSketch;
-	canvasSketch.PaperSizes = paperSizes;
-
-	return canvasSketch;
-
-})));
-
-
-},{}],"three/three-stuff.js":[function(require,module,exports) {
-var global = arguments[3];
+},{}],"three/three-class-refactor.js":[function(require,module,exports) {
 "use strict";
 
-var _vertex = _interopRequireDefault(require("../shaders/vertex.glsl"));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-var _fragment = _interopRequireDefault(require("../shaders/fragment.glsl"));
+var THREE = _interopRequireWildcard(require("three"));
+
+var _vertex = _interopRequireDefault(require("../shaders/vertex.js"));
+
+var _fragment = _interopRequireDefault(require("../shaders/fragment.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Ensure ThreeJS is in global scope for the 'examples/'
-global.THREE = require("three"); // Include any additional ThreeJS examples below
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-require("three/examples/js/controls/OrbitControls");
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-var canvasSketch = require("canvas-sketch");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var settings = {
-  // Make the loop animated
-  animate: true,
-  // Get a WebGL canvas rather than 2D
-  context: "webgl"
-};
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-var sketch = function sketch(_ref) {
-  var context = _ref.context;
-  // Create a renderer
-  var renderer = new THREE.WebGLRenderer({
-    canvas: context.canvas
-  }); //attach the canvas to the dom
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-  var container = context.canvas;
-  container.appendChild(renderer.domElement); // WebGL background color
+var OrbitControls = require('three-orbit-controls')(THREE);
 
-  renderer.setClearColor(0xeeeeee, 1);
-  renderer.physicallyCorrectLights = true;
-  renderer.outputEncoding = THREE.sRGBEncoding; // Setup a camera
+var Sketch = /*#__PURE__*/function () {
+  function Sketch(options) {
+    _classCallCheck(this, Sketch);
 
-  var camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
-  camera.position.set(0, 0, -4);
-  camera.lookAt(new THREE.Vector3()); // Setup camera controller
+    this.scene = new THREE.Scene();
+    this.container = options.dom;
+    this.width = this.container.offsetWidth;
+    this.height = this.container.offsetHeight;
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(this.width, this.height);
+    this.renderer.setClearColor(0xeeeeee, 1);
+    this.renderer.physicallyCorrectLights = true;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.container.appendChild(this.renderer.domElement);
+    this.camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
+    this.camera.position.set(0, 0, 2);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.time = 0;
+    this.isPlaying = true;
+    this.addObjects();
+    this.resize();
+    this.render();
+    this.setupResize();
+  }
 
-  var controls = new THREE.OrbitControls(camera, context.canvas); // Setup your scene
-
-  var scene = new THREE.Scene(); // Setup a geometry
-
-  var material = new THREE.ShaderMaterial({
-    extensions: {
-      derivatives: '#extension GL_OES_standard_derivatives : enable'
-    },
-    side: THREE.DoubleSide,
-    uniforms: {
-      time: {
-        type: "f",
-        value: 0
-      },
-      resolution: {
-        type: "v4",
-        value: new THREE.Vector4()
-      },
-      uvRate1: {
-        value: new THREE.Vector2(1, 1)
-      }
-    },
-    vertexShader: _vertex.default,
-    fragmentShader: _fragment.default
-  });
-  var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-  var plane = new THREE.Mesh(geometry, material);
-  scene.add(plane); // draw each frame
-
-  return {
-    // Handle resize events here
-    resize: function resize(_ref2) {
-      var pixelRatio = _ref2.pixelRatio,
-          viewportWidth = _ref2.viewportWidth,
-          viewportHeight = _ref2.viewportHeight;
-      renderer.setPixelRatio(pixelRatio);
-      renderer.setSize(viewportWidth, viewportHeight);
-      camera.aspect = viewportWidth / viewportHeight;
-      material.uniforms.resolution.value.x = viewportWidth;
-      material.uniforms.resolution.value.y = viewportHeight;
-      material.uniforms.resolution.value.z = viewportWidth / viewportHeight;
-      material.uniforms.resolution.value.w = viewportHeight / viewportWidth;
-      camera.updateProjectionMatrix();
-    },
-    // Setup a material
-    // addObjects() {
-    //   let material = new THREE.ShaderMaterial({
-    //     extensions: {
-    //       derivatives: '#extension GL_OES_standard_derivatives : enable'
-    //     },
-    //     side:  THREE.DoubleSide,
-    //     uniforms:{
-    //       time: { type: "f", value: 0 },
-    //       resolution: { type: "v4", value: new THREE.Vector4() },
-    //       uvRate1: {
-    //         value: new THREE.Vector2(1, 1)
-    //       }
-    //     },
-    //     vertexShader: vertex,
-    //     fragmentShader: fragment
-    //   })
-    //   let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-    //   let plane = new THREE.Mesh(geometry, material);
-    //   scene.add(plane);
-    // },
-    // Update & render your scene here
-    render: function render(_ref3) {
-      var time = _ref3.time;
-      controls.update();
-      renderer.render(scene, camera);
-    },
-    // Dispose of events & renderer for cleaner hot-reloading
-    unload: function unload() {
-      controls.dispose();
-      renderer.dispose();
+  _createClass(Sketch, [{
+    key: "settings",
+    value: function settings() {
+      var that = this;
+      this.settings = {
+        progress: 0
+      };
     }
-  };
-};
+  }, {
+    key: "setupResize",
+    value: function setupResize() {
+      window.addEventListener("resize", this.resize.bind(this));
+    }
+  }, {
+    key: "resize",
+    value: function resize() {
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer.setSize(this.width, this.height);
+      this.camera.aspect = this.width / this.height;
+      this.imageAspect = 853 / 1280;
+      var a1;
+      var a2;
 
-canvasSketch(sketch, settings);
-},{"../shaders/vertex.glsl":"shaders/vertex.glsl","../shaders/fragment.glsl":"shaders/fragment.glsl","three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
+      if (this.height / this.width > this.imageAspect) {
+        a1 = this.width / this.height * this.imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = this.height / this.width / this.imageAspect;
+      }
+
+      this.material.uniforms.resolution.value.x = this.width;
+      this.material.uniforms.resolution.value.y = this.height;
+      this.material.uniforms.resolution.value.z = a1;
+      this.material.uniforms.resolution.value.w = a2;
+      camera.updateProjectionMatrix();
+    }
+  }, {
+    key: "addObjects",
+    value: function addObjects() {
+      var that = this;
+      this.material = new THREE.ShaderMaterial({
+        extensions: {
+          derivatives: '#extension GL_OES_standard_derivatives : enable'
+        },
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            type: "f",
+            value: 0
+          },
+          resolution: {
+            type: "v4",
+            value: new THREE.Vector4()
+          },
+          uvRate1: {
+            value: new THREE.Vector2(1, 1)
+          }
+        },
+        vertexShader: (0, _vertex.default)(),
+        fragmentShader: (0, _fragment.default)()
+      });
+      this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+      this.plane = new THREE.Mesh(this.geometry, this.material);
+      this.scene.add(this.plane);
+    }
+  }, {
+    key: "stop",
+    value: function stop() {
+      this.isPlaying = false;
+    }
+  }, {
+    key: "play",
+    value: function play() {
+      if (!this.isPlaying) {
+        this.render();
+        this.isPlaying = true;
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (!this.isPlaying) return;
+      this.time += 0.05;
+      this.material.uniforms.time.value = this.time;
+      requestAnimationFrame(this.render.bind(this));
+      this.renderer.render(this.scene, this.camera);
+    }
+  }]);
+
+  return Sketch;
+}();
+
+exports.default = Sketch;
+},{"three":"../node_modules/three/build/three.module.js","../shaders/vertex.js":"shaders/vertex.js","../shaders/fragment.js":"shaders/fragment.js","three-orbit-controls":"../node_modules/three-orbit-controls/index.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 require("./style.scss");
 
-var _threeStuff = _interopRequireDefault(require("./three/three-stuff"));
-
-var _canvasSketch = _interopRequireDefault(require("canvas-sketch"));
+var _threeClassRefactor = _interopRequireDefault(require("./three/three-class-refactor.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40217,12 +37909,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-var settings = {
-  // Make the loop animated
-  animate: true,
-  // Get a WebGL canvas rather than 2D
-  context: "webgl"
-};
+var sketch = new _threeClassRefactor.default({
+  dom: document.getElementById('canvas')
+});
 var speed = 0;
 var position = 0;
 var rounded = 0;
@@ -40260,9 +37949,9 @@ function raf() {
 }
 
 console.log('it works!');
-(0, _canvasSketch.default)(_threeStuff.default, settings);
+canvasSketch(sketch, settings);
 raf();
-},{"./style.scss":"style.scss","./three/three-stuff":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./style.scss":"style.scss","./three/three-class-refactor.js":"three/three-class-refactor.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -40290,7 +37979,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49888" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51092" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -25,9 +25,8 @@ body #block {
   width: 100px;
   background: peru;
   position: absolute;
-  z-index: 100;
 }
-body canvas {
+body #canvas {
   width: 100vw;
   height: 100vh;
   position: fixed;

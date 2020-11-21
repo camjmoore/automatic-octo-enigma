@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import vertex from '../shaders/vertex.glsl'
-import fragment from '../shaders/fragment.glsl'
+import vertexShader from '../shaders/vertex.js'
+import fragmentShader from '../shaders/fragment.js'
 
 let OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -88,8 +88,8 @@ export default class Sketch {
           value: new THREE.Vector2(1, 1)
         }
       },
-      vertexShader: vertex,
-      fragmentShader: fragment
+      vertexShader: vertexShader(),
+      fragmentShader: fragmentShader(),
     })
 
     this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
