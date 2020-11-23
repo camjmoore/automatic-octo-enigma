@@ -1,9 +1,10 @@
 import './style.scss';
-import Sketch from './three/three-class-refactor.js';
+import Sketch from './three/three-stuff.js';
+const canvasSketch = require("canvas-sketch");
 
-let sketch = new Sketch({
-  dom: document.getElementById('canvas')
-})
+// let sketch = new Sketch({
+//   dom: document.getElementById('canvas')
+// })
 
 let speed = 0;
 let position = 0;
@@ -44,5 +45,5 @@ function raf(){
 }
 
 console.log('it works!')
-canvasSketch(sketch, settings);
+canvasSketch(Sketch, settings);
 raf();

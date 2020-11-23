@@ -1,5 +1,5 @@
-import vertex from '../shaders/vertex.glsl'
-import fragment from '../shaders/fragment.glsl'
+import vertexShader from "../shaders/vertex.glsl";
+import fragmentShader from "../shaders/fragment.glsl";
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
@@ -11,12 +11,12 @@ const canvasSketch = require("canvas-sketch");
 
 const settings = {
   // Make the loop animated
-  animate: true,
+  // animate: true,
   // Get a WebGL canvas rather than 2D
   context: "webgl"
 };
 
-const sketch = ({ context }) => {
+const Sketch = ({ context }) => {
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
     canvas: context.canvas
@@ -55,8 +55,8 @@ const sketch = ({ context }) => {
         value: new THREE.Vector2(1, 1)
       }
     },
-    vertexShader: vertex,
-    fragmentShader: fragment
+    vertexShader: vertexShader(),
+    fragmentShader: fragmentShader(),
   })
 
   let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
@@ -115,4 +115,4 @@ const sketch = ({ context }) => {
   };
 };
 
-canvasSketch(sketch, settings);
+canvasSketch(Sketch, settings);
