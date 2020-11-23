@@ -1,6 +1,9 @@
 import * as THREE from 'three';
-import vertexShader from '../shaders/vertex.js'
-import fragmentShader from '../shaders/fragment.js'
+import vertexShader from "../shaders/vertexShader.js";
+import fragmentShader from "../shaders/fragmentShader.js";
+
+
+// global.THREE = require("three");
 
 let OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -71,7 +74,7 @@ export default class Sketch {
     this.material.uniforms.resolution.value.z = a1;
     this.material.uniforms.resolution.value.w = a2;
 
-    camera.updateProjectionMatrix();
+    this.camera.updateProjectionMatrix();
   }
 
   addObjects() {

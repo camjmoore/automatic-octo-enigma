@@ -1,10 +1,17 @@
 import './style.scss';
-import Sketch from './three/three-stuff.js';
-const canvasSketch = require("canvas-sketch");
+import Sketch from './three/three-class-refactor.js';
+// const canvasSketch = require('canvas-sketch');
 
-// let sketch = new Sketch({
-//   dom: document.getElementById('canvas')
-// })
+let sketch = new Sketch({
+  dom: document.getElementById('canvas')
+})
+
+// const settings = {
+//   // Make the loop animated
+//   // animate: true,
+//   // Get a WebGL canvas rather than 2D
+//   context: document.getElementById("canvas")
+// };
 
 let speed = 0;
 let position = 0;
@@ -45,5 +52,6 @@ function raf(){
 }
 
 console.log('it works!')
-canvasSketch(Sketch, settings);
 raf();
+// canvasSketch(Sketch, settings);
+// Sketch(settings);

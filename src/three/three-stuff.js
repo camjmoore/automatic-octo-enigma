@@ -1,11 +1,15 @@
-import vertexShader from "../shaders/vertex.glsl";
-import fragmentShader from "../shaders/fragment.glsl";
+import * as THREE from 'three';
+import vertexShader from "../shaders/vertexShader.js";
+import fragmentShader from "../shaders/fragmentShader.js";
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
 
 // Include any additional ThreeJS examples below
-require("three/examples/js/controls/OrbitControls");
+// require("three/examples/js/controls/OrbitControls");
+
+let OrbitControls = require('three-orbit-controls')(THREE);
+
 
 const canvasSketch = require("canvas-sketch");
 
@@ -13,14 +17,12 @@ const settings = {
   // Make the loop animated
   // animate: true,
   // Get a WebGL canvas rather than 2D
-  context: "webgl"
+  context: document.getElementById("canvas")
 };
 
-const Sketch = ({ context }) => {
+export const Sketch = ({ context }) => {
   // Create a renderer
-  const renderer = new THREE.WebGLRenderer({
-    canvas: context.canvas
-  });
+  const renderer = new THREE.WebGLRenderer({context});
 
   //attach the canvas to the dom
   const container = context.canvas
@@ -63,6 +65,8 @@ const Sketch = ({ context }) => {
 
   let plane = new THREE.Mesh(geometry, material);
   scene.add(plane);
+
+  console.log("Sketch running")
 
   // draw each frame
   return {
@@ -115,4 +119,4 @@ const Sketch = ({ context }) => {
   };
 };
 
-canvasSketch(Sketch, settings);
+// canvasSketch(Sketch, settings);
