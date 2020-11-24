@@ -1,6 +1,9 @@
 import vertexShader from '../shaders/vertexShader.js';
 import fragmentShader from '../shaders/fragmentShader.js';
 
+//11-24 @11:21am
+//created handleimages, added texture prop to shaderMaterial uniforms
+
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
 
@@ -58,6 +61,7 @@ export const Sketch = ({ context }) => {
     side:  THREE.DoubleSide,
     uniforms:{
       time: { type: "f", value: 0 },
+      texture1: { type: "t", value: null },
       resolution: { type: "v4", value: new THREE.Vector4() },
       uvRate1: {
         value: new THREE.Vector2(1, 1)
@@ -76,6 +80,23 @@ export const Sketch = ({ context }) => {
 
   // draw each frame
   return {
+    
+    // Map our images from our html into our shader material texture
+    handleImages() {
+      let images = [...document.querySelectorAll('img')];
+      images.forEach((img, i) => {
+        let materialImg = material.clone()
+        materialImg.uniforms.texture1.value = new THREE.Texture(img)
+
+        let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+        let mesh = new THREE.mesh(geom, materialImg)
+        scene.add(mesh)
+
+        //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+        mesh.position.y = i*1.2
+      })
+    },
+
     // Handle resize events here
     resize() {
       // renderer.setPixelRatio(pixelRatio);
