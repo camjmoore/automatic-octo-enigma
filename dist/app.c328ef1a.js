@@ -40189,24 +40189,27 @@ var Sketch = function Sketch(_ref) {
     },
     vertexShader: (0, _vertexShader.default)(),
     fragmentShader: (0, _fragmentShader.default)()
-  });
-  var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-  var plane = new THREE.Mesh(geometry, material);
-  scene.add(plane); // Map our images from our html into our shader material texture
+  }); // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  // let plane = new THREE.Mesh(geometry, material);
+  // scene.add(plane);
+
+  var materials = [];
+  var meshes = []; // Map our images from our html into our shader material texture
 
   var images = _toConsumableArray(document.querySelectorAll('img'));
 
   images.forEach(function (img, i) {
     var materialImg = material.clone();
+    materials.push(materialImg);
     materialImg.uniforms.texture1.value = new THREE.Texture(img);
     materialImg.uniforms.texture1.value.needsUpdate = true;
     var geom = new THREE.PlaneBufferGeometry(1.5, 1, 20, 20);
     var mesh = new THREE.Mesh(geom, materialImg);
-    scene.add(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+    scene.add(mesh);
+    meshes.push(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
 
     mesh.position.y = i * 1.2;
-  });
-  console.log("Sketch running"); // draw each frame
+  }); // draw each frame
 
   return {
     // Map our images from our html into our shader material texture
@@ -40251,8 +40254,12 @@ var Sketch = function Sketch(_ref) {
     // Update & render your scene here
     render: function render(_ref2) {
       var time = _ref2.time;
-      time += 0.05;
-      material.uniforms.time.value = time;
+      time += 0.05; //applying time to the cloned materials
+
+      materials.forEach(function (m) {
+        m.uniforms.time.value = time;
+      }); // material.uniforms.time.value = time;
+
       controls.update();
       renderer.render(scene, camera);
     },
@@ -40327,8 +40334,8 @@ function raf() {
   }); //acts as a lerp function
 
   var diff = rounded - position;
-  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015;
-  console.log(rounded); // block.style.transform = `translate(0, ${position*100}px)`
+  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015; // console.log(rounded)
+  // block.style.transform = `translate(0, ${position*100}px)`
 
   wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)");
   window.requestAnimationFrame(raf);
@@ -40365,7 +40372,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49783" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51300" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

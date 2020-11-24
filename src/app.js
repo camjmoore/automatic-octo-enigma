@@ -45,7 +45,7 @@ function raf(){
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.015;
   
-  console.log(rounded)
+  // console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   window.requestAnimationFrame(raf)
