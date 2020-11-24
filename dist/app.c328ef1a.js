@@ -209,7 +209,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = fragmentShader;
 
 function fragmentShader() {
-  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        gl_FragColor = vec4(1.,0.,0.0,1.);\n    }\n  ";
+  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        gl_FragColor = vec4(vUv,0.0,1.1);\n    }\n  ";
 }
 },{}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
 "use strict";
@@ -40313,7 +40313,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52940" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53413" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -8,7 +8,7 @@ export default function fragmentShader() {
     varying vec3 vposition;
     float PI = 3.141592653589793238;
     void main() {
-        gl_FragColor = vec4(1.,0.,0.0,1.);
+        gl_FragColor = vec4(vUv,0.0,1.1);
     }
   `
 }
