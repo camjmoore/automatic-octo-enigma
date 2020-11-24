@@ -17,6 +17,7 @@ const settings = {
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
   // time: 0,
+  attributes: { antialias: true },
 };
 
 export const Sketch = ({ context }) => {
@@ -77,10 +78,26 @@ export const Sketch = ({ context }) => {
     fragmentShader: fragmentShader(),
   })
 
-  let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
-  let plane = new THREE.Mesh(geometry, material);
-  scene.add(plane);
+  // let plane = new THREE.Mesh(geometry, material);
+  // scene.add(plane);
+
+  // Map our images from our html into our shader material texture
+  let images = [...document.querySelectorAll('img')];
+
+  images.forEach((img, i) => {
+    let materialImg = material.clone()
+    materialImg.uniforms.texture1.value = new THREE.Texture(img)
+    materialImg.uniforms.texture1.value.needsUpdate = true
+
+    let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+    let mesh = new THREE.Mesh(geom, materialImg)
+    scene.add(mesh)
+
+    //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+    mesh.position.y = i*1.2
+  })
 
   console.log("Sketch running")
 
@@ -89,18 +106,18 @@ export const Sketch = ({ context }) => {
     
     // Map our images from our html into our shader material texture
     handleImages() {
-      let images = [...document.querySelectorAll('img')];
-      images.forEach((img, i) => {
-        let materialImg = material.clone()
-        materialImg.uniforms.texture1.value = new THREE.Texture(img)
+      // let images = [...document.querySelectorAll('img')];
+      // images.forEach((img, i) => {
+      //   let materialImg = material.clone()
+      //   materialImg.uniforms.texture1.value = new THREE.Texture(img)
 
-        let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
-        let mesh = new THREE.mesh(geom, materialImg)
-        scene.add(mesh)
+      //   let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+      //   let mesh = new THREE.Mesh(geom, materialImg)
+      //   scene.add(mesh)
 
-        //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
-        mesh.position.y = i*1.2
-      })
+      //   //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+      //   mesh.position.y = i*1.2
+      // })
     },
 
     // Handle resize events here

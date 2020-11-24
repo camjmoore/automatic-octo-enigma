@@ -209,7 +209,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = fragmentShader;
 
 function fragmentShader() {
-  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        gl_FragColor = vec4(vUv,0.0,1.1);\n    }\n  ";
+  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        vec4 t = texture2D(texture1, vUv);\n        gl_FragColor = t;\n    }\n  ";
 }
 },{}],"../node_modules/three/build/three.module.js":[function(require,module,exports) {
 "use strict";
@@ -40129,8 +40129,11 @@ var settings = {
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
-  context: 'webgl' // time: 0,
-
+  context: 'webgl',
+  // time: 0,
+  attributes: {
+    antialias: true
+  }
 };
 
 var Sketch = function Sketch(_ref) {
@@ -40185,26 +40188,37 @@ var Sketch = function Sketch(_ref) {
     },
     vertexShader: (0, _vertexShader.default)(),
     fragmentShader: (0, _fragmentShader.default)()
+  }); // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  // let plane = new THREE.Mesh(geometry, material);
+  // scene.add(plane);
+  // Map our images from our html into our shader material texture
+
+  var images = _toConsumableArray(document.querySelectorAll('img'));
+
+  images.forEach(function (img, i) {
+    var materialImg = material.clone();
+    materialImg.uniforms.texture1.value = new THREE.Texture(img);
+    materialImg.uniforms.texture1.value.needsUpdate = true;
+    var geom = new THREE.PlaneBufferGeometry(1.5, 1, 20, 20);
+    var mesh = new THREE.Mesh(geom, materialImg);
+    scene.add(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+
+    mesh.position.y = i * 1.2;
   });
-  var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-  var plane = new THREE.Mesh(geometry, material);
-  scene.add(plane);
   console.log("Sketch running"); // draw each frame
 
   return {
     // Map our images from our html into our shader material texture
-    handleImages: function handleImages() {
-      var images = _toConsumableArray(document.querySelectorAll('img'));
-
-      images.forEach(function (img, i) {
-        var materialImg = material.clone();
-        materialImg.uniforms.texture1.value = new THREE.Texture(img);
-        var geom = new THREE.PlaneBufferGeometry(1.5, 1, 20, 20);
-        var mesh = new THREE.mesh(geom, materialImg);
-        scene.add(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
-
-        mesh.position.y = i * 1.2;
-      });
+    handleImages: function handleImages() {// let images = [...document.querySelectorAll('img')];
+      // images.forEach((img, i) => {
+      //   let materialImg = material.clone()
+      //   materialImg.uniforms.texture1.value = new THREE.Texture(img)
+      //   let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+      //   let mesh = new THREE.Mesh(geom, materialImg)
+      //   scene.add(mesh)
+      //   //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+      //   mesh.position.y = i*1.2
+      // })
     },
     // Handle resize events here
     resize: function resize() {
