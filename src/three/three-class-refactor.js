@@ -5,7 +5,8 @@ import fragmentShader from "../shaders/fragmentShader.js";
 
 // global.THREE = require("three");
 
-let OrbitControls = require('three-orbit-controls')(THREE);
+let OrbitControls = require('three/examples/js/controls/OrbitControls');
+
 
 export default class Sketch {
   constructor(options){
@@ -17,7 +18,7 @@ export default class Sketch {
     this.renderer = new THREE.WebGLRenderer()
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xeeeeee, 1); 
+    this.renderer.setClearColor('#000', 1.0); 
     this.renderer.physicallyCorrectLights = true;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     

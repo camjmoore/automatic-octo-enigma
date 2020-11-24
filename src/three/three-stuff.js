@@ -1,15 +1,15 @@
-import * as THREE from 'three';
-import vertexShader from "../shaders/vertexShader.js";
-import fragmentShader from "../shaders/fragmentShader.js";
+// import * as THREE from 'three';
+import vertexShader from '../shaders/vertexShader.js';
+import fragmentShader from '../shaders/fragmentShader.js';
+// import canvasSketch from 'canvasSketch';
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
 
 // Include any additional ThreeJS examples below
-// require("three/examples/js/controls/OrbitControls");
+require("three/examples/js/controls/OrbitControls");
 
-let OrbitControls = require('three-orbit-controls')(THREE);
-
+// let OrbitControls = require('three-orbit-controls')(THREE);
 
 const canvasSketch = require("canvas-sketch");
 
@@ -17,19 +17,21 @@ const settings = {
   // Make the loop animated
   // animate: true,
   // Get a WebGL canvas rather than 2D
-  context: document.getElementById("canvas")
+  context: 'webgl',
 };
 
 export const Sketch = ({ context }) => {
   // Create a renderer
-  const renderer = new THREE.WebGLRenderer({context});
+  const renderer = new THREE.WebGLRenderer({
+    context
+  });
 
   //attach the canvas to the dom
   const container = context.canvas
   container.appendChild(renderer.domElement)
 
   // WebGL background color
-  renderer.setClearColor(0xeeeeee, 1);
+  renderer.setClearColor('#000', 1);
   renderer.physicallyCorrectLights = true;
   renderer.outputEncoding = THREE.sRGBEncoding;
 
@@ -119,4 +121,4 @@ export const Sketch = ({ context }) => {
   };
 };
 
-// canvasSketch(Sketch, settings);
+canvasSketch(Sketch, settings);
