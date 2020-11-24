@@ -2,7 +2,6 @@ import vertexShader from '../shaders/vertexShader.js';
 import fragmentShader from '../shaders/fragmentShader.js';
 
 //11-24 @11:21am
-//created handleimages, added texture prop to shaderMaterial uniforms
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
@@ -21,19 +20,29 @@ const settings = {
 };
 
 export const Sketch = ({ context }) => {
+  // Setup your scene
+  const scene = new THREE.Scene();
+  let time = 0;
+  
+  //attach the canvas to the dom
+  const container = context.canvas
+  let width = container.offsetWidth
+  let height = container.offsetHeight
+
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
     context
   });
-
-  //attach the canvas to the dom
-  const container = context.canvas
-  container.appendChild(renderer.domElement)
-
+  
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height);
   // WebGL background color
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
   renderer.outputEncoding = THREE.sRGBEncoding;
+
+  // Append the render target to the dom
+  container.appendChild(renderer.domElement)
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(
@@ -49,9 +58,6 @@ export const Sketch = ({ context }) => {
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
 
-  let time = 0;
-  // Setup your scene
-  const scene = new THREE.Scene();
 
   // Setup a geometry
   let material = new THREE.ShaderMaterial({

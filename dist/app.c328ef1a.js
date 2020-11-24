@@ -40118,7 +40118,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 //11-24 @11:21am
-//created handleimages, added texture prop to shaderMaterial uniforms
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three"); // Include any additional ThreeJS examples below
 
@@ -40136,26 +40135,31 @@ var settings = {
 
 var Sketch = function Sketch(_ref) {
   var context = _ref.context;
-  // Create a renderer
-  var renderer = new THREE.WebGLRenderer({
-    context: context
-  }); //attach the canvas to the dom
+  // Setup your scene
+  var scene = new THREE.Scene();
+  var time = 0; //attach the canvas to the dom
 
   var container = context.canvas;
-  container.appendChild(renderer.domElement); // WebGL background color
+  var width = container.offsetWidth;
+  var height = container.offsetHeight; // Create a renderer
+
+  var renderer = new THREE.WebGLRenderer({
+    context: context
+  });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height); // WebGL background color
 
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
-  renderer.outputEncoding = THREE.sRGBEncoding; // Setup a camera
+  renderer.outputEncoding = THREE.sRGBEncoding; // Append the render target to the dom
+
+  container.appendChild(renderer.domElement); // Setup a camera
 
   var camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
   camera.position.set(0, 0, 2);
   camera.lookAt(new THREE.Vector3()); // Setup camera controller
 
-  var controls = new THREE.OrbitControls(camera, context.canvas);
-  var time = 0; // Setup your scene
-
-  var scene = new THREE.Scene(); // Setup a geometry
+  var controls = new THREE.OrbitControls(camera, context.canvas); // Setup a geometry
 
   var material = new THREE.ShaderMaterial({
     extensions: {
@@ -40345,7 +40349,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50072" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49783" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

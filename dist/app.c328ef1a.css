@@ -34,6 +34,7 @@ body canvas {
   top: 0;
   left: 0;
   z-index: -1;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */
