@@ -40105,21 +40105,19 @@ var _fragmentShader = _interopRequireDefault(require("../shaders/fragmentShader.
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import * as THREE from 'three';
-// import canvasSketch from 'canvasSketch';
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three"); // Include any additional ThreeJS examples below
 
-require("three/examples/js/controls/OrbitControls"); // let OrbitControls = require('three-orbit-controls')(THREE);
-
+require("three/examples/js/controls/OrbitControls");
 
 var canvasSketch = require("canvas-sketch");
 
 var settings = {
   // Make the loop animated
-  // animate: true,
+  animate: true,
   // Get a WebGL canvas rather than 2D
-  context: 'webgl'
+  context: 'webgl' // time: 0,
+
 };
 
 var Sketch = function Sketch(_ref) {
@@ -40132,15 +40130,16 @@ var Sketch = function Sketch(_ref) {
   var container = context.canvas;
   container.appendChild(renderer.domElement); // WebGL background color
 
-  renderer.setClearColor('#000', 1);
+  renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
   renderer.outputEncoding = THREE.sRGBEncoding; // Setup a camera
 
   var camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
-  camera.position.set(0, 0, -4);
+  camera.position.set(0, 0, 2);
   camera.lookAt(new THREE.Vector3()); // Setup camera controller
 
-  var controls = new THREE.OrbitControls(camera, context.canvas); // Setup your scene
+  var controls = new THREE.OrbitControls(camera, context.canvas);
+  var time = 0; // Setup your scene
 
   var scene = new THREE.Scene(); // Setup a geometry
 
@@ -40172,43 +40171,36 @@ var Sketch = function Sketch(_ref) {
 
   return {
     // Handle resize events here
-    resize: function resize(_ref2) {
-      var pixelRatio = _ref2.pixelRatio,
-          viewportWidth = _ref2.viewportWidth,
-          viewportHeight = _ref2.viewportHeight;
-      renderer.setPixelRatio(pixelRatio);
-      renderer.setSize(viewportWidth, viewportHeight);
-      camera.aspect = viewportWidth / viewportHeight;
-      material.uniforms.resolution.value.x = viewportWidth;
-      material.uniforms.resolution.value.y = viewportHeight;
-      material.uniforms.resolution.value.z = viewportWidth / viewportHeight;
-      material.uniforms.resolution.value.w = viewportHeight / viewportWidth;
+    resize: function resize() {
+      // renderer.setPixelRatio(pixelRatio);
+      // renderer.setSize(viewportWidth, viewportHeight);
+      // camera.aspect = viewportWidth / viewportHeight;
+      var width = container.offsetWidth;
+      var height = container.offsetHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      var imageAspect = 853 / 1280;
+      var a1;
+      var a2;
+
+      if (height / width > imageAspect) {
+        a1 = width / height * imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = height / width / imageAspect;
+      }
+
+      material.uniforms.resolution.value.x = width;
+      material.uniforms.resolution.value.y = height;
+      material.uniforms.resolution.value.z = a1;
+      material.uniforms.resolution.value.w = a2;
       camera.updateProjectionMatrix();
     },
-    // Setup a material
-    // addObjects() {
-    //   let material = new THREE.ShaderMaterial({
-    //     extensions: {
-    //       derivatives: '#extension GL_OES_standard_derivatives : enable'
-    //     },
-    //     side:  THREE.DoubleSide,
-    //     uniforms:{
-    //       time: { type: "f", value: 0 },
-    //       resolution: { type: "v4", value: new THREE.Vector4() },
-    //       uvRate1: {
-    //         value: new THREE.Vector2(1, 1)
-    //       }
-    //     },
-    //     vertexShader: vertex,
-    //     fragmentShader: fragment
-    //   })
-    //   let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-    //   let plane = new THREE.Mesh(geometry, material);
-    //   scene.add(plane);
-    // },
     // Update & render your scene here
-    render: function render(_ref3) {
-      var time = _ref3.time;
+    render: function render() {
+      // time += 0.05;
+      // material.uniforms.time.value = time;
       controls.update();
       renderer.render(scene, camera);
     },
@@ -40292,7 +40284,7 @@ function raf() {
 
 console.log('it works!');
 raf();
-canvasSketch(_threeStuff.default, settings); // Sketch(settings);
+canvasSketch(_threeStuff.default, settings);
 },{"./style.scss":"style.scss","./three/three-stuff.js":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -40321,7 +40313,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49933" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52940" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

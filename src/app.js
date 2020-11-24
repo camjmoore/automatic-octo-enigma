@@ -54,4 +54,3 @@ function raf(){
 console.log('it works!')
 raf();
 canvasSketch(Sketch, settings);
-// Sketch(settings);
