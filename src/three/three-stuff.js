@@ -35,8 +35,8 @@ export const Sketch = ({ context }) => {
     context
   });
   
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(width, height);
+  // renderer.setPixelRatio(window.devicePixelRatio);
+  // renderer.setSize(width, height);
   // WebGL background color
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
@@ -65,6 +65,7 @@ export const Sketch = ({ context }) => {
     extensions: {
       derivatives: '#extension GL_OES_standard_derivatives : enable'
     },
+    color: '0xffff00',
     side:  THREE.DoubleSide,
     uniforms:{
       time: { type: "f", value: 0 },
@@ -78,10 +79,10 @@ export const Sketch = ({ context }) => {
     fragmentShader: fragmentShader(),
   })
 
-  // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
-  // let plane = new THREE.Mesh(geometry, material);
-  // scene.add(plane);
+  let plane = new THREE.Mesh(geometry, material);
+  scene.add(plane);
 
   // Map our images from our html into our shader material texture
   let images = [...document.querySelectorAll('img')];
@@ -150,9 +151,9 @@ export const Sketch = ({ context }) => {
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render() {
-      // time += 0.05;
-      // material.uniforms.time.value = time;
+    render({time}) {
+      time += 0.05;
+      material.uniforms.time.value = time;
       controls.update();
       renderer.render(scene, camera);
     },

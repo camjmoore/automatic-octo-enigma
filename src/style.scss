@@ -25,6 +25,10 @@ body {
     top: 500px;
   }
 
+  img {
+    display: none;
+  }
+
   #block {
     height: 100px;
     width: 100px;
@@ -40,6 +44,6 @@ body {
     top: 0;
     left: 0;
     z-index: -1;
-    pointer-events: none;
+    // pointer-events: none;
   }
 }

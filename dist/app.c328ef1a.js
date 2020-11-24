@@ -198,7 +198,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = vertexShader;
 
 function vertexShader() {
-  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = uv;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n    }\n  ";
+  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = uv;\n        vec3 pos = position;\n        pos.y += sin(time)*0.02;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n    }\n  ";
 }
 },{}],"shaders/fragmentShader.js":[function(require,module,exports) {
 "use strict";
@@ -40148,9 +40148,9 @@ var Sketch = function Sketch(_ref) {
 
   var renderer = new THREE.WebGLRenderer({
     context: context
-  });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(width, height); // WebGL background color
+  }); // renderer.setPixelRatio(window.devicePixelRatio);
+  // renderer.setSize(width, height);
+  // WebGL background color
 
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
@@ -40168,6 +40168,7 @@ var Sketch = function Sketch(_ref) {
     extensions: {
       derivatives: '#extension GL_OES_standard_derivatives : enable'
     },
+    color: '0xffff00',
     side: THREE.DoubleSide,
     uniforms: {
       time: {
@@ -40188,10 +40189,10 @@ var Sketch = function Sketch(_ref) {
     },
     vertexShader: (0, _vertexShader.default)(),
     fragmentShader: (0, _fragmentShader.default)()
-  }); // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-  // let plane = new THREE.Mesh(geometry, material);
-  // scene.add(plane);
-  // Map our images from our html into our shader material texture
+  });
+  var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  var plane = new THREE.Mesh(geometry, material);
+  scene.add(plane); // Map our images from our html into our shader material texture
 
   var images = _toConsumableArray(document.querySelectorAll('img'));
 
@@ -40248,9 +40249,10 @@ var Sketch = function Sketch(_ref) {
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render: function render() {
-      // time += 0.05;
-      // material.uniforms.time.value = time;
+    render: function render(_ref2) {
+      var time = _ref2.time;
+      time += 0.05;
+      material.uniforms.time.value = time;
       controls.update();
       renderer.render(scene, camera);
     },

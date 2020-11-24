@@ -20,6 +20,9 @@ body .n3 {
 body .n4 {
   top: 500px;
 }
+body img {
+  display: none;
+}
 body #block {
   height: 100px;
   width: 100px;
@@ -34,7 +37,6 @@ body canvas {
   top: 0;
   left: 0;
   z-index: -1;
-  pointer-events: none;
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */
