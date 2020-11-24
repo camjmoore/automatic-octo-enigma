@@ -1,10 +1,14 @@
 import './style.scss';
-import Sketch from './three/three-stuff.js';
-const canvasSketch = require('canvas-sketch');
+import { Sketch } from './three/three-stuff.js';
+import { GiveMesh } from './three/three-stuff.js';
 
+const canvasSketch = require('canvas-sketch');
 // let sketch = new Sketch({
 //   dom: document.getElementById('canvas')
 // })
+
+// let materials = [];
+// let meshes = [];
 
 const settings = {
   // Make the loop animated
@@ -48,9 +52,12 @@ function raf(){
   // console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
+  // sketch.meshes.forEach((mesh, i) => {
+  //   mesh.position.y = i*1.2 + position*1.2
+  // })
   window.requestAnimationFrame(raf)
 }
 
-console.log('it works!')
 raf();
+GiveMesh()
 canvasSketch(Sketch, settings);

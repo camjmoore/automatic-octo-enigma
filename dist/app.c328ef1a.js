@@ -198,7 +198,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = vertexShader;
 
 function vertexShader() {
-  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = uv;\n        vec3 pos = position;\n        pos.y += sin(time)*0.02;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n    }\n  ";
+  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = (uv - vec2(0.5))*0.9 + vec2(0.5);\n        vec3 pos = position;\n        pos.y += sin(time*0.7)*0.02;\n        vUv.y -= sin(time*0.7)*0.02;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n    }\n  ";
 }
 },{}],"shaders/fragmentShader.js":[function(require,module,exports) {
 "use strict";
@@ -40097,7 +40097,7 @@ var global = arguments[3];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Sketch = void 0;
+exports.GiveMesh = exports.Sketch = void 0;
 
 var _vertexShader = _interopRequireDefault(require("../shaders/vertexShader.js"));
 
@@ -40117,7 +40117,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-//11-24 @11:21am
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three"); // Include any additional ThreeJS examples below
 
@@ -40208,27 +40207,20 @@ var Sketch = function Sketch(_ref) {
     scene.add(mesh);
     meshes.push(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
 
-    mesh.position.y = i * 1.2;
+    mesh.position.y = i * 1.2; // mesh.rotation.y = -0.5
+    // mesh.rotation.x = 0.5
   }); // draw each frame
 
   return {
+    materials: materials,
+    meshes: meshes,
     // Map our images from our html into our shader material texture
-    handleImages: function handleImages() {// let images = [...document.querySelectorAll('img')];
-      // images.forEach((img, i) => {
-      //   let materialImg = material.clone()
-      //   materialImg.uniforms.texture1.value = new THREE.Texture(img)
-      //   let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
-      //   let mesh = new THREE.Mesh(geom, materialImg)
-      //   scene.add(mesh)
-      //   //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
-      //   mesh.position.y = i*1.2
-      // })
-    },
     // Handle resize events here
     resize: function resize() {
       // renderer.setPixelRatio(pixelRatio);
       // renderer.setSize(viewportWidth, viewportHeight);
       // camera.aspect = viewportWidth / viewportHeight;
+      console.log('resize fire');
       var width = container.offsetWidth;
       var height = container.offsetHeight;
       renderer.setSize(width, height);
@@ -40249,7 +40241,7 @@ var Sketch = function Sketch(_ref) {
       material.uniforms.resolution.value.y = height;
       material.uniforms.resolution.value.z = a1;
       material.uniforms.resolution.value.w = a2;
-      camera.updateProjectionMatrix();
+      camera.updateProjectionMatrix(); // console.log(meshes)
     },
     // Update & render your scene here
     render: function render(_ref2) {
@@ -40262,6 +40254,7 @@ var Sketch = function Sketch(_ref) {
 
       controls.update();
       renderer.render(scene, camera);
+      return meshes;
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload: function unload() {
@@ -40272,15 +40265,19 @@ var Sketch = function Sketch(_ref) {
 };
 
 exports.Sketch = Sketch;
+
+var GiveMesh = function GiveMesh(meshes) {
+  console.log(meshes);
+};
+
+exports.GiveMesh = GiveMesh;
 canvasSketch(Sketch, settings);
 },{"../shaders/vertexShader.js":"shaders/vertexShader.js","../shaders/fragmentShader.js":"shaders/fragmentShader.js","three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 require("./style.scss");
 
-var _threeStuff = _interopRequireDefault(require("./three/three-stuff.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _threeStuff = require("./three/three-stuff.js");
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -40297,6 +40294,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 var canvasSketch = require('canvas-sketch'); // let sketch = new Sketch({
 //   dom: document.getElementById('canvas')
 // })
+// let materials = [];
+// let meshes = [];
 
 
 var settings = {
@@ -40337,13 +40336,16 @@ function raf() {
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015; // console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
 
-  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)");
+  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)"); // sketch.meshes.forEach((mesh, i) => {
+  //   mesh.position.y = i*1.2 + position*1.2
+  // })
+
   window.requestAnimationFrame(raf);
 }
 
-console.log('it works!');
 raf();
-canvasSketch(_threeStuff.default, settings);
+(0, _threeStuff.GiveMesh)();
+canvasSketch(_threeStuff.Sketch, settings);
 },{"./style.scss":"style.scss","./three/three-stuff.js":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -40372,7 +40374,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51300" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56407" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

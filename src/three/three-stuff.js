@@ -1,8 +1,6 @@
 import vertexShader from '../shaders/vertexShader.js';
 import fragmentShader from '../shaders/fragmentShader.js';
 
-//11-24 @11:21am
-
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
 
@@ -102,33 +100,23 @@ export const Sketch = ({ context }) => {
     meshes.push(mesh);
     //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
     mesh.position.y = i*1.2
+    // mesh.rotation.y = -0.5
+    // mesh.rotation.x = 0.5
   })
 
   // draw each frame
   return {
+    materials: materials,
+    meshes: meshes,
     
     // Map our images from our html into our shader material texture
-    handleImages() {
-      // let images = [...document.querySelectorAll('img')];
-      // images.forEach((img, i) => {
-      //   let materialImg = material.clone()
-      //   materialImg.uniforms.texture1.value = new THREE.Texture(img)
-
-      //   let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
-      //   let mesh = new THREE.Mesh(geom, materialImg)
-      //   scene.add(mesh)
-
-      //   //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
-      //   mesh.position.y = i*1.2
-      // })
-    },
 
     // Handle resize events here
     resize() {
       // renderer.setPixelRatio(pixelRatio);
       // renderer.setSize(viewportWidth, viewportHeight);
       // camera.aspect = viewportWidth / viewportHeight;
-
+      console.log('resize fire')
       let width = container.offsetWidth;
       let height =  container.offsetHeight;
       renderer.setSize(width, height);
@@ -151,6 +139,8 @@ export const Sketch = ({ context }) => {
       material.uniforms.resolution.value.w = a2;
       
       camera.updateProjectionMatrix();
+
+      // console.log(meshes)
     },
     // Update & render your scene here
     render({time}) {
@@ -162,13 +152,18 @@ export const Sketch = ({ context }) => {
       // material.uniforms.time.value = time;
       controls.update();
       renderer.render(scene, camera);
+      return meshes
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload() {
       controls.dispose();
       renderer.dispose();
-    }
+    },  
   };
 };
+
+export const GiveMesh = (meshes) => {
+  console.log(meshes)
+}
 
 canvasSketch(Sketch, settings);
