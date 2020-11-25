@@ -162,8 +162,15 @@ export const Sketch = ({ context }) => {
   };
 };
 
-export const GiveMesh = (meshes) => {
-  console.log(meshes)
+// export const GiveMesh = (callback, sketch, settings) => {
+//   callback(sketch, settings).then(console.log(Promise))
+// }
+
+
+export const GiveMesh = () => {
+  let meshArray = []
+  canvasSketch(Sketch, settings).then((value) => {meshArray.push(value.sketch.meshes)})
+  return meshArray
 }
 
 canvasSketch(Sketch, settings);

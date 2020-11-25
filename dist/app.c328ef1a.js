@@ -40262,12 +40262,19 @@ var Sketch = function Sketch(_ref) {
       renderer.dispose();
     }
   };
-};
+}; // export const GiveMesh = (callback, sketch, settings) => {
+//   callback(sketch, settings).then(console.log(Promise))
+// }
+
 
 exports.Sketch = Sketch;
 
-var GiveMesh = function GiveMesh(meshes) {
-  console.log(meshes);
+var GiveMesh = function GiveMesh() {
+  var meshArray = [];
+  canvasSketch(Sketch, settings).then(function (value) {
+    meshArray.push(value.sketch.meshes);
+  });
+  return meshArray;
 };
 
 exports.GiveMesh = GiveMesh;
@@ -40343,8 +40350,9 @@ function raf() {
   window.requestAnimationFrame(raf);
 }
 
-raf();
-(0, _threeStuff.GiveMesh)();
+raf(); // GiveMesh(canvasSketch, Sketch, settings)
+
+console.log((0, _threeStuff.GiveMesh)());
 canvasSketch(_threeStuff.Sketch, settings);
 },{"./style.scss":"style.scss","./three/three-stuff.js":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -40374,7 +40382,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56407" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49757" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

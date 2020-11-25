@@ -59,5 +59,6 @@ function raf(){
 }
 
 raf();
-GiveMesh()
+// GiveMesh(canvasSketch, Sketch, settings)
+console.log(GiveMesh())
 canvasSketch(Sketch, settings);
