@@ -1,6 +1,6 @@
 import './style.scss';
 import { Sketch } from './three/three-stuff.js';
-import { GiveMesh } from './three/three-stuff.js';
+import { GiveMesh, PassPosition } from './three/three-stuff.js';
 
 const canvasSketch = require('canvas-sketch');
 // let sketch = new Sketch({
@@ -12,9 +12,11 @@ const canvasSketch = require('canvas-sketch');
 
 const settings = {
   // Make the loop animated
-  // animate: true,
+  animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
+  // time: 0,
+  attributes: { antialias: true },
 };
 
 let speed = 0;
@@ -34,7 +36,7 @@ let objets = Array(5).fill({dist:0})
 
 function raf(){
   position += speed;
-  speed*=0.8;
+  speed *= 0.8;
   rounded = Math.round(position);
   
   //iterate over the dist objects in the array we created
@@ -49,16 +51,26 @@ function raf(){
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.015;
   
-  // console.log(rounded)
+  // console.log(position)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
+
+/* consume meshArray from GiveMesh()*/
+
+  
   // sketch.meshes.forEach((mesh, i) => {
   //   mesh.position.y = i*1.2 + position*1.2
   // })
+
+/* output updated mesh positions and mutate their values in the three func*/
+
+
   window.requestAnimationFrame(raf)
+  return position
 }
 
 raf();
+let meshVar = GiveMesh()
+console.log(position)
 // GiveMesh(canvasSketch, Sketch, settings)
-console.log(GiveMesh())
 canvasSketch(Sketch, settings);

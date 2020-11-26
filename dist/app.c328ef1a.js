@@ -40097,11 +40097,13 @@ var global = arguments[3];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.GiveMesh = exports.Sketch = void 0;
+exports.GiveMesh = exports.Sketch = exports.PassPosition = void 0;
 
 var _vertexShader = _interopRequireDefault(require("../shaders/vertexShader.js"));
 
 var _fragmentShader = _interopRequireDefault(require("../shaders/fragmentShader.js"));
+
+var _app = require("../app.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40134,6 +40136,15 @@ var settings = {
     antialias: true
   }
 };
+var meshPositions = 0;
+
+var PassPosition = function PassPosition(position) {
+  meshPositions = position;
+  console.log(meshPositions);
+  return meshPositions;
+};
+
+exports.PassPosition = PassPosition;
 
 var Sketch = function Sketch(_ref) {
   var context = _ref.context;
@@ -40147,9 +40158,7 @@ var Sketch = function Sketch(_ref) {
 
   var renderer = new THREE.WebGLRenderer({
     context: context
-  }); // renderer.setPixelRatio(window.devicePixelRatio);
-  // renderer.setSize(width, height);
-  // WebGL background color
+  }); // WebGL background color
 
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
@@ -40188,12 +40197,10 @@ var Sketch = function Sketch(_ref) {
     },
     vertexShader: (0, _vertexShader.default)(),
     fragmentShader: (0, _fragmentShader.default)()
-  }); // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-  // let plane = new THREE.Mesh(geometry, material);
-  // scene.add(plane);
+  }); // Map our images from our html into our shader material texture
 
   var materials = [];
-  var meshes = []; // Map our images from our html into our shader material texture
+  var meshes = [];
 
   var images = _toConsumableArray(document.querySelectorAll('img'));
 
@@ -40214,13 +40221,8 @@ var Sketch = function Sketch(_ref) {
   return {
     materials: materials,
     meshes: meshes,
-    // Map our images from our html into our shader material texture
     // Handle resize events here
     resize: function resize() {
-      // renderer.setPixelRatio(pixelRatio);
-      // renderer.setSize(viewportWidth, viewportHeight);
-      // camera.aspect = viewportWidth / viewportHeight;
-      console.log('resize fire');
       var width = container.offsetWidth;
       var height = container.offsetHeight;
       renderer.setSize(width, height);
@@ -40251,10 +40253,13 @@ var Sketch = function Sketch(_ref) {
       materials.forEach(function (m) {
         m.uniforms.time.value = time;
       }); // material.uniforms.time.value = time;
+      //applying positions to mesh positions
+      // meshes.forEach((mesh, i) => {
+      //   mesh.position.y = i*1.2 + meshPositions*1.2
+      // })
 
       controls.update();
-      renderer.render(scene, camera);
-      return meshes;
+      renderer.render(scene, camera); // return meshes
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload: function unload() {
@@ -40262,15 +40267,12 @@ var Sketch = function Sketch(_ref) {
       renderer.dispose();
     }
   };
-}; // export const GiveMesh = (callback, sketch, settings) => {
-//   callback(sketch, settings).then(console.log(Promise))
-// }
-
+};
 
 exports.Sketch = Sketch;
+var meshArray = [];
 
 var GiveMesh = function GiveMesh() {
-  var meshArray = [];
   canvasSketch(Sketch, settings).then(function (value) {
     meshArray.push(value.sketch.meshes);
   });
@@ -40278,8 +40280,9 @@ var GiveMesh = function GiveMesh() {
 };
 
 exports.GiveMesh = GiveMesh;
+console.log(meshArray);
 canvasSketch(Sketch, settings);
-},{"../shaders/vertexShader.js":"shaders/vertexShader.js","../shaders/fragmentShader.js":"shaders/fragmentShader.js","three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
+},{"../shaders/vertexShader.js":"shaders/vertexShader.js","../shaders/fragmentShader.js":"shaders/fragmentShader.js","../app.js":"app.js","three":"../node_modules/three/build/three.module.js","three/examples/js/controls/OrbitControls":"../node_modules/three/examples/js/controls/OrbitControls.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 require("./style.scss");
@@ -40307,9 +40310,13 @@ var canvasSketch = require('canvas-sketch'); // let sketch = new Sketch({
 
 var settings = {
   // Make the loop animated
-  // animate: true,
+  animate: true,
   // Get a WebGL canvas rather than 2D
-  context: 'webgl'
+  context: 'webgl',
+  // time: 0,
+  attributes: {
+    antialias: true
+  }
 };
 var speed = 0;
 var position = 0;
@@ -40340,19 +40347,25 @@ function raf() {
   }); //acts as a lerp function
 
   var diff = rounded - position;
-  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015; // console.log(rounded)
+  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015; // console.log(position)
   // block.style.transform = `translate(0, ${position*100}px)`
 
-  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)"); // sketch.meshes.forEach((mesh, i) => {
+  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)");
+  /* consume meshArray from GiveMesh()*/
+  // sketch.meshes.forEach((mesh, i) => {
   //   mesh.position.y = i*1.2 + position*1.2
   // })
 
+  /* output updated mesh positions and mutate their values in the three func*/
+
   window.requestAnimationFrame(raf);
+  return position;
 }
 
-raf(); // GiveMesh(canvasSketch, Sketch, settings)
+raf();
+var meshVar = (0, _threeStuff.GiveMesh)();
+console.log(position); // GiveMesh(canvasSketch, Sketch, settings)
 
-console.log((0, _threeStuff.GiveMesh)());
 canvasSketch(_threeStuff.Sketch, settings);
 },{"./style.scss":"style.scss","./three/three-stuff.js":"three/three-stuff.js","canvas-sketch":"../node_modules/canvas-sketch/dist/canvas-sketch.umd.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -40382,7 +40395,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49757" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49825" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

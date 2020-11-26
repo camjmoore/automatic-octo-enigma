@@ -1,5 +1,6 @@
 import vertexShader from '../shaders/vertexShader.js';
 import fragmentShader from '../shaders/fragmentShader.js';
+import {  raf } from '../app.js';
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
@@ -18,6 +19,14 @@ const settings = {
   attributes: { antialias: true },
 };
 
+let meshPositions = 0;
+
+export const PassPosition = (position) => {
+  meshPositions = position
+  console.log(meshPositions)
+  return meshPositions
+}
+
 export const Sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
@@ -33,8 +42,6 @@ export const Sketch = ({ context }) => {
     context
   });
   
-  // renderer.setPixelRatio(window.devicePixelRatio);
-  // renderer.setSize(width, height);
   // WebGL background color
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
@@ -57,7 +64,6 @@ export const Sketch = ({ context }) => {
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
 
-
   // Setup a geometry
   let material = new THREE.ShaderMaterial({
     extensions: {
@@ -77,15 +83,9 @@ export const Sketch = ({ context }) => {
     fragmentShader: fragmentShader(),
   })
 
-  // let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-
-  // let plane = new THREE.Mesh(geometry, material);
-  // scene.add(plane);
-
+  // Map our images from our html into our shader material texture
   let materials = [];
   let meshes = [];
-
-  // Map our images from our html into our shader material texture
   let images = [...document.querySelectorAll('img')];
 
   images.forEach((img, i) => {
@@ -108,15 +108,8 @@ export const Sketch = ({ context }) => {
   return {
     materials: materials,
     meshes: meshes,
-    
-    // Map our images from our html into our shader material texture
-
     // Handle resize events here
     resize() {
-      // renderer.setPixelRatio(pixelRatio);
-      // renderer.setSize(viewportWidth, viewportHeight);
-      // camera.aspect = viewportWidth / viewportHeight;
-      console.log('resize fire')
       let width = container.offsetWidth;
       let height =  container.offsetHeight;
       renderer.setSize(width, height);
@@ -150,9 +143,13 @@ export const Sketch = ({ context }) => {
         m.uniforms.time.value = time;
       })
       // material.uniforms.time.value = time;
+      //applying positions to mesh positions
+      // meshes.forEach((mesh, i) => {
+      //   mesh.position.y = i*1.2 + meshPositions*1.2
+      // })
       controls.update();
       renderer.render(scene, camera);
-      return meshes
+      // return meshes
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload() {
@@ -162,15 +159,12 @@ export const Sketch = ({ context }) => {
   };
 };
 
-// export const GiveMesh = (callback, sketch, settings) => {
-//   callback(sketch, settings).then(console.log(Promise))
-// }
-
+let meshArray = []
 
 export const GiveMesh = () => {
-  let meshArray = []
   canvasSketch(Sketch, settings).then((value) => {meshArray.push(value.sketch.meshes)})
   return meshArray
 }
 
+console.log(meshArray)
 canvasSketch(Sketch, settings);
