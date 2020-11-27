@@ -35,6 +35,7 @@ function raf(){
     let scale = 1 + 0.2*obj.dist;
     sketch.meshes[i].position.y = i*1.2 - position*1.2
     sketch.meshes[i].scale.set(scale,scale,scale)
+    sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist
   })
   
   //acts as a lerp function

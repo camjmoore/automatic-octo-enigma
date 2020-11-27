@@ -36715,7 +36715,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = fragmentShader;
 
 function fragmentShader() {
-  return "\n    uniform float time;\n    uniform float progress;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        vec4 t = texture2D(texture1, vUv);\n        gl_FragColor = t;\n    }\n  ";
+  return "\n    uniform float time;\n    uniform float progress;\n    uniform float distanceFromCenter;\n    uniform sampler2D texture1;\n    uniform vec4 resolution;\n    varying vec2 vUv;\n    varying vec3 vposition;\n    float PI = 3.141592653589793238;\n    void main() {\n        vec4 t = texture2D(texture1, vUv);\n        float bw = (t.r + t.b + t.g)/3.;\n        vec4 next = vec4(bw,bw,bw,1.);\n        gl_FragColor = mix(next,t,distanceFromCenter);\n        gl_FragColor.a = clamp(distanceFromCenter,0.2,1.);\n    }\n  ";
 }
 },{}],"../node_modules/three-orbit-controls/index.js":[function(require,module,exports) {
 module.exports = function( THREE ) {
@@ -37787,7 +37787,9 @@ var Sketch = /*#__PURE__*/function () {
     this.container = options.dom;
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xeeeeee, 1.0);
@@ -37861,6 +37863,10 @@ var Sketch = /*#__PURE__*/function () {
             type: "f",
             value: 0
           },
+          distanceFromCenter: {
+            type: "f",
+            value: 0
+          },
           texture1: {
             type: "t",
             value: null
@@ -37873,6 +37879,7 @@ var Sketch = /*#__PURE__*/function () {
             value: new THREE.Vector2(1, 1)
           }
         },
+        transparent: true,
         vertexShader: (0, _vertexShader.default)(),
         fragmentShader: (0, _fragmentShader.default)()
       }); //original mesh becamew redundant after we cloned everythin for the final images in handleImages
@@ -40158,6 +40165,7 @@ function raf() {
     var scale = 1 + 0.2 * obj.dist;
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
+    sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
   }); //acts as a lerp function
 
   var diff = rounded - position;
@@ -40199,7 +40207,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52917" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53177" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
