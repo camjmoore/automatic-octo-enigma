@@ -36704,7 +36704,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = vertexShader;
 
 function vertexShader() {
-  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = (uv - vec2(0.5))*0.9 + vec2(0.5);\n        vec3 pos = position;\n        pos.y += sin(time*0.7)*0.02;\n        vUv.y -= sin(time*0.7)*0.02;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n    }\n  ";
+  return "\n    uniform float time;\n    varying vec2 vUv;\n    varying vec3 vPosition;\n    uniform vec2 pixels;\n    float PI = 3.141592653589793238;\n    void main() {\n        vUv = (uv - vec2(0.5))*0.9 + vec2(0.5);\n        vec3 pos = position;\n        pos.y += sin(PI*uv.x)*-0.05;\n        pos.z += sin(PI*uv.x)*0.1;\n        pos.y += sin(time*0.7)*0.02;\n        vUv.y -= sin(time*0.7)*0.02;\n        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n    }\n  ";
 }
 },{}],"shaders/fragmentShader.js":[function(require,module,exports) {
 "use strict";
@@ -37805,6 +37805,7 @@ var Sketch = /*#__PURE__*/function () {
     this.setupResize();
     this.materials = [];
     this.meshes = [];
+    this.groups = [];
     this.handleImages();
   }
 
@@ -37895,15 +37896,20 @@ var Sketch = /*#__PURE__*/function () {
         materialImg.uniforms.texture1.value.needsUpdate = true;
         var geom = new THREE.PlaneBufferGeometry(1.5, 1, 20, 20);
         var mesh = new THREE.Mesh(geom, materialImg);
+        var group = new THREE.Group();
+        group.add(mesh);
 
-        _this.scene.add(mesh);
+        _this.groups.push(group);
+
+        _this.scene.add(group);
 
         _this.meshes.push(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
 
 
         mesh.position.y = i * 1.2;
-        mesh.rotation.y = -0.3;
-        mesh.rotation.x = 0.5;
+        group.rotation.y = -0.3;
+        group.rotation.x = -0.3;
+        group.rotation.z = -0.1; // mesh.rotation.x = 0.5
       });
     }
   }, {
@@ -40149,7 +40155,7 @@ function raf() {
     obj.dist = Math.min(Math.abs(position - i), 1);
     obj.dist = 1 - Math.pow(obj.dist, 2);
     elems[i].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
-    var scale = 1 + 0.1 * obj.dist;
+    var scale = 1 + 0.2 * obj.dist;
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
   }); //acts as a lerp function
@@ -40193,7 +40199,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52785" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52917" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

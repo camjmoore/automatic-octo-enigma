@@ -39,6 +39,7 @@ export default class Sketch {
     this.setupResize();
     this.materials = [];
     this.meshes = [];
+    this.groups = [];
     this.handleImages();
   }
 
@@ -110,15 +111,22 @@ export default class Sketch {
       this.materials.push(materialImg)
       materialImg.uniforms.texture1.value = new THREE.Texture(img)
       materialImg.uniforms.texture1.value.needsUpdate = true
-  
+      
       let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
       let mesh = new THREE.Mesh(geom, materialImg)
-      this.scene.add(mesh)
+      let group = new THREE.Group()
+
+      group.add(mesh);
+      this.groups.push(group)
+      this.scene.add(group)
       this.meshes.push(mesh);
       //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
       mesh.position.y = i*1.2
-      mesh.rotation.y = -0.3
-      mesh.rotation.x = 0.5
+
+      group.rotation.y = -0.3;
+      group.rotation.x = -0.3;
+      group.rotation.z = -0.1;
+      // mesh.rotation.x = 0.5
     })
   }
 
