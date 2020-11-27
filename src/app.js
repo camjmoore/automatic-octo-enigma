@@ -32,7 +32,7 @@ function raf(){
     obj.dist = Math.min(Math.abs(position - i), 1)
     obj.dist = 1 - obj.dist**2;
     elems[i].style.transform = `scale(${1 + 0.4*obj.dist})`
-    let scale = 1 + 0.2*obj.dist;
+    let scale = 1 + 0.3*obj.dist;
     sketch.meshes[i].position.y = i*1.2 - position*1.2
     sketch.meshes[i].scale.set(scale,scale,scale)
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist

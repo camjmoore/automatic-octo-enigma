@@ -127,7 +127,7 @@ export default class Sketch {
 
       group.rotation.y = -0.3;
       group.rotation.x = -0.3;
-      group.rotation.z = -0.1;
+      group.rotation.z = -0.15;
       // mesh.rotation.x = 0.5
     })
   }

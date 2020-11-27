@@ -37916,7 +37916,7 @@ var Sketch = /*#__PURE__*/function () {
         mesh.position.y = i * 1.2;
         group.rotation.y = -0.3;
         group.rotation.x = -0.3;
-        group.rotation.z = -0.1; // mesh.rotation.x = 0.5
+        group.rotation.z = -0.15; // mesh.rotation.x = 0.5
       });
     }
   }, {
@@ -40162,7 +40162,7 @@ function raf() {
     obj.dist = Math.min(Math.abs(position - i), 1);
     obj.dist = 1 - Math.pow(obj.dist, 2);
     elems[i].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
-    var scale = 1 + 0.2 * obj.dist;
+    var scale = 1 + 0.3 * obj.dist;
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
