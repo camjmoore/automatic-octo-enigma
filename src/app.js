@@ -28,10 +28,13 @@ function raf(){
   rounded = Math.round(position);
   
   //iterate over the dist objects in the array we created
-  objets.forEach((obj, index) => {
-    obj.dist = Math.min(Math.abs(position - index), 1)
+  objets.forEach((obj, i) => {
+    obj.dist = Math.min(Math.abs(position - i), 1)
     obj.dist = 1 - obj.dist**2;
-    elems[index].style.transform = `scale(${1 + 0.4*obj.dist})`
+    elems[i].style.transform = `scale(${1 + 0.4*obj.dist})`
+    let scale = 1 + 0.1*obj.dist;
+    sketch.meshes[i].position.y = i*1.2 - position*1.2
+    sketch.meshes[i].scale.set(scale,scale,scale)
   })
   
   //acts as a lerp function
@@ -42,10 +45,9 @@ function raf(){
   // console.log(position)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
-  
-  sketch.meshes.forEach((mesh, i) => {
-    mesh.position.y = i*1.2 + position*1.2
-  })
+
+  //fix for discontinuity of resize function after page refresh
+  sketch.resize()
 
   window.requestAnimationFrame(raf)
 }

@@ -37790,7 +37790,7 @@ var Sketch = /*#__PURE__*/function () {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor('#000', 1.0);
+    this.renderer.setClearColor(0xeeeeee, 1.0);
     this.renderer.physicallyCorrectLights = true;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.container.appendChild(this.renderer.domElement);
@@ -37901,8 +37901,9 @@ var Sketch = /*#__PURE__*/function () {
         _this.meshes.push(mesh); //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
 
 
-        mesh.position.y = i * 1.2; // mesh.rotation.y = -0.5
-        // mesh.rotation.x = 0.5
+        mesh.position.y = i * 1.2;
+        mesh.rotation.y = -0.3;
+        mesh.rotation.x = 0.5;
       });
     }
   }, {
@@ -40144,20 +40145,22 @@ function raf() {
   speed *= 0.8;
   rounded = Math.round(position); //iterate over the dist objects in the array we created
 
-  objets.forEach(function (obj, index) {
-    obj.dist = Math.min(Math.abs(position - index), 1);
+  objets.forEach(function (obj, i) {
+    obj.dist = Math.min(Math.abs(position - i), 1);
     obj.dist = 1 - Math.pow(obj.dist, 2);
-    elems[index].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
+    elems[i].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
+    var scale = 1 + 0.1 * obj.dist;
+    sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
+    sketch.meshes[i].scale.set(scale, scale, scale);
   }); //acts as a lerp function
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.015; // console.log(position)
   // block.style.transform = `translate(0, ${position*100}px)`
 
-  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)");
-  sketch.meshes.forEach(function (mesh, i) {
-    mesh.position.y = i * 1.2 + position * 1.2;
-  });
+  wrap.style.transform = "translate(0, ".concat(-position * 100 + 50, "px)"); //fix for discontinuity of resize function after page refresh
+
+  sketch.resize();
   window.requestAnimationFrame(raf);
 }
 
@@ -40190,7 +40193,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51713" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52785" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

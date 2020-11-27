@@ -14,7 +14,7 @@ export default class Sketch {
     this.renderer = new THREE.WebGLRenderer()
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor('#000', 1.0); 
+    this.renderer.setClearColor(0xeeeeee, 1.0); 
     this.renderer.physicallyCorrectLights = true;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     
@@ -117,8 +117,8 @@ export default class Sketch {
       this.meshes.push(mesh);
       //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
       mesh.position.y = i*1.2
-      // mesh.rotation.y = -0.5
-      // mesh.rotation.x = 0.5
+      mesh.rotation.y = -0.3
+      mesh.rotation.x = 0.5
     })
   }
 
