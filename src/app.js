@@ -1,23 +1,11 @@
 import './style.scss';
-import { Sketch } from './three/three-stuff.js';
-import { GiveMesh, PassPosition } from './three/three-stuff.js';
+import Sketch from './three/three-class-refactor.js';
 
 const canvasSketch = require('canvas-sketch');
-// let sketch = new Sketch({
-//   dom: document.getElementById('canvas')
-// })
 
-// let materials = [];
-// let meshes = [];
-
-const settings = {
-  // Make the loop animated
-  animate: true,
-  // Get a WebGL canvas rather than 2D
-  context: 'webgl',
-  // time: 0,
-  attributes: { antialias: true },
-};
+let sketch = new Sketch({
+  dom: document.getElementById('canvas')
+})
 
 let speed = 0;
 let position = 0;
@@ -54,23 +42,14 @@ function raf(){
   // console.log(position)
   // block.style.transform = `translate(0, ${position*100}px)`
   wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
-
-/* consume meshArray from GiveMesh()*/
-
   
-  // sketch.meshes.forEach((mesh, i) => {
-  //   mesh.position.y = i*1.2 + position*1.2
-  // })
-
-/* output updated mesh positions and mutate their values in the three func*/
-
+  sketch.meshes.forEach((mesh, i) => {
+    mesh.position.y = i*1.2 + position*1.2
+  })
 
   window.requestAnimationFrame(raf)
-  return position
 }
 
 raf();
-let meshVar = GiveMesh()
-console.log(position)
-// GiveMesh(canvasSketch, Sketch, settings)
-canvasSketch(Sketch, settings);
+
+// canvasSketch(Sketch, settings);

@@ -2,11 +2,7 @@ import * as THREE from 'three';
 import vertexShader from "../shaders/vertexShader.js";
 import fragmentShader from "../shaders/fragmentShader.js";
 
-
-// global.THREE = require("three");
-
-let OrbitControls = require('three/examples/js/controls/OrbitControls');
-
+let OrbitControls = require('three-orbit-controls')(THREE);
 
 export default class Sketch {
   constructor(options){
@@ -41,6 +37,9 @@ export default class Sketch {
     this.resize();
     this.render();
     this.setupResize();
+    this.materials = [];
+    this.meshes = [];
+    this.handleImages();
   }
 
   settings() {
@@ -87,6 +86,7 @@ export default class Sketch {
       side: THREE.DoubleSide,
       uniforms: {
         time: { type: "f", value: 0 },
+        texture1: { type: "t", value: null },
         resolution: { type: "v4", value: new THREE.Vector4() },
         uvRate1: {
           value: new THREE.Vector2(1, 1)
@@ -95,11 +95,31 @@ export default class Sketch {
       vertexShader: vertexShader(),
       fragmentShader: fragmentShader(),
     })
+    //original mesh becamew redundant after we cloned everythin for the final images in handleImages
+    // this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
-    this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+    // this.plane = new THREE.Mesh(this.geometry, this.material);
+    // this.scene.add(this.plane);
+  }
 
-    this.plane = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.plane);
+  handleImages() {
+    let images = [...document.querySelectorAll('img')];
+  
+    images.forEach((img, i) => {
+      let materialImg = this.material.clone()
+      this.materials.push(materialImg)
+      materialImg.uniforms.texture1.value = new THREE.Texture(img)
+      materialImg.uniforms.texture1.value.needsUpdate = true
+  
+      let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+      let mesh = new THREE.Mesh(geom, materialImg)
+      this.scene.add(mesh)
+      this.meshes.push(mesh);
+      //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+      mesh.position.y = i*1.2
+      // mesh.rotation.y = -0.5
+      // mesh.rotation.x = 0.5
+    })
   }
 
   stop() {
@@ -116,6 +136,11 @@ export default class Sketch {
   render() {
     if(!this.isPlaying) return;
     this.time += 0.05;
+    if(this.materials){
+      this.materials.forEach( m => {
+        m.uniforms.time.value = this.time;
+      })
+    }
     this.material.uniforms.time.value = this.time;
     requestAnimationFrame(this.render.bind(this));
     this.renderer.render(this.scene, this.camera);
