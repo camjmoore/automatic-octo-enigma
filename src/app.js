@@ -1,8 +1,6 @@
 import './style.scss';
 import Sketch from './three/three-class-refactor.js';
 
-const canvasSketch = require('canvas-sketch');
-
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
 })
@@ -41,11 +39,17 @@ function raf(){
   //acts as a lerp function
   let diff = (rounded - position);
   
-  position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.015;
-  
-  // console.log(position)
+  position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
+
+  if(position > 1){
+    position = Math.min(position, 4.1)
+  } else { 
+    position = Math.max(position, 0.05)
+  }
+
+  console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
-  wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
+  // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
 
   //fix for discontinuity of resize function after page refresh
   sketch.resize()
@@ -54,5 +58,3 @@ function raf(){
 }
 
 raf();
-
-// canvasSketch(Sketch, settings);
