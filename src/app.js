@@ -41,11 +41,9 @@ function raf(){
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
 
-  if(position > 1){
-    position = Math.min(position, 4.1)
-  } else { 
-    position = Math.max(position, 0.05)
-  }
+  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.05)
+
+
 
   console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`

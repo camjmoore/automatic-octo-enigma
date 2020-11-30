@@ -38014,13 +38014,7 @@ function raf() {
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
-
-  if (position > 1) {
-    position = Math.min(position, 4.1);
-  } else {
-    position = Math.max(position, 0.05);
-  }
-
+  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.05);
   console.log(rounded); // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   //fix for discontinuity of resize function after page refresh
@@ -38058,7 +38052,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49813" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50702" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
