@@ -11,6 +11,8 @@ let rounded = 0;
 let block = document.getElementById('block');
 let wrap = document.getElementById('wrapper');
 let elems = [...document.querySelectorAll('.n')];
+let nav = [...document.querySelectorAll('li')];
+let descrips = [...document.querySelectorAll('.description')];
 
 window.addEventListener('wheel', e => {
   //slow down rate of change for y
@@ -34,6 +36,7 @@ function raf(){
     sketch.meshes[i].position.y = i*1.2 - position*1.2
     sketch.meshes[i].scale.set(scale,scale,scale)
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist
+
   })
   
   //acts as a lerp function
@@ -41,11 +44,35 @@ function raf(){
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
 
-  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.05)
+  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1)
+
+  nav.forEach((el) => {
+    el.addEventListener('mouseover', (e) => {
+      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4
+    })
+  })
+
+  descrips.forEach((descrip) => {
+    descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display')
+  })
+  
+  // let displayed = `description${rounded}`
+  // if className = `description${rounded}`
+  
+  // if(descrip.getAttribute('data-desc') == rounded){
+  //   descrip.classList.remove('display')
+  // } else {
+  //   descrip.classList.add('display')
+  // }
+
+  //mesh positions should programmatically render trigger classes for scss animations
+    //if rounded value is between a
+    
+    
+  //mesh position values are only available within raf()
 
 
-
-  console.log(rounded)
+  // console.log(rounded)
   // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
 

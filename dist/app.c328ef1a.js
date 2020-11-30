@@ -37988,6 +37988,10 @@ var wrap = document.getElementById('wrapper');
 
 var elems = _toConsumableArray(document.querySelectorAll('.n'));
 
+var nav = _toConsumableArray(document.querySelectorAll('li'));
+
+var descrips = _toConsumableArray(document.querySelectorAll('.description'));
+
 window.addEventListener('wheel', function (e) {
   //slow down rate of change for y
   speed += e.deltaY * 0.0003;
@@ -38014,8 +38018,26 @@ function raf() {
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
-  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.05);
-  console.log(rounded); // block.style.transform = `translate(0, ${position*100}px)`
+  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1);
+  nav.forEach(function (el) {
+    el.addEventListener('mouseover', function (e) {
+      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4;
+    });
+  });
+  descrips.forEach(function (descrip) {
+    descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
+  }); // let displayed = `description${rounded}`
+  // if className = `description${rounded}`
+  // if(descrip.getAttribute('data-desc') == rounded){
+  //   descrip.classList.remove('display')
+  // } else {
+  //   descrip.classList.add('display')
+  // }
+  //mesh positions should programmatically render trigger classes for scss animations
+  //if rounded value is between a
+  //mesh position values are only available within raf()
+  // console.log(rounded)
+  // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   //fix for discontinuity of resize function after page refresh
 

@@ -48,12 +48,25 @@ body header .nav-container .corner-emblem {
   width: 20%;
 }
 body #wrapper {
-  background-color: aqua;
   width: 500px;
   height: 300px;
   position: absolute;
   top: 175px;
   left: 110px;
+}
+body #wrapper .description {
+  animation: fadeIn ease 2s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+body #wrapper .display {
+  display: none;
 }
 body #wrapper .n {
   position: absolute;

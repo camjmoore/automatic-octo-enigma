@@ -67,12 +67,28 @@ body {
   }
 
   #wrapper {
-    background-color: aqua;
     width: 500px;
     height: 300px;
     position: absolute;
     top: 175px;
     left: 110px;
+
+    .description {
+      animation: fadeIn ease 2s;
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+
+    .display {
+      display: none;
+    }
 
     .n {
       position: absolute;
