@@ -1,5 +1,6 @@
 import vertexShader from '../shaders/vertexShader.js';
 import fragmentShader from '../shaders/fragmentShader.js';
+import {  raf } from '../app.js';
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require("three");
@@ -15,22 +16,39 @@ const settings = {
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
   // time: 0,
+  attributes: { antialias: true },
 };
 
+let meshPositions = 0;
+
+export const PassPosition = (position) => {
+  meshPositions = position
+  console.log(meshPositions)
+  return meshPositions
+}
+
 export const Sketch = ({ context }) => {
+  // Setup your scene
+  const scene = new THREE.Scene();
+  let time = 0;
+  
+  //attach the canvas to the dom
+  const container = context.canvas
+  let width = container.offsetWidth
+  let height = container.offsetHeight
+
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
     context
   });
-
-  //attach the canvas to the dom
-  const container = context.canvas
-  container.appendChild(renderer.domElement)
-
+  
   // WebGL background color
   renderer.setClearColor(0xeeeeee, 1);
   renderer.physicallyCorrectLights = true;
   renderer.outputEncoding = THREE.sRGBEncoding;
+
+  // Append the render target to the dom
+  container.appendChild(renderer.domElement)
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(
@@ -46,18 +64,16 @@ export const Sketch = ({ context }) => {
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
 
-  let time = 0;
-  // Setup your scene
-  const scene = new THREE.Scene();
-
   // Setup a geometry
   let material = new THREE.ShaderMaterial({
     extensions: {
       derivatives: '#extension GL_OES_standard_derivatives : enable'
     },
+    color: '0xffff00',
     side:  THREE.DoubleSide,
     uniforms:{
       time: { type: "f", value: 0 },
+      texture1: { type: "t", value: null },
       resolution: { type: "v4", value: new THREE.Vector4() },
       uvRate1: {
         value: new THREE.Vector2(1, 1)
@@ -67,21 +83,33 @@ export const Sketch = ({ context }) => {
     fragmentShader: fragmentShader(),
   })
 
-  let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+  // Map our images from our html into our shader material texture
+  let materials = [];
+  let meshes = [];
+  let images = [...document.querySelectorAll('img')];
 
-  let plane = new THREE.Mesh(geometry, material);
-  scene.add(plane);
+  images.forEach((img, i) => {
+    let materialImg = material.clone()
+    materials.push(materialImg)
+    materialImg.uniforms.texture1.value = new THREE.Texture(img)
+    materialImg.uniforms.texture1.value.needsUpdate = true
 
-  console.log("Sketch running")
+    let geom = new THREE.PlaneBufferGeometry(1.5,1,20,20)
+    let mesh = new THREE.Mesh(geom, materialImg)
+    scene.add(mesh)
+    meshes.push(mesh);
+    //mutate the y position of each subsequent plane to its index*1.2, so they successively stack
+    mesh.position.y = i*1.2
+    // mesh.rotation.y = -0.5
+    // mesh.rotation.x = 0.5
+  })
 
   // draw each frame
   return {
+    materials: materials,
+    meshes: meshes,
     // Handle resize events here
     resize() {
-      // renderer.setPixelRatio(pixelRatio);
-      // renderer.setSize(viewportWidth, viewportHeight);
-      // camera.aspect = viewportWidth / viewportHeight;
-
       let width = container.offsetWidth;
       let height =  container.offsetHeight;
       renderer.setSize(width, height);
@@ -104,20 +132,39 @@ export const Sketch = ({ context }) => {
       material.uniforms.resolution.value.w = a2;
       
       camera.updateProjectionMatrix();
+
+      // console.log(meshes)
     },
     // Update & render your scene here
-    render() {
-      // time += 0.05;
+    render({time}) {
+      time += 0.05;
+      //applying time to the cloned materials
+      materials.forEach( m => {
+        m.uniforms.time.value = time;
+      })
       // material.uniforms.time.value = time;
+      //applying positions to mesh positions
+      // meshes.forEach((mesh, i) => {
+      //   mesh.position.y = i*1.2 + meshPositions*1.2
+      // })
       controls.update();
       renderer.render(scene, camera);
+      // return meshes
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload() {
       controls.dispose();
       renderer.dispose();
-    }
+    },  
   };
 };
 
+let meshArray = []
+
+export const GiveMesh = () => {
+  canvasSketch(Sketch, settings).then((value) => {meshArray.push(value.sketch.meshes)})
+  return meshArray
+}
+
+console.log(meshArray)
 canvasSketch(Sketch, settings);
