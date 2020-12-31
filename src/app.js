@@ -1,5 +1,6 @@
 import './style.scss';
 import Sketch from './three/three-class-refactor.js';
+import Glide from '@glidejs/glide';
 
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
@@ -21,6 +22,15 @@ window.addEventListener('wheel', e => {
 
 //create an array of object to iterate over
 let objets = Array(5).fill({dist:0}) 
+
+const glide = new Glide('.glide', {
+  type: 'carousel',
+  perView: 1,
+  startAt: 0,
+})
+
+glide.mount()
+
 
 function raf(){
   position += speed;

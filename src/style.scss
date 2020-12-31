@@ -1,3 +1,5 @@
+@import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
+
 body {
   overflow: hidden;
   font-family: "Nunito Sans", sans-serif;
@@ -69,21 +71,13 @@ body {
   #wrapper {
     width: 500px;
     height: 300px;
+    overflow: hidden;
     position: absolute;
     top: 175px;
     left: 110px;
 
     .description {
-      animation: fadeIn ease 2s;
-
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
+      width: 500px;
     }
 
     .display {
