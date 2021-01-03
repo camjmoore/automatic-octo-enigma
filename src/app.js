@@ -1,6 +1,28 @@
 import './style.scss';
 import Sketch from './three/three-class-refactor.js';
-import Glide from '@glidejs/glide';
+import Glide from '@glidejs/glide'
+
+let glide1 = new Glide('.glide1', {
+  perView: 1,
+  startAt: 0,
+  hoverpause: true,
+  autoplay: false
+})
+
+let glide2 = new Glide('.glide2', {
+  perView: 1,
+  startAt: 0,
+  hoverpause: true,
+  autoplay: 2700
+})
+
+glide1.mount()
+
+setTimeout(() => {
+  glide1.update()
+  glide1.play(2700)
+  console.log('update ran')
+}, 1000)
 
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
@@ -22,15 +44,6 @@ window.addEventListener('wheel', e => {
 
 //create an array of object to iterate over
 let objets = Array(5).fill({dist:0}) 
-
-const glide = new Glide('.glide', {
-  type: 'carousel',
-  perView: 1,
-  startAt: 0,
-})
-
-glide.mount()
-
 
 function raf(){
   position += speed;
@@ -65,6 +78,12 @@ function raf(){
   descrips.forEach((descrip) => {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display')
   })
+
+  descrips.forEach((descrip) => {
+    descrip.addEventListener('wheel', e => {
+      e.preventdefault()
+    })
+  })
   
   // let displayed = `description${rounded}`
   // if className = `description${rounded}`
@@ -88,7 +107,6 @@ function raf(){
 
   //fix for discontinuity of resize function after page refresh
   sketch.resize()
-
   window.requestAnimationFrame(raf)
 }
 
