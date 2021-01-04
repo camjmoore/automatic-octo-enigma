@@ -17,12 +17,13 @@ let glide2 = new Glide('.glide2', {
 })
 
 glide1.mount()
+glide2.mount()
 
 setTimeout(() => {
   glide1.update()
   glide1.play(2700)
   console.log('update ran')
-}, 1000)
+}, 2000)
 
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
@@ -34,7 +35,7 @@ let rounded = 0;
 let block = document.getElementById('block');
 let wrap = document.getElementById('wrapper');
 let elems = [...document.querySelectorAll('.n')];
-let nav = [...document.querySelectorAll('li')];
+let nav = [...document.querySelectorAll('.nav-li')];
 let descrips = [...document.querySelectorAll('.description')];
 
 window.addEventListener('wheel', e => {
@@ -70,8 +71,9 @@ function raf(){
   position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1)
 
   nav.forEach((el) => {
-    el.addEventListener('mouseover', (e) => {
+    el.addEventListener('click', (e) => {
       e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4
+      console.log('nav clicked!')
     })
   })
 
@@ -80,8 +82,9 @@ function raf(){
   })
 
   descrips.forEach((descrip) => {
-    descrip.addEventListener('wheel', e => {
-      e.preventdefault()
+    descrip.addEventListener('click', e => {
+      console.log('description clicked')
+      e.stopPropagation()
     })
   })
   

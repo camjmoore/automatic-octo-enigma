@@ -41467,19 +41467,17 @@ var glide1 = new _glide.default('.glide1', {
 });
 var glide2 = new _glide.default('.glide2', {
   perView: 1,
-  startAt: 0
+  startAt: 0,
+  hoverpause: true,
+  autoplay: 2700
 });
 glide1.mount();
-var glideEl2 = document.querySelector('.glide2');
-glideEl2.addEventListener('mouseover', function (e) {
-  e.stopPropagation();
-});
 glide2.mount();
 setTimeout(function () {
   glide1.update();
   glide1.play(2700);
   console.log('update ran');
-}, 1000);
+}, 2000);
 var sketch = new _threeClassRefactor.default({
   dom: document.getElementById('canvas')
 });
@@ -41491,7 +41489,7 @@ var wrap = document.getElementById('wrapper');
 
 var elems = _toConsumableArray(document.querySelectorAll('.n'));
 
-var nav = _toConsumableArray(document.querySelectorAll('li'));
+var nav = _toConsumableArray(document.querySelectorAll('.nav-li'));
 
 var descrips = _toConsumableArray(document.querySelectorAll('.description'));
 
@@ -41523,16 +41521,18 @@ function raf() {
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
   position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1);
   nav.forEach(function (el) {
-    el.addEventListener('mouseover', function (e) {
+    el.addEventListener('click', function (e) {
       e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4;
+      console.log('nav clicked!');
     });
   });
   descrips.forEach(function (descrip) {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
   });
   descrips.forEach(function (descrip) {
-    descrip.addEventListener('wheel', function (e) {
-      e.preventdefault();
+    descrip.addEventListener('click', function (e) {
+      console.log('description clicked');
+      e.stopPropagation();
     });
   }); // let displayed = `description${rounded}`
   // if className = `description${rounded}`
@@ -41582,7 +41582,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57359" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54485" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
