@@ -130,13 +130,12 @@
   cursor: -webkit-grabbing;
 }
 
-body {
+html body {
   overflow: hidden;
-  font-family: "Nunito Sans", sans-serif;
   font-weight: bold;
   background-color: #eeeeee;
 }
-body header {
+html body header {
   position: fixed;
   top: 0;
   left: 0;
@@ -144,23 +143,22 @@ body header {
   color: #1f2641ff;
   z-index: 1;
 }
-body header .nav-container {
+html body header .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  align-content: center;
   flex-wrap: nowrap;
   height: 100px;
   width: 100%;
   max-width: 70em;
-  margin: 0;
+  margin: 0 auto;
   overflow: hidden;
 }
-body header .nav-container .header-nav {
+html body header .nav-container .header-nav {
   display: flex;
   width: 100%;
 }
-body header .nav-container .header-nav .menu {
+html body header .nav-container .header-nav .menu {
   display: flex;
   justify-content: center;
   align-content: center;
@@ -168,18 +166,22 @@ body header .nav-container .header-nav .menu {
   margin: 0 auto;
   padding: 0;
 }
-body header .nav-container .header-nav .menu .nav-li {
+html body header .nav-container .header-nav .menu .nav-li {
   width: 100%;
   text-align: center;
   list-style-type: none;
   justify-content: space-around;
+  cursor: pointer;
+  font-family: "Montserrat", serif;
 }
-body header .nav-container .corner-emblem {
+html body header .nav-container .corner-emblem {
   display: flex;
-  justify-content: flex-end;
-  width: 20%;
+  justify-content: center;
+  width: 100%;
+  font-family: "Montserrat", serif;
+  font-size: 28.43px;
 }
-body #wrapper {
+html body #wrapper {
   width: 500px;
   height: 1000px;
   overflow: hidden;
@@ -187,61 +189,73 @@ body #wrapper {
   top: 150px;
   left: 110px;
 }
-body #wrapper .description {
+html body #wrapper .description {
   width: 100%;
+  font-family: "Esteban", sans-serif;
+  font-size: 28.43px;
 }
-body #wrapper .description h1 {
+html body #wrapper .description h1 {
   line-height: 0rem;
+  font-family: "Montserrat", serif;
 }
-body #wrapper .description4 {
+html body #wrapper .description p {
+  font-size: 16px;
+  font-weight: 300;
+}
+html body #wrapper .description4 {
   overflow-y: auto;
 }
-body #wrapper .glide__slides {
+html body #wrapper .glide__slides {
   width: 500px;
 }
-body #wrapper .glide__slides .glide__slide {
+html body #wrapper .glide__slides .glide__slide {
   max-width: 500px;
+  font-size: 21.33px;
 }
-body #wrapper .glide__slides .glide__slide li {
+html body #wrapper .glide__slides .glide__slide li {
   min-width: 500px;
   height: 100%;
 }
-body #wrapper .glide__bullets {
+html body #wrapper .glide__slides .glide__slide h2 {
+  font-family: "Montserrat", serif;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+html body #wrapper .glide__bullets {
   position: relative;
-  padding-top: 10px;
+  padding-top: 40px;
   display: flex;
   justify-content: center;
 }
-body #wrapper .video {
+html body #wrapper .video {
   position: relative;
   padding-bottom: 56.25%;
-  padding-top: 25px;
   height: 0px;
 }
-body #wrapper .display {
+html body #wrapper .display {
   display: none;
 }
-body #wrapper .n {
+html body #wrapper .n {
   position: absolute;
   top: 300px;
   left: 150px;
 }
-body #wrapper .n1 {
+html body #wrapper .n1 {
   top: 400px;
 }
-body #wrapper .n2 {
+html body #wrapper .n2 {
   top: 500px;
 }
-body #wrapper .n3 {
+html body #wrapper .n3 {
   top: 600px;
 }
-body #wrapper .n4 {
+html body #wrapper .n4 {
   top: 700px;
 }
-body #wrapper img {
+html body #wrapper img {
   display: none;
 }
-body #canvas {
+html body #canvas {
   width: 100vw;
   height: 100vh;
   position: fixed;

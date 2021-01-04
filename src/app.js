@@ -12,8 +12,8 @@ let glide1 = new Glide('.glide1', {
 let glide2 = new Glide('.glide2', {
   perView: 1,
   startAt: 0,
-  hoverpause: true,
-  autoplay: 2700
+  // hoverpause: true,
+  // autoplay: 2700
 })
 
 glide1.mount()
@@ -47,6 +47,9 @@ window.addEventListener('wheel', e => {
 let objets = Array(5).fill({dist:0}) 
 
 function raf(){
+  glide2.update()
+
+
   position += speed;
   speed *= 0.8;
   rounded = Math.round(position);
