@@ -8,6 +8,7 @@ html {
     // font-family: 'Lusitana', serif;
     // font-family: 'Montserrat', serif;
     font-weight: bold;
+    color: #1f2641ff;
     background-color: #eeeeee;
     
     header {
@@ -73,6 +74,7 @@ html {
           width: 100%;
           font-family: 'Montserrat', serif;
           font-size: 28.43px;
+          font-weight: bold;
           
           // h1 {
           //   width: 100%;
@@ -91,18 +93,19 @@ html {
     
     .description {
       width: 100%;
-      font-family: 'Esteban', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 28.43px;
       
       h1 {
         line-height: 0rem;
         font-family: 'Montserrat', serif;
-
+        font-weight: 700;
+        width: 500px;
       }
 
       p {
         font-size: 16px;
-        font-weight: 300;
+        line-height: 1.5rem;
       }
     }
     
@@ -110,37 +113,36 @@ html {
       overflow-y: auto;
     }
     
-    .glide__slides {
-      width: 500px;
-      
-      .glide__slide {
-        max-width: 500px;
-        font-size: 21.33px;
-        
-        li {
-          min-width: 500px;
-          height: 100%;
+    .glide__track {
+      position: absolute;
+      top: 50px;
 
-        }
+      .glide__slides {
+        width: 500px;
         
-        h2 {
-          font-family: 'Montserrat', serif;
-          margin-top: 0px;
-          margin-bottom: 0px;
+        .glide__slide {
+          max-width: 500px;
+          font-size: 21.33px;
           
+          li {
+            min-width: 500px;
+            height: 100%;
+            
+          }
+          
+          h2 {
+            font-family: 'Montserrat', serif;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            
+          }
         }
       }
     }
     
-    .glide__bullets {
-      position: relative;
-      padding-top: 40px;
-      display: flex;
-      justify-content: center;
-    }
-    
     .video {
-      position: relative;
+      position: absolute;
+      top: 220px;
       padding-bottom: 56.25%;
       height: 0px;
     }

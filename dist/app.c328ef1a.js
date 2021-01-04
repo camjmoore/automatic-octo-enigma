@@ -41467,9 +41467,9 @@ var glide1 = new _glide.default('.glide1', {
 });
 var glide2 = new _glide.default('.glide2', {
   perView: 1,
-  startAt: 0 // hoverpause: true,
-  // autoplay: 2700
-
+  startAt: 0,
+  hoverpause: true,
+  autoplay: 2700
 });
 glide1.mount();
 glide2.mount();
@@ -41503,7 +41503,6 @@ var objets = Array(5).fill({
 });
 
 function raf() {
-  glide2.update();
   position += speed;
   speed *= 0.8;
   rounded = Math.round(position); //iterate over the dist objects in the array we created
@@ -41551,6 +41550,7 @@ function raf() {
   //fix for discontinuity of resize function after page refresh
 
   sketch.resize();
+  glide2.update();
   window.requestAnimationFrame(raf);
 }
 
@@ -41583,7 +41583,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62367" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64426" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
