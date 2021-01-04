@@ -12,16 +12,21 @@ let glide1 = new Glide('.glide1', {
 let glide2 = new Glide('.glide2', {
   perView: 1,
   startAt: 0,
-  hoverpause: true,
-  autoplay: 2700
+})
+
+let glide3 = new Glide('.glide3', {
+  perView: 1,
+  startAt: 0,
 })
 
 glide1.mount()
 glide2.mount()
+glide3.mount()
+
 
 setTimeout(() => {
   glide1.update()
-  glide1.play(2700)
+  glide1.play(2300)
   console.log('update ran')
 }, 2000)
 
@@ -44,7 +49,7 @@ window.addEventListener('wheel', e => {
 })
 
 //create an array of object to iterate over
-let objets = Array(5).fill({dist:0}) 
+let objets = Array(4).fill({dist:0}) 
 
 function raf(){
   position += speed;
@@ -68,24 +73,17 @@ function raf(){
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
 
-  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1)
+  position > 1 ? position = Math.min(position, 3.1) : position = Math.max(position, 0.01)
 
   nav.forEach((el) => {
     el.addEventListener('click', (e) => {
-      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4
+      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 3
       console.log('nav clicked!')
     })
   })
 
   descrips.forEach((descrip) => {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display')
-  })
-
-  descrips.forEach((descrip) => {
-    descrip.addEventListener('click', e => {
-      console.log('description clicked')
-      e.stopPropagation()
-    })
   })
   
   // let displayed = `description${rounded}`
@@ -111,6 +109,7 @@ function raf(){
   //fix for discontinuity of resize function after page refresh
   sketch.resize()
   glide2.update()
+  glide3.update()
   window.requestAnimationFrame(raf)
 }
 

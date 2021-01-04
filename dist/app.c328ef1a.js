@@ -41467,15 +41467,18 @@ var glide1 = new _glide.default('.glide1', {
 });
 var glide2 = new _glide.default('.glide2', {
   perView: 1,
-  startAt: 0,
-  hoverpause: true,
-  autoplay: 2700
+  startAt: 0
+});
+var glide3 = new _glide.default('.glide3', {
+  perView: 1,
+  startAt: 0
 });
 glide1.mount();
 glide2.mount();
+glide3.mount();
 setTimeout(function () {
   glide1.update();
-  glide1.play(2700);
+  glide1.play(2300);
   console.log('update ran');
 }, 2000);
 var sketch = new _threeClassRefactor.default({
@@ -41498,7 +41501,7 @@ window.addEventListener('wheel', function (e) {
   speed += e.deltaY * 0.0003;
 }); //create an array of object to iterate over
 
-var objets = Array(5).fill({
+var objets = Array(4).fill({
   dist: 0
 });
 
@@ -41519,21 +41522,15 @@ function raf() {
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
-  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1);
+  position > 1 ? position = Math.min(position, 3.1) : position = Math.max(position, 0.01);
   nav.forEach(function (el) {
     el.addEventListener('click', function (e) {
-      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4;
+      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 3;
       console.log('nav clicked!');
     });
   });
   descrips.forEach(function (descrip) {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
-  });
-  descrips.forEach(function (descrip) {
-    descrip.addEventListener('click', function (e) {
-      console.log('description clicked');
-      e.stopPropagation();
-    });
   }); // let displayed = `description${rounded}`
   // if className = `description${rounded}`
   // if(descrip.getAttribute('data-desc') == rounded){
@@ -41551,6 +41548,7 @@ function raf() {
 
   sketch.resize();
   glide2.update();
+  glide3.update();
   window.requestAnimationFrame(raf);
 }
 
@@ -41583,7 +41581,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64426" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65425" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

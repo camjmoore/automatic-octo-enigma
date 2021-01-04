@@ -188,8 +188,8 @@ html body #wrapper {
   height: 1000px;
   overflow: hidden;
   position: absolute;
-  top: 150px;
-  left: 110px;
+  top: 180px;
+  left: 130px;
 }
 html body #wrapper .description {
   width: 100%;
@@ -201,6 +201,10 @@ html body #wrapper .description h1 {
   font-family: "Montserrat", serif;
   font-weight: 700;
   width: 500px;
+}
+html body #wrapper .description h1 a {
+  text-decoration: none;
+  color: inherit;
 }
 html body #wrapper .description p {
   font-size: 16px;
@@ -231,7 +235,7 @@ html body #wrapper .glide__track .glide__slides .glide__slide h2 {
 }
 html body #wrapper .video {
   position: absolute;
-  top: 220px;
+  top: 200px;
   padding-bottom: 56.25%;
   height: 0px;
 }
