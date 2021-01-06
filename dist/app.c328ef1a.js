@@ -41477,7 +41477,6 @@ glide1.mount();
 glide2.mount();
 glide3.mount();
 setTimeout(function () {
-  sketch.resize();
   glide1.update();
   glide1.play(2300);
   console.log('update ran');
@@ -41582,7 +41581,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57865" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52552" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

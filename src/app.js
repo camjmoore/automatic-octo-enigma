@@ -25,7 +25,6 @@ glide2.mount()
 glide3.mount()
 
 setTimeout(() => {
-  sketch.resize()
   glide1.update()
   glide1.play(2300)
   console.log('update ran')

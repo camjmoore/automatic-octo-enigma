@@ -186,7 +186,6 @@ html body header .nav-container .corner-emblem {
 html body #wrapper {
   width: 500px;
   height: 1000px;
-  overflow: hidden;
   position: absolute;
   top: 180px;
   left: 130px;
@@ -214,6 +213,9 @@ html body #wrapper .description {
 }
 html body #wrapper #glide1 h1 {
   line-height: 0rem;
+}
+html body #wrapper #glide3 h1 {
+  width: 600px;
 }
 html body #wrapper .glide {
   height: inherit;
@@ -259,9 +261,11 @@ html body #wrapper .glide .glide__arrows {
   top: 200px;
   width: 500px;
 }
+html body #wrapper .glide .glide__arrows .glide__arrow {
+  color: #1f2641ff;
+}
 html body #wrapper .video {
-  position: absolute;
-  top: 200px;
+  position: relative;
   padding-bottom: 56.25%;
   height: 0px;
 }
@@ -296,6 +300,26 @@ html body #canvas {
   left: 300px;
   z-index: -1;
   pointer-events: none;
+}
+html body footer {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  height: 80px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #1f2641ff;
+  z-index: 10;
+}
+html body footer .tools {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+html body footer .tools svg {
+  width: 40px;
+  height: 40px;
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */
