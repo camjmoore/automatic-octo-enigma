@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Lusitana&family=Raleway:wght@300&display=swap" rel="stylesheet"> -->
+  <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Esteban&family=Montserrat:wght@300&display=swap" rel="stylesheet"> -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Esteban&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/7242ecec06.js" crossorigin="anonymous"></script>
   <script src="/app.c328ef1a.js" defer=""></script>
   <title>Document</title>
 <link rel="stylesheet" href="/app.c328ef1a.css"></head>
@@ -23,14 +26,13 @@
       </nav>
 
       <div class="corner-emblem">
-        <h1>Web Developer</h1>
+        <h1>Cameron Moore <i class="fas fa-code"></i></h1>
       </div>
-
     </div>
   </header>
   
   <div id="wrapper">
-    <div data-desc="0" class="description description0 display">
+    <div data-desc="0" class="description description1 display">
       <h1>Hi, I'm Cameron</h1>
       <p>My formative growth as a developer has been shaped by industry-professionals and daily collaboration with remote teams. In addition to a solid understanding of web fundamentals I have experience collaborating within an Agile team to deliver features for a real stakeholder.</p>
 
@@ -55,7 +57,7 @@
 
     </div>
 
-    <div data-desc="1" class="glide2 description description2 display">
+    <div data-desc="1" id="glide2" class="glide description description2 display">
       <h1>
         <a href="https://somnus.netlify.app/#">Somnus</a>
       </h1>
@@ -75,8 +77,13 @@
           </li>
         </ul>
       </div>
+
+      <div class="glide__arrows" data-glide-el="controls">
+        <!-- <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><i class="fas fa-arrow-left"></i></button> -->
+        <button class="glide__arrow glide__arrow--right" data-glide-dir=">"><i class="fas fa-arrow-right"></i></button>
+      </div>
     </div>
-    <div data-desc="2" class="glide3 description description3 display">
+    <div data-desc="2" id="glide3" class="glide description description3 display">
       <h1>
         <a href="">
           Family Recipes
@@ -98,32 +105,39 @@
           </li>
         </ul>
       </div>
+
+      <!-- <div class="glide__arrows" data-glide-el="controls">
+        <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><i class="fas fa-arrow-left"></i></button>
+        <button class="glide__arrow glide__arrow--right" data-glide-dir=">"><i class="fas fa-arrow-right"></i></button>
+      </div> -->
     </div>
-    <div data-desc="3" class="glide1 description description4 display">
+    <div data-desc="3" id="glide1" class="glide description description4 display">
       <h1>
         <a href="">
           Story Squad
         </a>
       </h1>
-        <div class="glide__track" data-glide-el="track">
-          <ul class="glide__slides">
-            <li class="glide__slide">
-              <h2>Project</h2>
-              <p>Story Squad is a creative story sharing platform for kids. I worked with real stakeholders to devise solutions within an actionable scope of 2 weeks.</p>
-            </li>
-            <li class="glide__slide">
-              <h2>Purpose and Goal</h2>
-              <p>Using an agile approach our team designed targeted solutions within an actionable scope of 2 weeks.</p>
-            </li>
-            <li class="glide__slide">
-              <h2>Lessons Learned</h2>
-              <p>After taking the training wheels off we got comfortable enough with the code base to make some changes to the existing structure</p>
-            </li>
-          </ul>
-        </div>
-        <div class="video">
-          <iframe width="500" height="271" src="https://www.youtube.com/embed/4zmPxvPamlc" frameborder="0" allowfullscreen=""></iframe>
-        </div>
+
+      <div class="glide__track" data-glide-el="track">
+        <ul class="glide__slides">
+          <li class="glide__slide">
+            <h2>Project</h2>
+            <p>Story Squad is a creative story sharing platform for kids. I worked with real stakeholders to devise solutions within an actionable scope of 2 weeks.</p>
+          </li>
+          <li class="glide__slide">
+            <h2>Purpose and Goal</h2>
+            <p>Using an agile approach our team designed targeted solutions within an actionable scope of 2 weeks.</p>
+          </li>
+          <li class="glide__slide">
+            <h2>Lessons Learned</h2>
+            <p>After taking the training wheels off we got comfortable enough with the code base to make some changes to the existing structure</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- <div class="video">
+        <iframe width="500" height="271" src="https://www.youtube.com/embed/4zmPxvPamlc" frameborder="0" allowfullscreen></iframe>
+      </div> -->
     </div>
     
     <!-- <div class="n">

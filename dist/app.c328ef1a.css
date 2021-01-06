@@ -173,13 +173,13 @@ html body header .nav-container .header-nav .menu .nav-li {
   list-style-type: none;
   justify-content: space-around;
   cursor: pointer;
-  font-family: "Montserrat", serif;
+  font-family: "Source Sans Pro", sans-serif;
 }
 html body header .nav-container .corner-emblem {
   display: flex;
   justify-content: center;
   width: 100%;
-  font-family: "Montserrat", serif;
+  font-family: "Source Serif Pro", serif;
   font-size: 28.43px;
   font-weight: bold;
 }
@@ -191,47 +191,73 @@ html body #wrapper {
   top: 180px;
   left: 130px;
 }
-html body #wrapper .description {
+html body #wrapper .description1 {
   width: 100%;
-  font-family: "Montserrat", sans-serif;
   font-size: 28.43px;
 }
-html body #wrapper .description h1 {
+html body #wrapper .description1 h1 {
   line-height: 0rem;
-  font-family: "Montserrat", serif;
+  font-family: "Source Serif Pro", serif;
   font-weight: 700;
   width: 500px;
 }
-html body #wrapper .description h1 a {
+html body #wrapper .description1 h1 a {
   text-decoration: none;
   color: inherit;
 }
-html body #wrapper .description p {
-  font-size: 16px;
-  line-height: 1.5rem;
+html body #wrapper .description1 p {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
 }
-html body #wrapper .description4 {
+html body #wrapper .description {
   overflow-y: auto;
 }
-html body #wrapper .glide__track {
+html body #wrapper #glide1 h1 {
+  line-height: 0rem;
+}
+html body #wrapper .glide {
+  height: inherit;
+  font-size: 28.43px;
+}
+html body #wrapper .glide h1 {
+  line-height: 0rem;
+  font-family: "Source Serif Pro", serif;
+}
+html body #wrapper .glide h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+html body #wrapper .glide .glide__track {
   position: absolute;
   top: 50px;
 }
-html body #wrapper .glide__track .glide__slides {
+html body #wrapper .glide .glide__track .glide__slides {
   width: 500px;
 }
-html body #wrapper .glide__track .glide__slides .glide__slide {
+html body #wrapper .glide .glide__track .glide__slides .glide__slide {
   max-width: 500px;
-  font-size: 21.33px;
 }
-html body #wrapper .glide__track .glide__slides .glide__slide li {
+html body #wrapper .glide .glide__track .glide__slides .glide__slide li {
   min-width: 500px;
   height: 100%;
 }
-html body #wrapper .glide__track .glide__slides .glide__slide h2 {
-  font-family: "Montserrat", serif;
+html body #wrapper .glide .glide__track .glide__slides .glide__slide h2 {
   margin-top: 0px;
   margin-bottom: 0px;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 28.43px;
+}
+html body #wrapper .glide .glide__track .glide__slides .glide__slide p {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
+  line-height: 1.5rem;
+}
+html body #wrapper .glide .glide__arrows {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  top: 200px;
+  width: 500px;
 }
 html body #wrapper .video {
   position: absolute;

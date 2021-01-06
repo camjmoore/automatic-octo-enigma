@@ -62,7 +62,7 @@ html {
               list-style-type: none;
               justify-content: space-around;
               cursor: pointer;
-              font-family: 'Montserrat', serif;
+              font-family: 'Source Sans Pro', sans-serif;
               
             }
           }
@@ -72,7 +72,7 @@ html {
           display: flex;
           justify-content: center;
           width: 100%;
-          font-family: 'Montserrat', serif;
+          font-family: 'Source Serif Pro', serif;
           font-size: 28.43px;
           font-weight: bold;
           
@@ -91,14 +91,14 @@ html {
     top: 180px;
     left: 130px;
     
-    .description {
+    .description1 {
       width: 100%;
-      font-family: 'Montserrat', sans-serif;
+      // font-family: 'Source Sans Pro', sans-serif;
       font-size: 28.43px;
       
       h1 {
         line-height: 0rem;
-        font-family: 'Montserrat', serif;
+        font-family: 'Source Serif Pro', serif;
         font-weight: 700;
         width: 500px;
 
@@ -109,42 +109,82 @@ html {
       }
 
       p {
-        font-size: 16px;
-        line-height: 1.5rem;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 21.33px;
+        // line-height: 1.5rem;
       }
     }
     
-    .description4 {
+    .description {
       overflow-y: auto;
     }
-    
-    .glide__track {
-      position: absolute;
-      top: 50px;
 
-      .glide__slides {
-        width: 500px;
+    #glide1 {
+      h1 {
+        line-height: 0rem;
+      }
+    }
+
+    .glide {
+      height: inherit;
+      font-size: 28.43px;
+
+      h1 {
+        line-height: 0rem;
+        font-family: 'Source Serif Pro', serif;
+        // font-weight: 700;
+        // width: 500px;
         
-        .glide__slide {
-          max-width: 500px;
-          font-size: 21.33px;
+        a {
+          text-decoration: none;
+          color: inherit;
+        }
+      }
+      
+      .glide__track {
+        // font-family: 'Source Sans Pro', sans-serif;
+        position: absolute;
+        
+        top: 50px;
+        
+        .glide__slides {
+          width: 500px;
           
-          li {
-            min-width: 500px;
-            height: 100%;
+          .glide__slide {
+            max-width: 500px;
+            // font-size: 21.33px;
             
-          }
-          
-          h2 {
-            font-family: 'Montserrat', serif;
-            margin-top: 0px;
-            margin-bottom: 0px;
+            li {
+              min-width: 500px;
+              height: 100%;  
+            }
+
+            h2 {
+              margin-top: 0px;
+              margin-bottom: 0px;
+              font-family: 'Source Sans Pro', sans-serif;
+              font-size: 28.43px;
+            }
             
+            p {
+              font-family: 'Source Sans Pro', sans-serif;
+              font-size: 21.33px;
+              line-height: 1.5rem;
+            }
           }
         }
       }
+
+      .glide__arrows {
+        position: relative;
+        display: flex;
+        justify-content: flex-start;
+        top: 200px;
+        width: 500px;
+        
+      }
     }
-    
+      
     .video {
       position: absolute;
       top: 200px;

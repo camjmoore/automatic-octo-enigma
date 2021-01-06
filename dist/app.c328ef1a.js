@@ -41459,17 +41459,17 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-var glide1 = new _glide.default('.glide1', {
+var glide1 = new _glide.default('#glide1', {
   perView: 1,
   startAt: 0,
   hoverpause: true,
   autoplay: false
 });
-var glide2 = new _glide.default('.glide2', {
+var glide2 = new _glide.default('#glide2', {
   perView: 1,
   startAt: 0
 });
-var glide3 = new _glide.default('.glide3', {
+var glide3 = new _glide.default('#glide3', {
   perView: 1,
   startAt: 0
 });
@@ -41477,6 +41477,7 @@ glide1.mount();
 glide2.mount();
 glide3.mount();
 setTimeout(function () {
+  sketch.resize();
   glide1.update();
   glide1.play(2300);
   console.log('update ran');
@@ -41581,7 +41582,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65425" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57865" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
