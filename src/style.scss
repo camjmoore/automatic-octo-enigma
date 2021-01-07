@@ -2,6 +2,7 @@
 @import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
 
 html {
+  box-sizing: border-box;
   
   body {
     overflow: hidden;
@@ -41,7 +42,7 @@ html {
             margin: 0 auto;
             padding: 0;
             
-            .nav-li {
+            .nav {
               width: 100%;
               text-align: center;
               list-style-type: none;
@@ -49,6 +50,25 @@ html {
               cursor: pointer;
               font-family: 'Source Sans Pro', sans-serif;
               
+              &:hover {
+                transform: scale(1.15);
+                transition: all 0.75s; 
+              }
+            }
+
+            #contact {
+              animation: scale 2s infinite;
+              transform: scale(1.15);
+              animation-direction: alternate;
+
+              @keyframes scale {
+                0% {
+                  transform: scale(1.15);
+                }
+                100% {
+                  transform: scale(1);
+                }
+              }
             }
           }
         }
@@ -60,7 +80,7 @@ html {
           font-family: 'Source Serif Pro', serif;
           font-size: 28.43px;
           font-weight: bold;
-          
+
         }
       }
     }
@@ -80,25 +100,29 @@ html {
         
         h1 {
           line-height: 0rem;
-          font-family: 'Source Serif Pro', serif;
+          font-family: 'Source Serif Pro', serif;          
           font-weight: 700;
           width: 500px;
-
+          
           a {
             text-decoration: none;
             color: inherit;
+
           }
         }
-
+        
         p {
           font-family: 'Source Sans Pro', sans-serif;
           font-size: 21.33px;
+          // margin-top: 0px;
+          // padding-top: 0px;
           // line-height: 1.5rem;
         }
       }
-      
+
       .description {
-        overflow-y: auto;
+        overflow: hidden;
+
       }
 
       #glide1 {
@@ -106,18 +130,18 @@ html {
           line-height: 0rem;
         }
       }
-
+      
       #glide3 {
         h1 {
           // z-index: 100;
           width: 600px;
         }
       }
-
+      
       .glide {
         height: inherit;
         font-size: 28.43px;
-
+        
         h1 {
           line-height: 0rem;
           font-family: 'Source Serif Pro', serif;
@@ -147,7 +171,7 @@ html {
                 min-width: 500px;
                 height: 100%;  
               }
-
+              
               h2 {
                 margin-top: 0px;
                 margin-bottom: 0px;
@@ -159,11 +183,12 @@ html {
                 font-family: 'Source Sans Pro', sans-serif;
                 font-size: 21.33px;
                 line-height: 1.5rem;
+                margin-top: 1px;
               }
             }
           }
         }
-
+        
         .glide__arrows {
           position: relative;
           display: flex;
@@ -173,11 +198,11 @@ html {
           
           .glide__arrow {
             color: #1f2641ff;
-            
+            background-color: #ffffff;
           }
         }
       }
-        
+      
       .video {
         position: relative;
         padding-bottom: 56.25%;
@@ -217,7 +242,7 @@ html {
         display: none;
       }
     }
-  
+    
     // #block {
       //   height: 100px;
       //   width: 100px;
@@ -225,20 +250,105 @@ html {
       //   position: absolute;
       //   z-index: 100;
       // }
-    
-    #canvas {
-      width: 100vw;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 300px;
-      z-index: -1;
-      pointer-events: none;
-    }
+      
+      #canvas {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 300px;
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      .background {
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color: #000000, $alpha: 0.5);
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        
+      .contact-modal {
+        width: 500px;
+        height: 300px;
+        border-radius: 4px;
+        background-color: white;
+        padding: 20px;
+        z-index: 2;
 
+        h2 {
+          padding: 0px;
+          margin: 0 auto;
+          text-align: center;
+          font-family: 'Source Sans Pro', sans-serif;
+          font-size: 21.33px;
+          width: 45%;
+
+        }
+
+        .fa-times-circle {
+          position: relative;
+          // bottom: 275px;
+          left: 480px;
+          color: #1f2641ff;
+          cursor: pointer;
+
+          &:hover {
+            transform: scale(1.15);
+            transition: all 1s; 
+          }
+        }
+        
+        form {
+          display: flex;
+          flex-direction: column;
+          
+          textarea {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 21.33px;
+            width: 80%;
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            background-color: #f8f8f8;
+            margin: 2% auto;
+            border-radius: 4px;
+            border: 1px silver solid; 
+            resize: none;
+          }
+          
+          // .message {
+            // }
+            
+          .button {
+            width: 125px;
+            margin: 2% auto;
+            border-radius: 4px;
+            color: #ffffff;
+            background-color: seagreen;
+            text-align: center;
+            text-decoration: none;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 21.33px;
+
+            &:hover {
+              background-color: rgb(34, 192, 102);
+              transform: scale(1.15);
+              transition: all 1s; 
+            }
+          }
+        }
+      }
+    }
+    
     footer {
       position: fixed;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       height: 80px;
       // box-sizing: border-box;
@@ -247,17 +357,37 @@ html {
       right: 0;
       background-color: #1f2641ff;
       z-index: 10;
-
+      
       .tools {
         display: flex;
-        justify-content: space-evenly;
-        width: 100%;
+        justify-content: space-around;
+        align-items: center;
+        width: 50%;
+        padding-left: 3%;
+        padding-right: 3%;
+        
+        .mytools {
+          font-family: 'Source Sans Pro', sans-serif;
+          font-size: 21.33px;
+          text-align: center;
+          width: 150px;
+          color: #ffffff;
+        }
 
         svg {
           width: 40px;
           height: 40px
         }
       }
+      
+      // .cta {
+      //   font-family: 'Source Serif Pro', serif;
+      //   font-size: 1.33rem;
+      //   color: #ffffff;
+      //   padding-left: 15%;
+      //   padding-right: 15%;
+        
+      // }
     }
   }
 }

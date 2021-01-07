@@ -41461,9 +41461,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 var glide1 = new _glide.default('#glide1', {
   perView: 1,
-  startAt: 0,
-  hoverpause: true,
-  autoplay: false
+  startAt: 0 // hoverpause: true,
+  // autoplay: false
+
 });
 var glide2 = new _glide.default('#glide2', {
   perView: 1,
@@ -41471,16 +41471,17 @@ var glide2 = new _glide.default('#glide2', {
 });
 var glide3 = new _glide.default('#glide3', {
   perView: 1,
-  startAt: 0
+  startAt: 0 // gap: 60,
+
 });
 glide1.mount();
 glide2.mount();
-glide3.mount();
-setTimeout(function () {
-  glide1.update();
-  glide1.play(2300);
-  console.log('update ran');
-}, 2000);
+glide3.mount(); // setTimeout(() => {
+//   glide1.update()
+//   glide1.play(2300)
+//   console.log('update ran')
+// }, 60000)
+
 var sketch = new _threeClassRefactor.default({
   dom: document.getElementById('canvas')
 });
@@ -41495,6 +41496,20 @@ var elems = _toConsumableArray(document.querySelectorAll('.n'));
 var nav = _toConsumableArray(document.querySelectorAll('.nav-li'));
 
 var descrips = _toConsumableArray(document.querySelectorAll('.description'));
+
+var contact = document.getElementById('contact');
+var modal = document.querySelector('.background');
+var close = document.querySelector('.fa-times-circle');
+contact.addEventListener('click', function (e) {
+  e.stopPropagation();
+  modal.style.display = 'flex';
+});
+close.addEventListener('click', function (e) {
+  modal.style.display = 'none';
+}); // display tools and languages used for each project
+// upon each position remove unnecessary ids
+
+var tools = _toConsumableArray(document.querySelectorAll('svg'));
 
 window.addEventListener('wheel', function (e) {
   //slow down rate of change for y
@@ -41531,22 +41546,15 @@ function raf() {
   });
   descrips.forEach(function (descrip) {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
-  }); // let displayed = `description${rounded}`
-  // if className = `description${rounded}`
-  // if(descrip.getAttribute('data-desc') == rounded){
-  //   descrip.classList.remove('display')
-  // } else {
-  //   descrip.classList.add('display')
-  // }
-  //mesh positions should programmatically render trigger classes for scss animations
-  //if rounded value is between a
-  //mesh position values are only available within raf()
-  // console.log(rounded)
+  }); //remember that mesh position values are only available within raf()
+  //extant lines from initial sketch of the behavior for the scroll interaction
   // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   //fix for discontinuity of resize function after page refresh
 
-  sketch.resize();
+  sketch.resize(); //enables glides to resize properly after canvas resize
+
+  glide1.update();
   glide2.update();
   glide3.update();
   window.requestAnimationFrame(raf);
@@ -41581,7 +41589,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52552" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58758" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

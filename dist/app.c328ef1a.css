@@ -130,6 +130,9 @@
   cursor: -webkit-grabbing;
 }
 
+html {
+  box-sizing: border-box;
+}
 html body {
   overflow: hidden;
   font-weight: bold;
@@ -167,13 +170,30 @@ html body header .nav-container .header-nav .menu {
   margin: 0 auto;
   padding: 0;
 }
-html body header .nav-container .header-nav .menu .nav-li {
+html body header .nav-container .header-nav .menu .nav {
   width: 100%;
   text-align: center;
   list-style-type: none;
   justify-content: space-around;
   cursor: pointer;
   font-family: "Source Sans Pro", sans-serif;
+}
+html body header .nav-container .header-nav .menu .nav:hover {
+  transform: scale(1.15);
+  transition: all 0.75s;
+}
+html body header .nav-container .header-nav .menu #contact {
+  animation: scale 2s infinite;
+  transform: scale(1.15);
+  animation-direction: alternate;
+}
+@keyframes scale {
+  0% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 html body header .nav-container .corner-emblem {
   display: flex;
@@ -209,7 +229,7 @@ html body #wrapper .description1 p {
   font-size: 21.33px;
 }
 html body #wrapper .description {
-  overflow-y: auto;
+  overflow: hidden;
 }
 html body #wrapper #glide1 h1 {
   line-height: 0rem;
@@ -253,6 +273,7 @@ html body #wrapper .glide .glide__track .glide__slides .glide__slide p {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 21.33px;
   line-height: 1.5rem;
+  margin-top: 1px;
 }
 html body #wrapper .glide .glide__arrows {
   position: relative;
@@ -263,6 +284,7 @@ html body #wrapper .glide .glide__arrows {
 }
 html body #wrapper .glide .glide__arrows .glide__arrow {
   color: #1f2641ff;
+  background-color: #ffffff;
 }
 html body #wrapper .video {
   position: relative;
@@ -301,9 +323,80 @@ html body #canvas {
   z-index: -1;
   pointer-events: none;
 }
+html body .background {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+html body .background .contact-modal {
+  width: 500px;
+  height: 300px;
+  border-radius: 4px;
+  background-color: white;
+  padding: 20px;
+  z-index: 2;
+}
+html body .background .contact-modal h2 {
+  padding: 0px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
+  width: 45%;
+}
+html body .background .contact-modal .fa-times-circle {
+  position: relative;
+  left: 480px;
+  color: #1f2641ff;
+  cursor: pointer;
+}
+html body .background .contact-modal .fa-times-circle:hover {
+  transform: scale(1.15);
+  transition: all 1s;
+}
+html body .background .contact-modal form {
+  display: flex;
+  flex-direction: column;
+}
+html body .background .contact-modal form textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
+  width: 80%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+  margin: 2% auto;
+  border-radius: 4px;
+  border: 1px silver solid;
+  resize: none;
+}
+html body .background .contact-modal form .button {
+  width: 125px;
+  margin: 2% auto;
+  border-radius: 4px;
+  color: #ffffff;
+  background-color: seagreen;
+  text-align: center;
+  text-decoration: none;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
+}
+html body .background .contact-modal form .button:hover {
+  background-color: #22c066;
+  transform: scale(1.15);
+  transition: all 1s;
+}
 html body footer {
   position: fixed;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   height: 80px;
   bottom: 0;
@@ -314,8 +407,18 @@ html body footer {
 }
 html body footer .tools {
   display: flex;
-  justify-content: space-evenly;
-  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  width: 50%;
+  padding-left: 3%;
+  padding-right: 3%;
+}
+html body footer .tools .mytools {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 21.33px;
+  text-align: center;
+  width: 150px;
+  color: #ffffff;
 }
 html body footer .tools svg {
   width: 40px;

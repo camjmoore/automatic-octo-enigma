@@ -5,8 +5,8 @@ import Glide from '@glidejs/glide'
 let glide1 = new Glide('#glide1', {
   perView: 1,
   startAt: 0,
-  hoverpause: true,
-  autoplay: false
+  // hoverpause: true,
+  // autoplay: false
 })
 
 let glide2 = new Glide('#glide2', {
@@ -17,6 +17,7 @@ let glide2 = new Glide('#glide2', {
 let glide3 = new Glide('#glide3', {
   perView: 1,
   startAt: 0,
+  // gap: 60,
 })
 
 
@@ -24,11 +25,11 @@ glide1.mount()
 glide2.mount()
 glide3.mount()
 
-setTimeout(() => {
-  glide1.update()
-  glide1.play(2300)
-  console.log('update ran')
-}, 2000)
+// setTimeout(() => {
+//   glide1.update()
+//   glide1.play(2300)
+//   console.log('update ran')
+// }, 60000)
 
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
@@ -42,6 +43,24 @@ let wrap = document.getElementById('wrapper');
 let elems = [...document.querySelectorAll('.n')];
 let nav = [...document.querySelectorAll('.nav-li')];
 let descrips = [...document.querySelectorAll('.description')];
+
+let contact = document.getElementById('contact')
+let modal = document.querySelector('.background')
+let close = document.querySelector('.fa-times-circle')
+
+contact.addEventListener('click', e => {
+  e.stopPropagation()
+  modal.style.display = 'flex';
+})
+
+close.addEventListener('click', (e) => {
+  modal.style.display = 'none';
+})
+
+// display tools and languages used for each project
+// upon each position remove unnecessary ids
+let tools = [...document.querySelectorAll('svg')];
+
 
 window.addEventListener('wheel', e => {
   //slow down rate of change for y
@@ -85,33 +104,22 @@ function raf(){
   descrips.forEach((descrip) => {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display')
   })
+        
+  //remember that mesh position values are only available within raf()
+      
+      
+  //extant lines from initial sketch of the behavior for the scroll interaction
+  // block.style.transform = `translate(0, ${position*100}px)`
+  // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   
-  // let displayed = `description${rounded}`
-  // if className = `description${rounded}`
-  
-  // if(descrip.getAttribute('data-desc') == rounded){
-    //   descrip.classList.remove('display')
-    // } else {
-      //   descrip.classList.add('display')
-      // }
-      
-      //mesh positions should programmatically render trigger classes for scss animations
-      //if rounded value is between a
-      
-      
-      //mesh position values are only available within raf()
-      
-      
-      // console.log(rounded)
-      // block.style.transform = `translate(0, ${position*100}px)`
-      // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
-      
-      //fix for discontinuity of resize function after page refresh
-      sketch.resize()
-      glide2.update()
-      glide3.update()
-      window.requestAnimationFrame(raf)
-    }
+  //fix for discontinuity of resize function after page refresh
+  sketch.resize()
+
+  //enables glides to resize properly after canvas resize
+  glide1.update()
+  glide2.update()
+  glide3.update()
+  window.requestAnimationFrame(raf)
+}
     
-    
-    raf();
+raf();
