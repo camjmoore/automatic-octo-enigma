@@ -228,6 +228,9 @@ html body #wrapper .description1 p {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 21.33px;
 }
+html body #wrapper .description4 #watch-me {
+  padding-top: 30px;
+}
 html body #wrapper .description {
   overflow: hidden;
 }
@@ -279,7 +282,7 @@ html body #wrapper .glide .glide__arrows {
   position: relative;
   display: flex;
   justify-content: flex-start;
-  top: 200px;
+  top: 220px;
   width: 500px;
 }
 html body #wrapper .glide .glide__arrows .glide__arrow {

@@ -120,6 +120,12 @@ html {
         }
       }
 
+      .description4 {
+        #watch-me {
+          padding-top: 30px;
+        }
+      }
+
       .description {
         overflow: hidden;
 
@@ -193,7 +199,7 @@ html {
           position: relative;
           display: flex;
           justify-content: flex-start;
-          top: 200px;
+          top: 220px;
           width: 500px;
           
           .glide__arrow {
