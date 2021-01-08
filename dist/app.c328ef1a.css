@@ -247,6 +247,12 @@ html body #wrapper .glide h1 {
   line-height: 0rem;
   font-family: "Source Serif Pro", serif;
 }
+html body #wrapper .glide h1:hover {
+  padding-left: 10px;
+  color: #1937af;
+  transform: scale(1.025);
+  transition: all 0.75s;
+}
 html body #wrapper .glide h1 a {
   text-decoration: none;
   color: inherit;

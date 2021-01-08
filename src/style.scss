@@ -164,8 +164,13 @@ html {
         h1 {
           line-height: 0rem;
           font-family: 'Source Serif Pro', serif;
-          // font-weight: 700;
-          // width: 500px;
+
+          &:hover {
+            padding-left: 10px;
+            color: rgb(25, 55, 175);
+            transform: scale(1.025);
+            transition: all 0.75s; 
+          }
           
           a {
             text-decoration: none;
