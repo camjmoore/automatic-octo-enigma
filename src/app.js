@@ -5,8 +5,6 @@ import Glide from '@glidejs/glide'
 let glide1 = new Glide('#glide1', {
   perView: 1,
   startAt: 0,
-  // hoverpause: true,
-  // autoplay: false
 })
 
 let glide2 = new Glide('#glide2', {
@@ -17,19 +15,12 @@ let glide2 = new Glide('#glide2', {
 let glide3 = new Glide('#glide3', {
   perView: 1,
   startAt: 0,
-  // gap: 60,
 })
 
 
 glide1.mount()
 glide2.mount()
 glide3.mount()
-
-// setTimeout(() => {
-//   glide1.update()
-//   glide1.play(2300)
-//   console.log('update ran')
-// }, 60000)
 
 let sketch = new Sketch({
   dom: document.getElementById('canvas')
@@ -57,17 +48,12 @@ close.addEventListener('click', (e) => {
   modal.style.display = 'none';
 })
 
-// display tools and languages used for each project
-// upon each position remove unnecessary ids
-let tools = [...document.querySelectorAll('svg')];
-
-
 window.addEventListener('wheel', e => {
-  //slow down rate of change for y
+  // slow down rate of change for y
   speed += e.deltaY*0.0003;
 })
 
-//create an array of object to iterate over
+// create an array of object to iterate over
 let objets = Array(4).fill({dist:0}) 
 
 function raf(){
@@ -75,19 +61,20 @@ function raf(){
   speed *= 0.8;
   rounded = Math.round(position);
   
-  //iterate over the dist objects in the array we created
+  // iterate over the dist objects in the array we created
   objets.forEach((obj, i) => {
     obj.dist = Math.min(Math.abs(position - i), 1)
     obj.dist = 1 - obj.dist**2;
     elems[i].style.transform = `scale(${1 + 0.4*obj.dist})`
     let scale = 1 + 0.3*obj.dist;
+    // remember that mesh position values are only available within raf()
     sketch.meshes[i].position.y = i*1.2 - position*1.2
     sketch.meshes[i].scale.set(scale,scale,scale)
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist
     
   })
-  
-  //acts as a lerp function
+
+  // acts as a lerp function
   let diff = (rounded - position);
   
   position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
@@ -104,18 +91,14 @@ function raf(){
   descrips.forEach((descrip) => {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display')
   })
-        
-  //remember that mesh position values are only available within raf()
-      
-      
-  //extant lines from initial sketch of the behavior for the scroll interaction
+
+  // remaining sketch of the behavior for the scroll interaction
   // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
   
-  //fix for discontinuity of resize function after page refresh
+  // refire resize function to fix canvas sizing after page refresh
   sketch.resize()
-
-  //enables glides to resize properly after canvas resize
+  // enables glides to resize properly after canvas resize
   glide1.update()
   glide2.update()
   glide3.update()

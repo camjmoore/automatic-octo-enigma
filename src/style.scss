@@ -12,7 +12,6 @@ html {
     
     header {
       position: fixed;
-      // box-sizing: border-box;
       top: 0;
       left: 0;
       right: 0;
@@ -55,21 +54,6 @@ html {
                 transition: all 0.75s; 
               }
             }
-
-            #contact {
-              // animation: scale 2s infinite;
-              // transform: scale(1.15);
-              // animation-direction: alternate;
-
-              // @keyframes scale {
-              //   0% {
-              //     transform: scale(1.15);
-              //   }
-              //   100% {
-              //     transform: scale(1);
-              //   }
-              // }
-            }
           }
         }
       
@@ -88,14 +72,12 @@ html {
     #wrapper {
       width: 500px;
       height: 1000px;
-      // overflow: hidden;
       position: absolute;
       top: 180px;
       left: 130px;
       
       .description1 {
         width: 100%;
-        // font-family: 'Source Sans Pro', sans-serif;
         font-size: 28.43px;
         
         h1 {
@@ -114,9 +96,6 @@ html {
         p {
           font-family: 'Source Sans Pro', sans-serif;
           font-size: 21.33px;
-          // margin-top: 0px;
-          // padding-top: 0px;
-          // line-height: 1.5rem;
         }
       }
 
@@ -152,7 +131,6 @@ html {
       
       #glide3 {
         h1 {
-          // z-index: 100;
           width: 600px;
         }
       }
@@ -179,7 +157,6 @@ html {
         }
         
         .glide__track {
-          // font-family: 'Source Sans Pro', sans-serif;
           position: absolute;
           
           top: 50px;
@@ -189,7 +166,6 @@ html {
             
             .glide__slide {
               max-width: 500px;
-              // font-size: 21.33px;
               
               li {
                 min-width: 500px;
@@ -241,9 +217,6 @@ html {
         position: absolute;
         top: 300px;
         left: 150px;
-        // width: 200px;
-        // height: 300px;
-        // background-color: blueviolet;
       }
       
       .n1 {
@@ -266,14 +239,6 @@ html {
         display: none;
       }
     }
-    
-    // #block {
-      //   height: 100px;
-      //   width: 100px;
-      //   background: peru;
-      //   position: absolute;
-      //   z-index: 100;
-      // }
       
       #canvas {
         width: 100vw;
@@ -316,7 +281,6 @@ html {
 
         .fa-times-circle {
           position: relative;
-          // bottom: 275px;
           left: 480px;
           color: #1f2641ff;
           cursor: pointer;
@@ -344,9 +308,6 @@ html {
             border: 1px silver solid; 
             resize: none;
           }
-          
-          // .message {
-            // }
             
           .button {
             width: 125px;
@@ -397,21 +358,12 @@ html {
           width: 150px;
           color: #ffffff;
         }
-
+        
         svg {
           width: 40px;
           height: 40px
         }
       }
-      
-      // .cta {
-      //   font-family: 'Source Serif Pro', serif;
-      //   font-size: 1.33rem;
-      //   color: #ffffff;
-      //   padding-left: 15%;
-      //   padding-right: 15%;
-        
-      // }
     }
   }
 }

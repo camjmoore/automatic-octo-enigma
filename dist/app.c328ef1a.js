@@ -41462,9 +41462,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 var glide1 = new _glide.default('#glide1', {
   perView: 1,
-  startAt: 0 // hoverpause: true,
-  // autoplay: false
-
+  startAt: 0
 });
 var glide2 = new _glide.default('#glide2', {
   perView: 1,
@@ -41472,17 +41470,11 @@ var glide2 = new _glide.default('#glide2', {
 });
 var glide3 = new _glide.default('#glide3', {
   perView: 1,
-  startAt: 0 // gap: 60,
-
+  startAt: 0
 });
 glide1.mount();
 glide2.mount();
-glide3.mount(); // setTimeout(() => {
-//   glide1.update()
-//   glide1.play(2300)
-//   console.log('update ran')
-// }, 60000)
-
+glide3.mount();
 var sketch = new _threeClassRefactor.default({
   dom: document.getElementById('canvas')
 });
@@ -41507,15 +41499,11 @@ contact.addEventListener('click', function (e) {
 });
 close.addEventListener('click', function (e) {
   modal.style.display = 'none';
-}); // display tools and languages used for each project
-// upon each position remove unnecessary ids
-
-var tools = _toConsumableArray(document.querySelectorAll('svg'));
-
+});
 window.addEventListener('wheel', function (e) {
-  //slow down rate of change for y
+  // slow down rate of change for y
   speed += e.deltaY * 0.0003;
-}); //create an array of object to iterate over
+}); // create an array of object to iterate over
 
 var objets = Array(4).fill({
   dist: 0
@@ -41524,17 +41512,18 @@ var objets = Array(4).fill({
 function raf() {
   position += speed;
   speed *= 0.8;
-  rounded = Math.round(position); //iterate over the dist objects in the array we created
+  rounded = Math.round(position); // iterate over the dist objects in the array we created
 
   objets.forEach(function (obj, i) {
     obj.dist = Math.min(Math.abs(position - i), 1);
     obj.dist = 1 - Math.pow(obj.dist, 2);
     elems[i].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
-    var scale = 1 + 0.3 * obj.dist;
+    var scale = 1 + 0.3 * obj.dist; // remember that mesh position values are only available within raf()
+
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
-  }); //acts as a lerp function
+  }); // acts as a lerp function
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
@@ -41547,13 +41536,12 @@ function raf() {
   });
   descrips.forEach(function (descrip) {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
-  }); //remember that mesh position values are only available within raf()
-  //extant lines from initial sketch of the behavior for the scroll interaction
+  }); // remaining sketch of the behavior for the scroll interaction
   // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
-  //fix for discontinuity of resize function after page refresh
+  // refire resize function to fix canvas sizing after page refresh
 
-  sketch.resize(); //enables glides to resize properly after canvas resize
+  sketch.resize(); // enables glides to resize properly after canvas resize
 
   glide1.update();
   glide2.update();
@@ -41590,7 +41578,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52291" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52832" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
