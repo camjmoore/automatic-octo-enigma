@@ -37799,6 +37799,7 @@ var Sketch = /*#__PURE__*/function () {
     this.camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
     this.camera.position.set(0, 0, 2);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableKeys = false;
     this.time = 0;
     this.isPlaying = true;
     this.addObjects();
@@ -41589,7 +41590,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59092" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50033" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

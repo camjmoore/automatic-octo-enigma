@@ -29,6 +29,7 @@ export default class Sketch {
 
     this.camera.position.set(0, 0, 2);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableKeys = false;
     this.time = 0;
 
     this.isPlaying = true;
