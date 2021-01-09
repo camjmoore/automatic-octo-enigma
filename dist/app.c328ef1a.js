@@ -37799,6 +37799,7 @@ var Sketch = /*#__PURE__*/function () {
     this.camera = new THREE.PerspectiveCamera(70, window.innerwidth / window.innerHeight, 0.001, 1000);
     this.camera.position.set(0, 0, 2);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableKeys = false;
     this.time = 0;
     this.isPlaying = true;
     this.addObjects();
@@ -41459,25 +41460,21 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-var glide1 = new _glide.default('.glide1', {
+var glide1 = new _glide.default('#glide1', {
   perView: 1,
-  startAt: 0,
-  hoverpause: true,
-  autoplay: false
+  startAt: 0
 });
-var glide2 = new _glide.default('.glide2', {
+var glide2 = new _glide.default('#glide2', {
   perView: 1,
-  startAt: 0,
-  hoverpause: true,
-  autoplay: 2700
+  startAt: 0
+});
+var glide3 = new _glide.default('#glide3', {
+  perView: 1,
+  startAt: 0
 });
 glide1.mount();
 glide2.mount();
-setTimeout(function () {
-  glide1.update();
-  glide1.play(2700);
-  console.log('update ran');
-}, 2000);
+glide3.mount();
 var sketch = new _threeClassRefactor.default({
   dom: document.getElementById('canvas')
 });
@@ -41493,64 +41490,62 @@ var nav = _toConsumableArray(document.querySelectorAll('.nav-li'));
 
 var descrips = _toConsumableArray(document.querySelectorAll('.description'));
 
+var contact = document.getElementById('contact');
+var modal = document.querySelector('.background');
+var close = document.querySelector('.fa-times-circle');
+contact.addEventListener('click', function (e) {
+  e.stopPropagation();
+  modal.style.display = 'flex';
+});
+close.addEventListener('click', function (e) {
+  modal.style.display = 'none';
+});
 window.addEventListener('wheel', function (e) {
-  //slow down rate of change for y
+  // slow down rate of change for y
   speed += e.deltaY * 0.0003;
-}); //create an array of object to iterate over
+}); // create an array of object to iterate over
 
-var objets = Array(5).fill({
+var objets = Array(4).fill({
   dist: 0
 });
 
 function raf() {
   position += speed;
   speed *= 0.8;
-  rounded = Math.round(position); //iterate over the dist objects in the array we created
+  rounded = Math.round(position); // iterate over the dist objects in the array we created
 
   objets.forEach(function (obj, i) {
     obj.dist = Math.min(Math.abs(position - i), 1);
     obj.dist = 1 - Math.pow(obj.dist, 2);
     elems[i].style.transform = "scale(".concat(1 + 0.4 * obj.dist, ")");
-    var scale = 1 + 0.3 * obj.dist;
+    var scale = 1 + 0.3 * obj.dist; // remember that mesh position values are only available within raf()
+
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
-  }); //acts as a lerp function
+  }); // acts as a lerp function
 
   var diff = rounded - position;
   position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
-  position > 1 ? position = Math.min(position, 4.1) : position = Math.max(position, 0.1);
+  position > 1 ? position = Math.min(position, 3.1) : position = Math.max(position, 0.01);
   nav.forEach(function (el) {
     el.addEventListener('click', function (e) {
-      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 4;
+      e.target.getAttribute('data-nav') == 0 ? position = 0 : position = 3;
       console.log('nav clicked!');
     });
   });
   descrips.forEach(function (descrip) {
     descrip.getAttribute('data-desc') == rounded ? descrip.classList.remove('display') : descrip.classList.add('display');
-  });
-  descrips.forEach(function (descrip) {
-    descrip.addEventListener('click', function (e) {
-      console.log('description clicked');
-      e.stopPropagation();
-    });
-  }); // let displayed = `description${rounded}`
-  // if className = `description${rounded}`
-  // if(descrip.getAttribute('data-desc') == rounded){
-  //   descrip.classList.remove('display')
-  // } else {
-  //   descrip.classList.add('display')
-  // }
-  //mesh positions should programmatically render trigger classes for scss animations
-  //if rounded value is between a
-  //mesh position values are only available within raf()
-  // console.log(rounded)
+  }); // remaining sketch of the behavior for the scroll interaction
   // block.style.transform = `translate(0, ${position*100}px)`
   // wrap.style.transform = `translate(0, ${-position*100 + 50}px)`
-  //fix for discontinuity of resize function after page refresh
+  // refire resize function to fix canvas sizing after page refresh
 
-  sketch.resize();
+  sketch.resize(); // enables glides to resize properly after canvas resize
+
+  glide1.update();
   glide2.update();
+  glide3.update();
   window.requestAnimationFrame(raf);
 }
 
@@ -41583,7 +41578,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64426" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51924" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

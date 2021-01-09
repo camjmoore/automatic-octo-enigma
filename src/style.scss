@@ -2,47 +2,32 @@
 @import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
 
 html {
+  box-sizing: border-box;
   
   body {
     overflow: hidden;
-    // font-family: 'Lusitana', serif;
-    // font-family: 'Montserrat', serif;
     font-weight: bold;
     color: #1f2641ff;
     background-color: #eeeeee;
     
     header {
       position: fixed;
-      // box-sizing: border-box;
       top: 0;
       left: 0;
       right: 0;
       color: #1f2641ff;
-      // background-color: tomato;
       z-index: 1;
       
       .nav-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        // align-content: center;
         flex-wrap: nowrap;
         height: 100px;
         width: 100%;
         max-width: 70em;
         margin: 0 auto;
         overflow: hidden;
-        
-        // .title {
-          //   width: 20%;
-          
-          //   svg {
-            //     position: fixed;
-            //     height: 30px;
-            //     top: 15px;
-            //     left: 15px;
-      //   }
-      // }
       
         .header-nav {
           display: flex;
@@ -56,14 +41,18 @@ html {
             margin: 0 auto;
             padding: 0;
             
-            .nav-li {
+            .nav {
               width: 100%;
               text-align: center;
               list-style-type: none;
               justify-content: space-around;
               cursor: pointer;
-              font-family: 'Montserrat', serif;
+              font-family: 'Source Sans Pro', sans-serif;
               
+              &:hover {
+                transform: scale(1.15);
+                transition: all 0.75s; 
+              }
             }
           }
         }
@@ -72,132 +61,309 @@ html {
           display: flex;
           justify-content: center;
           width: 100%;
-          font-family: 'Montserrat', serif;
+          font-family: 'Source Serif Pro', serif;
           font-size: 28.43px;
           font-weight: bold;
-          
-          // h1 {
-          //   width: 100%;
-          // }
+
         }
+      }
     }
-  }
   
-  #wrapper {
-    width: 500px;
-    height: 1000px;
-    overflow: hidden;
-    position: absolute;
-    top: 150px;
-    left: 110px;
-    
-    .description {
-      width: 100%;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 28.43px;
+    #wrapper {
+      width: 500px;
+      height: 1000px;
+      position: absolute;
+      top: 180px;
+      left: 130px;
       
-      h1 {
-        line-height: 0rem;
-        font-family: 'Montserrat', serif;
-        font-weight: 700;
-        width: 500px;
-      }
-
-      p {
-        font-size: 16px;
-        line-height: 1.5rem;
-      }
-    }
-    
-    .description4 {
-      overflow-y: auto;
-    }
-    
-    .glide__track {
-      position: absolute;
-      top: 50px;
-
-      .glide__slides {
-        width: 500px;
+      .description1 {
+        width: 100%;
+        font-size: 28.43px;
         
-        .glide__slide {
-          max-width: 500px;
-          font-size: 21.33px;
+        h1 {
+          line-height: 0rem;
+          font-family: 'Source Serif Pro', serif;          
+          font-weight: 700;
+          width: 500px;
           
-          li {
-            min-width: 500px;
-            height: 100%;
-            
+          a {
+            text-decoration: none;
+            color: inherit;
+
+          }
+        }
+        
+        p {
+          font-family: 'Source Sans Pro', sans-serif;
+          font-size: 21.33px;
+        }
+      }
+
+      .description4 {
+        #watch-me {
+          padding-top: 30px;
+          padding-left: 30px;
+          animation: scale 2s infinite;
+          transform: scale(1.15);
+          animation-direction: alternate;
+
+          @keyframes scale {
+            0% {
+              transform: scale(1.05);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+        }
+      }
+
+      .description {
+        overflow: hidden;
+
+      }
+
+      #glide1 {
+        h1 {
+          line-height: 0rem;
+        }
+      }
+      
+      #glide3 {
+        h1 {
+          width: 600px;
+        }
+      }
+      
+      .glide {
+        height: inherit;
+        font-size: 28.43px;
+        
+        h1 {
+          line-height: 0rem;
+          font-family: 'Source Serif Pro', serif;
+
+          &:hover {
+            padding-left: 10px;
+            color: rgb(25, 55, 175);
+            transform: scale(1.025);
+            transition: all 0.75s; 
           }
           
-          h2 {
-            font-family: 'Montserrat', serif;
-            margin-top: 0px;
-            margin-bottom: 0px;
+          a {
+            text-decoration: none;
+            color: inherit;
+          }
+        }
+        
+        .glide__track {
+          position: absolute;
+          
+          top: 50px;
+          
+          .glide__slides {
+            width: 500px;
             
+            .glide__slide {
+              max-width: 500px;
+              
+              li {
+                min-width: 500px;
+                height: 100%;  
+              }
+              
+              h2 {
+                margin-top: 0px;
+                margin-bottom: 0px;
+                font-family: 'Source Sans Pro', sans-serif;
+                font-size: 28.43px;
+              }
+              
+              p {
+                font-family: 'Source Sans Pro', sans-serif;
+                font-size: 21.33px;
+                line-height: 1.5rem;
+                margin-top: 1px;
+              }
+            }
+          }
+        }
+        
+        .glide__arrows {
+          position: relative;
+          display: flex;
+          justify-content: flex-start;
+          top: 220px;
+          width: 500px;
+          
+          .glide__arrow {
+            color: #1f2641ff;
+            background-color: #ffffff;
+          }
+        }
+      }
+      
+      .video {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0px;
+      }
+      
+      .display {
+        display: none;
+      }
+      
+      .n {
+        position: absolute;
+        top: 300px;
+        left: 150px;
+      }
+      
+      .n1 {
+        top: 400px;
+      }
+      
+      .n2 {
+        top: 500px;
+      }
+      
+      .n3 {
+        top: 600px;
+      }
+      
+      .n4 {
+        top: 700px;
+      }
+      
+      img {
+        display: none;
+      }
+    }
+      
+      #canvas {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 300px;
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      .background {
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color: #000000, $alpha: 0.5);
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        
+      .contact-modal {
+        width: 500px;
+        height: 300px;
+        border-radius: 4px;
+        background-color: white;
+        padding: 20px;
+        z-index: 2;
+
+        h2 {
+          padding: 0px;
+          margin: 0 auto;
+          text-align: center;
+          font-family: 'Source Sans Pro', sans-serif;
+          font-size: 21.33px;
+          width: 45%;
+
+        }
+
+        .fa-times-circle {
+          position: relative;
+          left: 480px;
+          color: #1f2641ff;
+          cursor: pointer;
+
+          &:hover {
+            transform: scale(1.15);
+            transition: all 1s; 
+          }
+        }
+        
+        form {
+          display: flex;
+          flex-direction: column;
+          
+          textarea {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 21.33px;
+            width: 80%;
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            background-color: #f8f8f8;
+            margin: 2% auto;
+            border-radius: 4px;
+            border: 1px silver solid; 
+            resize: none;
+          }
+            
+          .button {
+            width: 125px;
+            margin: 2% auto;
+            border-radius: 4px;
+            color: #ffffff;
+            background-color: seagreen;
+            text-align: center;
+            text-decoration: none;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 21.33px;
+
+            &:hover {
+              background-color: rgb(34, 192, 102);
+              transform: scale(1.15);
+              transition: all 1s; 
+            }
           }
         }
       }
     }
     
-    .video {
-      position: absolute;
-      top: 220px;
-      padding-bottom: 56.25%;
-      height: 0px;
-    }
-    
-    .display {
-      display: none;
-    }
-    
-    .n {
-      position: absolute;
-      top: 300px;
-      left: 150px;
-      // width: 200px;
-      // height: 300px;
-      // background-color: blueviolet;
-    }
-    
-    .n1 {
-      top: 400px;
-    }
-    
-    .n2 {
-      top: 500px;
-    }
-    
-    .n3 {
-      top: 600px;
-    }
-    
-    .n4 {
-      top: 700px;
-    }
-    
-    img {
-      display: none;
-    }
-  }
-  
-  // #block {
-    //   height: 100px;
-    //   width: 100px;
-    //   background: peru;
-    //   position: absolute;
-    //   z-index: 100;
-    // }
-    
-    #canvas {
-      width: 100vw;
-      height: 100vh;
+    footer {
       position: fixed;
-      top: 0;
-      left: 300px;
-      z-index: -1;
-      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+      // box-sizing: border-box;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1f2641ff;
+      z-index: 10;
+      
+      .tools {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 50%;
+        padding-left: 3%;
+        padding-right: 3%;
+        
+        .mytools {
+          font-family: 'Source Sans Pro', sans-serif;
+          font-size: 21.33px;
+          text-align: center;
+          width: 150px;
+          color: #ffffff;
+        }
+        
+        svg {
+          width: 40px;
+          height: 40px
+        }
+      }
     }
   }
-
 }
