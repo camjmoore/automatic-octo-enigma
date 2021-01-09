@@ -1,4 +1,4 @@
-# Cameron's Web-Dev Portfolio Websites
+# Cameron's Web-Dev Portfolio
 
 Shaders and scroll behavior implemented by following yuri3D's 'Scrolling effects with webGL and three.js' tutorial  
 
