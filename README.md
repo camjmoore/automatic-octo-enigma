@@ -1,2 +1,5 @@
-# automatic-octo-enigma
-A Practice project following a tutorial by yuri3D scrolling effects with webGL and three.js
+# Cameron's Web-Dev Portfolio Websites
+
+Shaders and scroll behavior implemented by following yuri3D's 'Scrolling effects with webGL and three.js' tutorial  
+
+bottom bar icons from dev icon  
