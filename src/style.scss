@@ -1,5 +1,6 @@
 @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
 @import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
+@import "./mixins.scss";
 
 html {
   box-sizing: border-box;
@@ -60,10 +61,15 @@ html {
         .corner-emblem {
           display: flex;
           justify-content: center;
-          width: 100%;
+          width: 98%;
           font-family: 'Source Serif Pro', serif;
           font-size: 28.43px;
           font-weight: bold;
+
+        }
+
+        @include md {
+          flex-direction: column-reverse;
 
         }
       }
@@ -351,18 +357,34 @@ html {
         padding-left: 3%;
         padding-right: 3%;
         
-        .mytools {
+        .languages {
           font-family: 'Source Sans Pro', sans-serif;
-          font-size: 21.33px;
+          font-size: 16px;
           text-align: center;
-          width: 150px;
+          width: 120px;
           color: #ffffff;
+
+          @include sm {
+            display: none;
+          }
         }
         
         svg {
           width: 40px;
-          height: 40px
+          height: 40px;
+
+          @include sm {
+            width: 30px;
+            height: 30px;          }
         }
+
+        @include md {
+          width: 80%;
+        }
+      }
+
+      @include md {
+        justify-content: center;
       }
     }
   }

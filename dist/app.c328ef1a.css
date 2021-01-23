@@ -185,10 +185,15 @@ html body header .nav-container .header-nav .menu .nav:hover {
 html body header .nav-container .corner-emblem {
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: 98%;
   font-family: "Source Serif Pro", serif;
   font-size: 28.43px;
   font-weight: bold;
+}
+@media (max-width: 1050px) {
+  html body header .nav-container {
+    flex-direction: column-reverse;
+  }
 }
 html body #wrapper {
   width: 500px;
@@ -421,16 +426,37 @@ html body footer .tools {
   padding-left: 3%;
   padding-right: 3%;
 }
-html body footer .tools .mytools {
+html body footer .tools .languages {
   font-family: "Source Sans Pro", sans-serif;
-  font-size: 21.33px;
+  font-size: 16px;
   text-align: center;
-  width: 150px;
+  width: 120px;
   color: #ffffff;
+}
+@media (max-width: 768px) {
+  html body footer .tools .languages {
+    display: none;
+  }
 }
 html body footer .tools svg {
   width: 40px;
   height: 40px;
+}
+@media (max-width: 768px) {
+  html body footer .tools svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+@media (max-width: 1050px) {
+  html body footer .tools {
+    width: 80%;
+  }
+}
+@media (max-width: 1050px) {
+  html body footer {
+    justify-content: center;
+  }
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */

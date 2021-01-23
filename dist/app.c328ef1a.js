@@ -41534,21 +41534,24 @@ function raf() {
     sketch.meshes[i].scale.set(scale, scale, scale);
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
 
-    if (window.innerWidth < 950 && window.innerWidth > 550) {
+    if (window.innerWidth < 1050 && window.innerWidth > 700) {
       canvas.style.left = '0px';
+      wrap.style.left = '130px';
       sketch.groups[i].rotation.x = -0.3;
       sketch.groups[i].rotation.y = 0;
       sketch.groups[i].rotation.z = 0;
       sketch.camera.position.set(0, 0, 1.75);
-    } else if (window.innerWidth < 550) {
+    } else if (window.innerWidth <= 700) {
       canvas.style.left = '0px';
-      wrap.style.left = '0px';
+      canvas.style.right = '0px';
+      wrap.style.left = '50px';
       sketch.groups[i].rotation.x = -0.3;
       sketch.groups[i].rotation.y = 0;
       sketch.groups[i].rotation.z = 0;
-      sketch.camera.position.set(0, 0, 3);
+      sketch.camera.position.set(0, 0, 2.75);
     } else {
       canvas.style.left = '300px';
+      wrap.style.left = '130px';
       sketch.groups[i].rotation.x = -0.3;
       sketch.groups[i].rotation.y = -0.3;
       sketch.groups[i].rotation.z = -0.15;
