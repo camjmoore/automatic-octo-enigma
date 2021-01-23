@@ -41475,8 +41475,9 @@ var glide3 = new _glide.default('#glide3', {
 glide1.mount();
 glide2.mount();
 glide3.mount();
+var canvas = document.getElementById('canvas');
 var sketch = new _threeClassRefactor.default({
-  dom: document.getElementById('canvas')
+  dom: canvas
 });
 var speed = 0;
 var position = 0;
@@ -41512,7 +41513,16 @@ var objets = Array(4).fill({
 function raf() {
   position += speed;
   speed *= 0.8;
-  rounded = Math.round(position); // iterate over the dist objects in the array we created
+  rounded = Math.round(position); //console log viewport width
+  // console.log(canvas.offsetWidth)
+  // console.log(window.innerWidth)
+  //if innerwidth < 650
+  //then canvas.style.left = '0 px'
+  // if (window.innerWidth < 650) {
+  //   console.log(sketch.group)
+  // }
+  // window.innerWidth < 650 ? canvas.style.left = '0px' : canvas.style.left = '300px'
+  // iterate over the dist objects in the array we created
 
   objets.forEach(function (obj, i) {
     obj.dist = Math.min(Math.abs(position - i), 1);
@@ -41523,6 +41533,28 @@ function raf() {
     sketch.meshes[i].position.y = i * 1.2 - position * 1.2;
     sketch.meshes[i].scale.set(scale, scale, scale);
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
+
+    if (window.innerWidth < 950 && window.innerWidth > 550) {
+      canvas.style.left = '0px';
+      sketch.groups[i].rotation.x = -0.3;
+      sketch.groups[i].rotation.y = 0;
+      sketch.groups[i].rotation.z = 0;
+      sketch.camera.position.set(0, 0, 1.75);
+    } else if (window.innerWidth < 550) {
+      canvas.style.left = '0px';
+      wrap.style.left = '0px';
+      sketch.groups[i].rotation.x = -0.3;
+      sketch.groups[i].rotation.y = 0;
+      sketch.groups[i].rotation.z = 0;
+      sketch.camera.position.set(0, 0, 3);
+    } else {
+      canvas.style.left = '300px';
+      sketch.groups[i].rotation.x = -0.3;
+      sketch.groups[i].rotation.y = -0.3;
+      sketch.groups[i].rotation.z = -0.15;
+      sketch.camera.position.set(0, 0, 2);
+    } // sketch.groups[i].rotation.y = 0
+
   }); // acts as a lerp function
 
   var diff = rounded - position;
@@ -41578,7 +41610,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52933" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55208" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

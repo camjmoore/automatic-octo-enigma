@@ -22,8 +22,10 @@ glide1.mount()
 glide2.mount()
 glide3.mount()
 
+let canvas = document.getElementById('canvas')
+
 let sketch = new Sketch({
-  dom: document.getElementById('canvas')
+  dom: canvas
 })
 
 let speed = 0;
@@ -61,6 +63,18 @@ function raf(){
   speed *= 0.8;
   rounded = Math.round(position);
   
+  //console log viewport width
+  // console.log(canvas.offsetWidth)
+  // console.log(window.innerWidth)
+
+  //if innerwidth < 650
+  //then canvas.style.left = '0 px'
+
+  // if (window.innerWidth < 650) {
+  //   console.log(sketch.group)
+  // }
+  // window.innerWidth < 650 ? canvas.style.left = '0px' : canvas.style.left = '300px'
+
   // iterate over the dist objects in the array we created
   objets.forEach((obj, i) => {
     obj.dist = Math.min(Math.abs(position - i), 1)
@@ -72,6 +86,27 @@ function raf(){
     sketch.meshes[i].scale.set(scale,scale,scale)
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist
     
+    if (window.innerWidth < 950 && window.innerWidth > 550) {
+      canvas.style.left = '0px'
+      sketch.groups[i].rotation.x = -0.3
+      sketch.groups[i].rotation.y = 0
+      sketch.groups[i].rotation.z = 0
+      sketch.camera.position.set(0, 0, 1.75)
+    } else if (window.innerWidth < 550) {
+      canvas.style.left = '0px'
+      wrap.style.left = '0px'
+      sketch.groups[i].rotation.x = -0.3
+      sketch.groups[i].rotation.y = 0
+      sketch.groups[i].rotation.z = 0
+      sketch.camera.position.set(0, 0, 3)
+    } else {
+      canvas.style.left = '300px'
+      sketch.groups[i].rotation.x = -0.3
+      sketch.groups[i].rotation.y = -0.3
+      sketch.groups[i].rotation.z = -0.15
+      sketch.camera.position.set(0, 0, 2)
+    }
+    // sketch.groups[i].rotation.y = 0
   })
 
   // acts as a lerp function
