@@ -41525,8 +41525,9 @@ function raf() {
     sketch.meshes[i].material.uniforms.distanceFromCenter.value = obj.dist;
   }); // acts as a lerp function
 
-  var diff = rounded - position;
-  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.035;
+  var diff = rounded - position; // stickiness/friction of scroll
+
+  position += Math.sign(diff * 0.050) * Math.pow(Math.abs(diff), 0.7) * 0.012;
   position > 1 ? position = Math.min(position, 3.1) : position = Math.max(position, 0.01);
   nav.forEach(function (el) {
     el.addEventListener('click', function (e) {
@@ -41578,7 +41579,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52933" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53882" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
