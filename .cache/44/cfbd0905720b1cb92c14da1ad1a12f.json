@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"id":"assets/storySquad.png","dependencies":[{"name":"C:\\Users\\Admin\\Desktop\\portfolio\\automatic-octo-enigma\\package.json","includedInParent":true,"mtime":1610397551291}],"generated":{"js":"module.exports = \"/3bdc8ad3bb9b8c7799abe34d35d43d52.png\";"},"sourceMaps":null,"error":null,"hash":"354342ef2d06f8a2e21cadf2b887f2ac","cacheData":{"env":{}}}
-=======
-{"id":"assets/storySquad.png","dependencies":[{"name":"C:\\Users\\Admin\\Desktop\\portfolio\\automatic-octo-enigma\\package.json","includedInParent":true,"mtime":1610220308123}],"generated":{"js":"module.exports = \"/3bdc8ad3bb9b8c7799abe34d35d43d52.png\";"},"sourceMaps":null,"error":null,"hash":"354342ef2d06f8a2e21cadf2b887f2ac","cacheData":{"env":{}}}
->>>>>>> main
+{"id":"assets/storySquad.png","dependencies":[{"name":"C:\\Users\\Admin\\Desktop\\portfolio\\automatic-octo-enigma\\package.json","includedInParent":true,"mtime":1611264183703}],"generated":{"js":"module.exports = \"/3bdc8ad3bb9b8c7799abe34d35d43d52.png\";"},"sourceMaps":null,"error":null,"hash":"354342ef2d06f8a2e21cadf2b887f2ac","cacheData":{"env":{}}}
