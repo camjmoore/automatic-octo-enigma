@@ -77,7 +77,8 @@ function raf(){
   // acts as a lerp function
   let diff = (rounded - position);
   
-  position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.035;
+  // stickiness/friction of scroll
+  position += Math.sign(diff*0.050)*Math.pow(Math.abs(diff),0.7)*0.012;
   
   position > 1 ? position = Math.min(position, 3.1) : position = Math.max(position, 0.01)
   
