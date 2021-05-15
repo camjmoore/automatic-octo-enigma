@@ -79,18 +79,58 @@ html {
       .description1 {
         width: 100%;
         font-size: 28.43px;
+
+        .about-links {
+          display: flex;
+          align-items: center;
+          width: 65%;
+          padding: 0;
+          margin: 0 auto;
+
+
+          #resume {
+            margin: 0;
+            padding-left: 0;
+            padding-right: 0;
+            justify-content: space-around;
+            width: 50%;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 22.33px;
+
+            &:hover {
+              color: rgb(25, 55, 175);
+              transition: all 0.5s; 
+            }
+          }
+          
+          #social {
+            margin: 0;
+            padding-left: 0;
+            padding-right: 0;
+            justify-content: space-around;
+            width: 20%
+          }
+          
+          a {
+            justify-content: space-around;
+            text-decoration: none;
+            color: inherit;
+            font-family: 'Source Sans Pro', sans-serif;
+            // font-size: 21.33px;
+  
+            &:hover {
+              color: rgb(25, 55, 175);
+              transition: all 0.5s; 
+            }
+          }
+        }
         
+
         h1 {
           line-height: 0rem;
           font-family: 'Source Serif Pro', serif;          
           font-weight: 700;
           width: 500px;
-          
-          a {
-            text-decoration: none;
-            color: inherit;
-
-          }
         }
         
         p {
@@ -314,7 +354,7 @@ html {
           text-align: center;
           font-family: 'Source Sans Pro', sans-serif;
           font-size: 21.33px;
-          width: 45%;
+          width: 57%;
 
         }
 
@@ -404,6 +444,15 @@ html {
         width: 10%;
         padding-left: 3%;
         padding-right: 3%;
+
+        svg {
+
+          &:hover {
+            transform: scale(1.15);
+            transition: all 1s; 
+            transition: all 0.75s; 
+          }
+        }
       }
     }
   }

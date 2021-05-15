@@ -201,15 +201,48 @@ html body #wrapper .description1 {
   width: 100%;
   font-size: 28.43px;
 }
+html body #wrapper .description1 .about-links {
+  display: flex;
+  align-items: center;
+  width: 65%;
+  padding: 0;
+  margin: 0 auto;
+}
+html body #wrapper .description1 .about-links #resume {
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: space-around;
+  width: 50%;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 22.33px;
+}
+html body #wrapper .description1 .about-links #resume:hover {
+  color: #1937af;
+  transition: all 0.5s;
+}
+html body #wrapper .description1 .about-links #social {
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: space-around;
+  width: 20%;
+}
+html body #wrapper .description1 .about-links a {
+  justify-content: space-around;
+  text-decoration: none;
+  color: inherit;
+  font-family: "Source Sans Pro", sans-serif;
+}
+html body #wrapper .description1 .about-links a:hover {
+  color: #1937af;
+  transition: all 0.5s;
+}
 html body #wrapper .description1 h1 {
   line-height: 0rem;
   font-family: "Source Serif Pro", serif;
   font-weight: 700;
   width: 500px;
-}
-html body #wrapper .description1 h1 a {
-  text-decoration: none;
-  color: inherit;
 }
 html body #wrapper .description1 p {
   font-family: "Source Sans Pro", sans-serif;
@@ -387,7 +420,7 @@ html body .background .contact-modal h2 {
   text-align: center;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 21.33px;
-  width: 45%;
+  width: 57%;
 }
 html body .background .contact-modal .fa-times-circle {
   position: relative;
@@ -463,6 +496,11 @@ html body footer .social {
   width: 10%;
   padding-left: 3%;
   padding-right: 3%;
+}
+html body footer .social svg:hover {
+  transform: scale(1.15);
+  transition: all 1s;
+  transition: all 0.75s;
 }
 
 /*# sourceMappingURL=/app.c328ef1a.css.map */
